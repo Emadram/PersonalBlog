@@ -15,98 +15,458 @@
         </div>
     }
     
-    <form method="post">
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5 class="mb-0">Personal Information</h5>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="Profile.Name" class="form-label">Name</label>
-                        <input asp-for="Profile.Name" class="form-control" />
-                        <span asp-validation-for="Profile.Name" class="text-danger"></span>
-                    </div>
-                    
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="Profile.Title" class="form-label">Title/Position</label>
-                        <input asp-for="Profile.Title" class="form-control" />
-                        <span asp-validation-for="Profile.Title" class="text-danger"></span>
-                    </div>
-                    
-                    <div class="col-md-12 mb-3">
-                        <label asp-for="Profile.Bio" class="form-label">Bio</label>
-                        <textarea asp-for="Profile.Bio" class="form-control" rows="4"></textarea>
-                        <span asp-validation-for="Profile.Bio" class="text-danger"></span>
-                    </div>
-                    
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="Profile.Location" class="form-label">Location</label>
-                        <input asp-for="Profile.Location" class="form-control" />
-                        <span asp-validation-for="Profile.Location" class="text-danger"></span>
-                    </div>
-                    
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="Profile.Email" class="form-label">Email</label>
-                        <input asp-for="Profile.Email" class="form-control" />
-                        <span asp-validation-for="Profile.Email" class="text-danger"></span>
-                    </div>
-                    
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="Profile.Phone" class="form-label">Phone</label>
-                        <input asp-for="Profile.Phone" class="form-control" />
-                        <span asp-validation-for="Profile.Phone" class="text-danger"></span>
-                    </div>
-                    
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="Profile.ImageUrl" class="form-label">Profile Image URL</label>
-                        <input asp-for="Profile.ImageUrl" class="form-control" />
-                        <span asp-validation-for="Profile.ImageUrl" class="text-danger"></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5 class="mb-0">Social Links</h5>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="Profile.GitHubUrl" class="form-label">GitHub URL</label>
-                        <input asp-for="Profile.GitHubUrl" class="form-control" />
-                        <span asp-validation-for="Profile.GitHubUrl" class="text-danger"></span>
-                    </div>
-                    
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="Profile.LinkedInUrl" class="form-label">LinkedIn URL</label>
-                        <input asp-for="Profile.LinkedInUrl" class="form-control" />
-                        <span asp-validation-for="Profile.LinkedInUrl" class="text-danger"></span>
-                    </div>
-                    
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="Profile.TwitterUrl" class="form-label">Twitter URL</label>
-                        <input asp-for="Profile.TwitterUrl" class="form-control" />
-                        <span asp-validation-for="Profile.TwitterUrl" class="text-danger"></span>
-                    </div>
-                    
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="Profile.ResumeUrl" class="form-label">Resume URL</label>
-                        <input asp-for="Profile.ResumeUrl" class="form-control" />
-                        <span asp-validation-for="Profile.ResumeUrl" class="text-danger"></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="d-flex justify-content-between">
-            <a asp-page="/Admin/Index" class="btn btn-secondary">
-                <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
-            </a>
-            <button type="submit" class="btn btn-primary">
-                <i class="fas fa-save me-2"></i>Save Changes
+    <ul class="nav nav-tabs mb-4" id="profileTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="personal-tab" data-bs-toggle="tab" data-bs-target="#personal" type="button" role="tab" aria-controls="personal" aria-selected="true">
+                <i class="fas fa-user me-2"></i>Personal Info
             </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="skills-tab" data-bs-toggle="tab" data-bs-target="#skills" type="button" role="tab" aria-controls="skills" aria-selected="false">
+                <i class="fas fa-code me-2"></i>Skills
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="experience-tab" data-bs-toggle="tab" data-bs-target="#experience" type="button" role="tab" aria-controls="experience" aria-selected="false">
+                <i class="fas fa-briefcase me-2"></i>Experience
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="education-tab" data-bs-toggle="tab" data-bs-target="#education" type="button" role="tab" aria-controls="education" aria-selected="false">
+                <i class="fas fa-graduation-cap me-2"></i>Education
+            </button>
+        </li>
+    </ul>
+    
+    <div class="tab-content" id="profileTabsContent">
+        <!-- Personal Information Tab -->
+        <div class="tab-pane fade show active" id="personal" role="tabpanel" aria-labelledby="personal-tab">
+            <form method="post" asp-page-handler="UpdateProfile">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Personal Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Profile.Name" class="form-label">Name</label>
+                                <input asp-for="Profile.Name" class="form-control" />
+                                <span asp-validation-for="Profile.Name" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Profile.Title" class="form-label">Title/Position</label>
+                                <input asp-for="Profile.Title" class="form-control" />
+                                <span asp-validation-for="Profile.Title" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="col-md-12 mb-3">
+                                <label asp-for="Profile.Bio" class="form-label">Bio</label>
+                                <textarea asp-for="Profile.Bio" class="form-control" rows="4"></textarea>
+                                <span asp-validation-for="Profile.Bio" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Profile.Location" class="form-label">Location</label>
+                                <input asp-for="Profile.Location" class="form-control" />
+                                <span asp-validation-for="Profile.Location" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Profile.Email" class="form-label">Email</label>
+                                <input asp-for="Profile.Email" class="form-control" />
+                                <span asp-validation-for="Profile.Email" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Profile.Phone" class="form-label">Phone</label>
+                                <input asp-for="Profile.Phone" class="form-control" />
+                                <span asp-validation-for="Profile.Phone" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Profile.ImageUrl" class="form-label">Profile Image URL</label>
+                                <input asp-for="Profile.ImageUrl" class="form-control" />
+                                <span asp-validation-for="Profile.ImageUrl" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Social Links</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Profile.GitHubUrl" class="form-label">GitHub URL</label>
+                                <input asp-for="Profile.GitHubUrl" class="form-control" />
+                                <span asp-validation-for="Profile.GitHubUrl" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Profile.LinkedInUrl" class="form-label">LinkedIn URL</label>
+                                <input asp-for="Profile.LinkedInUrl" class="form-control" />
+                                <span asp-validation-for="Profile.LinkedInUrl" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Profile.TwitterUrl" class="form-label">Twitter URL</label>
+                                <input asp-for="Profile.TwitterUrl" class="form-control" />
+                                <span asp-validation-for="Profile.TwitterUrl" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Profile.ResumeUrl" class="form-label">Resume URL</label>
+                                <input asp-for="Profile.ResumeUrl" class="form-control" />
+                                <span asp-validation-for="Profile.ResumeUrl" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-between">
+                    <a asp-page="/Admin/Index" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-2"></i>Save Personal Info
+                    </button>
+                </div>
+            </form>
         </div>
-    </form>
-</div> 
+        
+        <!-- Skills Tab -->
+        <div class="tab-pane fade" id="skills" role="tabpanel" aria-labelledby="skills-tab">
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Skills</h5>
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addSkillModal">
+                        <i class="fas fa-plus-circle me-2"></i>Add Skill
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Category</th>
+                                    <th>Proficiency</th>
+                                    <th>Icon</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var skill in Model.Skills)
+                                {
+                                    <tr>
+                                        <td>@skill.Name</td>
+                                        <td>@skill.Category</td>
+                                        <td>
+                                            <div class="progress">
+                                                <div class="progress-bar bg-success" role="progressbar" 
+                                                     style="width: @skill.Proficiency%" 
+                                                     aria-valuenow="@skill.Proficiency" aria-valuemin="0" aria-valuemax="100">
+                                                    @skill.Proficiency%
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><i class="@skill.IconClass"></i> @skill.IconClass</td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-primary edit-skill-btn" 
+                                                    data-id="@skill.Id"
+                                                    data-name="@skill.Name"
+                                                    data-category="@skill.Category"
+                                                    data-proficiency="@skill.Proficiency"
+                                                    data-icon="@skill.IconClass">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <form method="post" asp-page-handler="DeleteSkill" asp-route-id="@skill.Id" class="d-inline">
+                                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this skill?')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                                @if (!Model.Skills.Any())
+                                {
+                                    <tr>
+                                        <td colspan="5" class="text-center py-3">No skills found. Add your first skill!</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Experience Tab -->
+        <div class="tab-pane fade" id="experience" role="tabpanel" aria-labelledby="experience-tab">
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Experience</h5>
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addExperienceModal">
+                        <i class="fas fa-plus-circle me-2"></i>Add Experience
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Company</th>
+                                    <th>Date Range</th>
+                                    <th>Order</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var exp in Model.Experiences)
+                                {
+                                    <tr>
+                                        <td>@exp.Title</td>
+                                        <td>@exp.Company</td>
+                                        <td>
+                                            @exp.StartDate.ToString("MMM yyyy") - 
+                                            @(exp.EndDate.HasValue ? exp.EndDate.Value.ToString("MMM yyyy") : "Present")
+                                        </td>
+                                        <td>@exp.Order</td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-primary edit-experience-btn"
+                                                    data-id="@exp.Id">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <form method="post" asp-page-handler="DeleteExperience" asp-route-id="@exp.Id" class="d-inline">
+                                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this experience?')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                                @if (!Model.Experiences.Any())
+                                {
+                                    <tr>
+                                        <td colspan="5" class="text-center py-3">No experience entries found. Add your first experience!</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Education Tab -->
+        <div class="tab-pane fade" id="education" role="tabpanel" aria-labelledby="education-tab">
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Education</h5>
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addEducationModal">
+                        <i class="fas fa-plus-circle me-2"></i>Add Education
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Degree</th>
+                                    <th>Institution</th>
+                                    <th>Date Range</th>
+                                    <th>Order</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var edu in Model.Educations)
+                                {
+                                    <tr>
+                                        <td>@edu.Degree</td>
+                                        <td>@edu.Institution</td>
+                                        <td>
+                                            @edu.StartDate.ToString("MMM yyyy") - 
+                                            @(edu.EndDate.HasValue ? edu.EndDate.Value.ToString("MMM yyyy") : "Present")
+                                        </td>
+                                        <td>@edu.Order</td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-primary edit-education-btn"
+                                                    data-id="@edu.Id">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <form method="post" asp-page-handler="DeleteEducation" asp-route-id="@edu.Id" class="d-inline">
+                                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this education entry?')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                                @if (!Model.Educations.Any())
+                                {
+                                    <tr>
+                                        <td colspan="5" class="text-center py-3">No education entries found. Add your first education!</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Skill Modal -->
+<div class="modal fade" id="addSkillModal" tabindex="-1" aria-labelledby="addSkillModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" asp-page-handler="AddSkill">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addSkillModalLabel">Add New Skill</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="newSkillName" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="newSkillName" name="newSkill.Name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newSkillCategory" class="form-label">Category</label>
+                        <input type="text" class="form-control" id="newSkillCategory" name="newSkill.Category" 
+                               placeholder="e.g., Programming Languages, Frameworks & Tools">
+                    </div>
+                    <div class="mb-3">
+                        <label for="newSkillProficiency" class="form-label">Proficiency (0-100)</label>
+                        <input type="range" class="form-range" min="0" max="100" id="newSkillProficiency" name="newSkill.Proficiency" value="80">
+                        <div class="d-flex justify-content-between">
+                            <span>0%</span>
+                            <span id="newSkillProficiencyValue">80%</span>
+                            <span>100%</span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newSkillIcon" class="form-label">Icon Class (FontAwesome)</label>
+                        <input type="text" class="form-control" id="newSkillIcon" name="newSkill.IconClass" 
+                               placeholder="e.g., fab fa-js, fas fa-database">
+                        <small class="text-muted">Find icons at <a href="https://fontawesome.com/icons" target="_blank">FontAwesome</a></small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Skill</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Skill Modal -->
+<div class="modal fade" id="editSkillModal" tabindex="-1" aria-labelledby="editSkillModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" asp-page-handler="UpdateSkill">
+                <input type="hidden" id="editSkillId" name="skill.Id" />
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editSkillModalLabel">Edit Skill</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="editSkillName" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="editSkillName" name="skill.Name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editSkillCategory" class="form-label">Category</label>
+                        <input type="text" class="form-control" id="editSkillCategory" name="skill.Category">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editSkillProficiency" class="form-label">Proficiency (0-100)</label>
+                        <input type="range" class="form-range" min="0" max="100" id="editSkillProficiency" name="skill.Proficiency" value="80">
+                        <div class="d-flex justify-content-between">
+                            <span>0%</span>
+                            <span id="editSkillProficiencyValue">80%</span>
+                            <span>100%</span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editSkillIcon" class="form-label">Icon Class (FontAwesome)</label>
+                        <input type="text" class="form-control" id="editSkillIcon" name="skill.IconClass">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Handle skill proficiency sliders
+        document.addEventListener('DOMContentLoaded', function() {
+            // New skill slider
+            const newSkillProficiency = document.getElementById('newSkillProficiency');
+            const newSkillProficiencyValue = document.getElementById('newSkillProficiencyValue');
+            if (newSkillProficiency && newSkillProficiencyValue) {
+                newSkillProficiencyValue.textContent = newSkillProficiency.value + '%';
+                newSkillProficiency.addEventListener('input', function() {
+                    newSkillProficiencyValue.textContent = this.value + '%';
+                });
+            }
+            
+            // Edit skill slider
+            const editSkillProficiency = document.getElementById('editSkillProficiency');
+            const editSkillProficiencyValue = document.getElementById('editSkillProficiencyValue');
+            if (editSkillProficiency && editSkillProficiencyValue) {
+                editSkillProficiency.addEventListener('input', function() {
+                    editSkillProficiencyValue.textContent = this.value + '%';
+                });
+            }
+            
+            // Edit skill buttons
+            const editButtons = document.querySelectorAll('.edit-skill-btn');
+            editButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    const name = this.getAttribute('data-name');
+                    const category = this.getAttribute('data-category');
+                    const proficiency = this.getAttribute('data-proficiency');
+                    const icon = this.getAttribute('data-icon');
+                    
+                    document.getElementById('editSkillId').value = id;
+                    document.getElementById('editSkillName').value = name;
+                    document.getElementById('editSkillCategory').value = category;
+                    document.getElementById('editSkillProficiency').value = proficiency;
+                    document.getElementById('editSkillProficiencyValue').textContent = proficiency + '%';
+                    document.getElementById('editSkillIcon').value = icon;
+                    
+                    const editModal = new bootstrap.Modal(document.getElementById('editSkillModal'));
+                    editModal.show();
+                });
+            });
+            
+            // Store the active tab in session storage
+            const triggerEl = document.querySelector('button[data-bs-toggle="tab"]');
+            if (triggerEl) {
+                triggerEl.addEventListener('shown.bs.tab', function(event) {
+                    sessionStorage.setItem('activeProfileTab', event.target.getAttribute('data-bs-target'));
+                });
+                
+                // Set active tab based on session storage
+                const activeTab = sessionStorage.getItem('activeProfileTab');
+                if (activeTab) {
+                    const tab = new bootstrap.Tab(document.querySelector('button[data-bs-target="' + activeTab + '"]'));
+                    tab.show();
+                }
+            }
+        });
+    </script>
+} 
