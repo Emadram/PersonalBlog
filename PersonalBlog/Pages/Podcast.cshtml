@@ -4,6 +4,155 @@
     ViewData["Title"] = "Podcast";
 }
 
-<h1>Podcast</h1>
+<div class="container">
+    <div class="row mb-5">
+        <div class="col-md-8">
+            <h1 class="mb-4"><i class="fas fa-microphone me-2"></i>Tech Talk Podcast</h1>
+            <p class="lead">
+                Join me as I discuss software development, project management, and the latest tech trends.
+                New episodes every week!
+            </p>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Subscribe</h5>
+                    <div class="d-flex flex-column gap-2">
+                        <a href="#" class="btn btn-outline-dark"><i class="fab fa-spotify me-2"></i>Spotify</a>
+                        <a href="#" class="btn btn-outline-dark"><i class="fab fa-apple me-2"></i>Apple Podcasts</a>
+                        <a href="#" class="btn btn-outline-dark"><i class="fas fa-rss me-2"></i>RSS Feed</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<p>Welcome to the Podcast page!</p> 
+    <!-- Featured Episode -->
+    <div class="section mb-5">
+        <h2>Latest Episode</h2>
+        <div class="card">
+            <div class="card-body">
+                <h3>EP 42: Microservices Architecture in 2025</h3>
+                <p class="text-muted">Published on July 15, 2025</p>
+                <p>
+                    In this episode, I discuss the evolution of microservices architecture and how it 
+                    has transformed over the past five years. Learn about the best practices, common pitfalls,
+                    and future trends in this architectural approach.
+                </p>
+                <div class="mb-4">
+                    <audio controls class="w-100">
+                        <source src="#" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+                <div>
+                    <span class="tag">Microservices</span>
+                    <span class="tag">Architecture</span>
+                    <span class="tag">Best Practices</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Episode List -->
+    <div class="section mb-5">
+        <h2>All Episodes</h2>
+        
+        <!-- Episode item -->
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-2 text-center">
+                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto" style="width: 80px; height: 80px;">
+                            <span style="font-size: 1.5rem;">EP 42</span>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <h4>Microservices Architecture in 2025</h4>
+                        <p class="text-muted mb-2">July 15, 2025 | 48 minutes</p>
+                        <p>
+                            In this episode, I discuss the evolution of microservices architecture and how it 
+                            has transformed over the past five years.
+                        </p>
+                        <button class="btn btn-sm btn-primary"><i class="fas fa-play me-1"></i>Listen Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-2 text-center">
+                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto" style="width: 80px; height: 80px;">
+                            <span style="font-size: 1.5rem;">EP 41</span>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <h4>Agile Project Management: Beyond the Buzzwords</h4>
+                        <p class="text-muted mb-2">July 8, 2025 | 52 minutes</p>
+                        <p>
+                            A deep dive into agile project management techniques that actually work in the real world.
+                        </p>
+                        <button class="btn btn-sm btn-primary"><i class="fas fa-play me-1"></i>Listen Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-2 text-center">
+                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto" style="width: 80px; height: 80px;">
+                            <span style="font-size: 1.5rem;">EP 40</span>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <h4>The Future of .NET: What's Coming in .NET 8</h4>
+                        <p class="text-muted mb-2">July 1, 2025 | 45 minutes</p>
+                        <p>
+                            Exploring the upcoming features in .NET 8 and how they'll impact application development.
+                        </p>
+                        <button class="btn btn-sm btn-primary"><i class="fas fa-play me-1"></i>Listen Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-2 text-center">
+                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto" style="width: 80px; height: 80px;">
+                            <span style="font-size: 1.5rem;">EP 39</span>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <h4>DevOps Pipelines: Automation Best Practices</h4>
+                        <p class="text-muted mb-2">June 24, 2025 | 50 minutes</p>
+                        <p>
+                            Learn how to build efficient CI/CD pipelines and automate your software delivery process.
+                        </p>
+                        <button class="btn btn-sm btn-primary"><i class="fas fa-play me-1"></i>Listen Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center mt-4">
+            <button class="btn btn-outline-primary">Load More Episodes</button>
+        </div>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="section mb-5">
+        <div class="card bg-primary text-white">
+            <div class="card-body text-center p-5">
+                <h3>Have a topic suggestion?</h3>
+                <p class="lead">I'm always looking for interesting tech topics to discuss on the podcast!</p>
+                <button class="btn btn-light btn-lg mt-3">Suggest a Topic</button>
+            </div>
+        </div>
+    </div>
+</div> 

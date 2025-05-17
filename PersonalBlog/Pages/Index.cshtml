@@ -1,10 +1,186 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "About Me";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container">
+    <div class="row mb-5">
+        <div class="col-md-8">
+            <h1 class="mb-4">Hello, I'm <span class="text-primary">John Doe</span></h1>
+            <h3 class="text-secondary mb-4">Software Developer & Project Manager</h3>
+            
+            <p class="lead mb-4">
+                I specialize in web development and project management with over 8 years of experience 
+                building scalable applications and leading development teams.
+            </p>
+            
+            <div class="d-flex gap-2 mb-5">
+                <a href="#" class="btn btn-primary">Download Resume</a>
+                <a href="#contact" class="btn btn-outline-primary">Contact Me</a>
+            </div>
+        </div>
+        <div class="col-md-4 text-center">
+            <div class="card p-3">
+                <img src="https://via.placeholder.com/300" alt="Profile Photo" class="rounded-circle mx-auto mb-3" style="width: 200px;">
+                <div class="card-body">
+                    <p class="card-text">
+                        <i class="fas fa-map-marker-alt me-2"></i> San Francisco, CA<br>
+                        <i class="fas fa-envelope me-2"></i> john@example.com<br>
+                        <i class="fas fa-phone me-2"></i> (123) 456-7890
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Skills Section -->
+    <div class="section mb-5">
+        <h2><i class="fas fa-code me-2"></i>Technical Skills</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <h4>Programming Languages</h4>
+                <div>
+                    <p class="mb-1">C# / .NET</p>
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 95%"></div>
+                    </div>
+                </div>
+                <div>
+                    <p class="mb-1">JavaScript / TypeScript</p>
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 90%"></div>
+                    </div>
+                </div>
+                <div>
+                    <p class="mb-1">SQL</p>
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 85%"></div>
+                    </div>
+                </div>
+                <div>
+                    <p class="mb-1">Python</p>
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 75%"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h4>Frameworks & Tools</h4>
+                <div class="d-flex flex-wrap">
+                    <span class="tag"><i class="fab fa-microsoft me-1"></i> ASP.NET Core</span>
+                    <span class="tag"><i class="fab fa-react me-1"></i> React</span>
+                    <span class="tag"><i class="fab fa-angular me-1"></i> Angular</span>
+                    <span class="tag"><i class="fas fa-database me-1"></i> SQL Server</span>
+                    <span class="tag"><i class="fab fa-docker me-1"></i> Docker</span>
+                    <span class="tag"><i class="fas fa-cloud me-1"></i> Azure</span>
+                    <span class="tag"><i class="fab fa-aws me-1"></i> AWS</span>
+                    <span class="tag"><i class="fab fa-git-alt me-1"></i> Git</span>
+                    <span class="tag"><i class="fab fa-jira me-1"></i> Jira</span>
+                    <span class="tag"><i class="fas fa-sitemap me-1"></i> Scrum/Agile</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Experience Section -->
+    <div class="section mb-5">
+        <h2><i class="fas fa-briefcase me-2"></i>Work Experience</h2>
+        
+        <div class="timeline">
+            <div class="timeline-item">
+                <h4>Senior Developer & Project Manager</h4>
+                <h5>Tech Innovations Inc.</h5>
+                <p class="text-muted">Jan 2020 - Present</p>
+                <p>
+                    Led development teams of 5-8 members, managing project timelines, 
+                    resource allocation, and stakeholder communication. Architected and 
+                    implemented microservices architecture that improved system scalability by 40%.
+                </p>
+                <code>C#, ASP.NET Core, Azure, Microservices, Team Leadership</code>
+            </div>
+            
+            <div class="timeline-item">
+                <h4>Full-Stack Developer</h4>
+                <h5>WebSolutions Co.</h5>
+                <p class="text-muted">May 2017 - Dec 2019</p>
+                <p>
+                    Developed and maintained multiple web applications using .NET Core and 
+                    React. Implemented CI/CD pipelines that reduced deployment time by 60%.
+                </p>
+                <code>C#, JavaScript, React, SQL Server, CI/CD</code>
+            </div>
+            
+            <div class="timeline-item">
+                <h4>Junior Software Engineer</h4>
+                <h5>StartUp Labs</h5>
+                <p class="text-muted">June 2015 - April 2017</p>
+                <p>
+                    Worked on front-end development for various client projects.
+                    Collaborated closely with UX designers to implement responsive interfaces.
+                </p>
+                <code>HTML/CSS, JavaScript, Bootstrap</code>
+            </div>
+        </div>
+    </div>
+
+    <!-- Education Section -->
+    <div class="section mb-5">
+        <h2><i class="fas fa-graduation-cap me-2"></i>Education</h2>
+        
+        <div class="timeline">
+            <div class="timeline-item">
+                <h4>Master of Computer Science</h4>
+                <h5>University of Technology</h5>
+                <p class="text-muted">2013 - 2015</p>
+                <p>Specialized in Software Engineering and Project Management</p>
+            </div>
+            
+            <div class="timeline-item">
+                <h4>Bachelor of Science in Computer Science</h4>
+                <h5>State University</h5>
+                <p class="text-muted">2009 - 2013</p>
+                <p>Dean's List, Computer Science Club President</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Section -->
+    <div id="contact" class="section mb-5">
+        <h2><i class="fas fa-envelope me-2"></i>Get In Touch</h2>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <form>
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="name" placeholder="Your name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" placeholder="your.email@example.com">
+                    </div>
+                    <div class="mb-3">
+                        <label for="message" class="form-label">Message</label>
+                        <textarea class="form-control" id="message" rows="4" placeholder="Your message"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Send Message</button>
+                </form>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Connect with me</h5>
+                        <p>I'm always interested in new projects and opportunities. Feel free to reach out!</p>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="fas fa-envelope me-2"></i> john@example.com</li>
+                            <li class="mb-2"><i class="fas fa-phone me-2"></i> (123) 456-7890</li>
+                            <li class="mb-2"><i class="fab fa-github me-2"></i> github.com/johndoe</li>
+                            <li class="mb-2"><i class="fab fa-linkedin me-2"></i> linkedin.com/in/johndoe</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
