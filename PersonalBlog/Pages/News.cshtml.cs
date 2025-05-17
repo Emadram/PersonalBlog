@@ -1,18 +1,27 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using PersonalBlog.Models;
+using PersonalBlog.Services;
 
 namespace PersonalBlog.Pages;
 
 public class NewsModel : PageModel
 {
-    private readonly ILogger<NewsModel> _logger;
+    private readonly INewsService _newsService;
 
-    public NewsModel(ILogger<NewsModel> logger)
+    public News FeaturedNews { get; set; }
+    public IEnumerable<News> RecentNews { get; set; }
+    public IEnumerable<string> Categories { get; set; }
+
+    public NewsModel(INewsService newsService)
     {
-        _logger = logger;
+        _newsService = newsService;
     }
 
     public void OnGet()
     {
+        FeaturedNews = _newsService.GetFeaturedNews();
+        RecentNews = _newsService.GetRecentNews(6);
+        Categories = _newsService.GetCategories();
     }
 } 

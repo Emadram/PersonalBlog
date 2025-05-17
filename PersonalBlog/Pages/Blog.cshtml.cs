@@ -1,18 +1,27 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using PersonalBlog.Models;
+using PersonalBlog.Services;
 
 namespace PersonalBlog.Pages;
 
 public class BlogModel : PageModel
 {
-    private readonly ILogger<BlogModel> _logger;
+    private readonly IBlogService _blogService;
 
-    public BlogModel(ILogger<BlogModel> logger)
+    public BlogPost FeaturedPost { get; set; }
+    public IEnumerable<BlogPost> RecentPosts { get; set; }
+    public IEnumerable<string> Categories { get; set; }
+
+    public BlogModel(IBlogService blogService)
     {
-        _logger = logger;
+        _blogService = blogService;
     }
 
     public void OnGet()
     {
+        FeaturedPost = _blogService.GetFeaturedPost();
+        RecentPosts = _blogService.GetRecentPosts(4);
+        Categories = _blogService.GetCategories();
     }
 } 

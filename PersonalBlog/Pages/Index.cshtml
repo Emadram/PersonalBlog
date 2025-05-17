@@ -7,27 +7,30 @@
 <div class="container">
     <div class="row mb-5">
         <div class="col-md-8">
-            <h1 class="mb-4">Hello, I'm <span class="text-primary">John Doe</span></h1>
-            <h3 class="text-secondary mb-4">Software Developer & Project Manager</h3>
+            <h1 class="mb-4">Hello, I'm <span class="text-primary">@Model.Profile.Name</span></h1>
+            <h3 class="text-secondary mb-4">@Model.Profile.Title</h3>
             
             <p class="lead mb-4">
-                I specialize in web development and project management with over 8 years of experience 
-                building scalable applications and leading development teams.
+                @Model.Profile.Bio
             </p>
             
             <div class="d-flex gap-2 mb-5">
-                <a href="#" class="btn btn-primary">Download Resume</a>
-                <a href="#contact" class="btn btn-outline-primary">Contact Me</a>
+                <a href="@Model.Profile.ResumeUrl" class="btn btn-primary">
+                    <i class="fas fa-download me-2"></i>Download Resume
+                </a>
+                <a href="#contact" class="btn btn-outline-primary">
+                    <i class="fas fa-envelope me-2"></i>Contact Me
+                </a>
             </div>
         </div>
         <div class="col-md-4 text-center">
             <div class="card p-3">
-                <img src="https://via.placeholder.com/300" alt="Profile Photo" class="rounded-circle mx-auto mb-3" style="width: 200px;">
+                <img src="@Model.Profile.ImageUrl" alt="Profile Photo" class="rounded-circle mx-auto mb-3" style="width: 200px;">
                 <div class="card-body">
                     <p class="card-text">
-                        <i class="fas fa-map-marker-alt me-2"></i> San Francisco, CA<br>
-                        <i class="fas fa-envelope me-2"></i> john@example.com<br>
-                        <i class="fas fa-phone me-2"></i> (123) 456-7890
+                        <i class="fas fa-map-marker-alt me-2"></i> @Model.Profile.Location<br>
+                        <i class="fas fa-envelope me-2"></i> @Model.Profile.Email<br>
+                        <i class="fas fa-phone me-2"></i> @Model.Profile.Phone
                     </p>
                 </div>
             </div>
@@ -36,48 +39,27 @@
 
     <!-- Skills Section -->
     <div class="section mb-5">
-        <h2><i class="fas fa-code me-2"></i>Technical Skills</h2>
+        <h2 class="section-title"><i class="fas fa-code me-2"></i>Technical Skills</h2>
         <div class="row">
             <div class="col-md-6">
                 <h4>Programming Languages</h4>
-                <div>
-                    <p class="mb-1">C# / .NET</p>
-                    <div class="skill-bar">
-                        <div class="skill-progress" style="width: 95%"></div>
+                @foreach (var skill in Model.Skills.Where(s => s.Category == "Programming Languages"))
+                {
+                    <div>
+                        <p class="mb-1">@skill.Name</p>
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width: @(skill.Proficiency)%"></div>
+                        </div>
                     </div>
-                </div>
-                <div>
-                    <p class="mb-1">JavaScript / TypeScript</p>
-                    <div class="skill-bar">
-                        <div class="skill-progress" style="width: 90%"></div>
-                    </div>
-                </div>
-                <div>
-                    <p class="mb-1">SQL</p>
-                    <div class="skill-bar">
-                        <div class="skill-progress" style="width: 85%"></div>
-                    </div>
-                </div>
-                <div>
-                    <p class="mb-1">Python</p>
-                    <div class="skill-bar">
-                        <div class="skill-progress" style="width: 75%"></div>
-                    </div>
-                </div>
+                }
             </div>
             <div class="col-md-6">
                 <h4>Frameworks & Tools</h4>
                 <div class="d-flex flex-wrap">
-                    <span class="tag"><i class="fab fa-microsoft me-1"></i> ASP.NET Core</span>
-                    <span class="tag"><i class="fab fa-react me-1"></i> React</span>
-                    <span class="tag"><i class="fab fa-angular me-1"></i> Angular</span>
-                    <span class="tag"><i class="fas fa-database me-1"></i> SQL Server</span>
-                    <span class="tag"><i class="fab fa-docker me-1"></i> Docker</span>
-                    <span class="tag"><i class="fas fa-cloud me-1"></i> Azure</span>
-                    <span class="tag"><i class="fab fa-aws me-1"></i> AWS</span>
-                    <span class="tag"><i class="fab fa-git-alt me-1"></i> Git</span>
-                    <span class="tag"><i class="fab fa-jira me-1"></i> Jira</span>
-                    <span class="tag"><i class="fas fa-sitemap me-1"></i> Scrum/Agile</span>
+                    @foreach (var skill in Model.Skills.Where(s => s.Category == "Frameworks & Tools"))
+                    {
+                        <span class="tag"><i class="@skill.IconClass me-1"></i> @skill.Name</span>
+                    }
                 </div>
             </div>
         </div>
@@ -85,9 +67,36 @@
 
     <!-- Experience Section -->
     <div class="section mb-5">
-        <h2><i class="fas fa-briefcase me-2"></i>Work Experience</h2>
+        <h2 class="section-title"><i class="fas fa-briefcase me-2"></i>Work Experience</h2>
         
         <div class="timeline">
+            @foreach (var exp in Model.Experiences)
+            {
+                <div class="timeline-item">
+                    <h4>@exp.Title</h4>
+                    <h5>@exp.Company</h5>
+                    <p class="text-muted">
+                        @exp.StartDate.ToString("MMM yyyy") - 
+                        @(exp.EndDate.HasValue ? exp.EndDate.Value.ToString("MMM yyyy") : "Present")
+                    </p>
+                    <p>@exp.Description</p>
+                    <code>@exp.Technologies</code>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Education Section -->
+    <div class="section mb-5">
+        <h2 class="section-title"><i class="fas fa-graduation-cap me-2"></i>Education</h2>
+        
+        <div class="timeline">
+            @foreach (var edu in Model.Educations)
+            {
+                <div class="timeline-item">
+                    <h4>@edu.Degree</h4>
+                    <h5>@edu.Institution</h5>
+                    <p class="text-muted">
             <div class="timeline-item">
                 <h4>Senior Developer & Project Manager</h4>
                 <h5>Tech Innovations Inc.</h5>
