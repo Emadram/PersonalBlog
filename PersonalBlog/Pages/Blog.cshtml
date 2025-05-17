@@ -88,7 +88,7 @@
         }
     </div>
 
-    <!-- Pagination -->
+    <!-- Pagination
     <div class="d-flex justify-content-center mb-5">
         <nav aria-label="Blog pagination">
             <ul class="pagination">
@@ -103,54 +103,8 @@
                 </li>
             </ul>
         </nav>
-    </div>
-
-    <!-- Code Snippet Example -->
-    <div class="section mb-5">
-        <h2 class="section-title">Latest Code Snippet</h2>
-        <div class="card">
-            <div class="card-header">
-                Extension Methods for Working with Collections
-            </div>
-            <div class="card-body">
-                <p>A set of useful extension methods for working with collections in C#:</p>
-                <pre><code>public static class CollectionExtensions
-{
-    /// &lt;summary>
-    /// Returns a safe enumerable that won't throw if the source is null
-    /// &lt;/summary>
-    public static IEnumerable&lt;T> SafeEnumerate&lt;T>(this IEnumerable&lt;T> source)
-    {
-        return source ?? Enumerable.Empty&lt;T>();
-    }
-
-    /// &lt;summary>
-    /// Executes an action for each item in the collection
-    /// &lt;/summary>
-    public static void ForEach&lt;T>(this IEnumerable&lt;T> source, Action&lt;T> action)
-    {
-        if (source == null || action == null) return;
-        
-        foreach (var item in source)
-        {
-            action(item);
-        }
-    }
-
-    /// &lt;summary>
-    /// Returns whether the collection is null or empty
-    /// &lt;/summary>
-    public static bool IsNullOrEmpty&lt;T>(this IEnumerable&lt;T> source)
-    {
-        return source == null || !source.Any();
-    }
-}</code></pre>
-                
-                <div class="mt-3">
-                    <span class="tag">C#</span>
-                    <span class="tag">Extension Methods</span>
-                    <span class="tag">Collections</span>
-                </div>
+    </div> -->
+</pre>
             </div>
         </div>
     </div>
