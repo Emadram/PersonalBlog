@@ -1,52 +1,139 @@
 @page
 @model PersonalBlog.Pages.NewsModel
-@{    
+@{
     ViewData["Title"] = "News";
 }
 
 <div class="container">
     <div class="row mb-5">
         <div class="col-lg-8">
-            <h1 class="mb-4"><i class="fas fa-newspaper me-2"></i>Tech News & Updates</h1>
+            <h1 class="mb-4 section-title"><i class="fas fa-newspaper me-2"></i>Tech News</h1>
             <p class="lead">
-                Stay updated on the latest tech trends, industry news, and my personal project updates.
+                Stay up-to-date with the latest happenings in the tech world, 
+                focusing on software development and industry trends.
             </p>
         </div>
         <div class="col-lg-4">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Subscribe to Updates</h5>
-                    <p>Get notified when new articles are published</p>
-                    <form>
-                        <div class="input-group mb-3">
-                            <input type="email" class="form-control" placeholder="Your email" aria-label="Your email">
-                            <button class="btn btn-primary" type="button">Subscribe</button>
-                        </div>
-                    </form>
+                    <h5 class="card-title">News Categories</h5>
+                    <div class="d-flex flex-wrap gap-2 mt-3">
+                        <a href="#" class="tag">All News</a>
+                        @foreach (var category in Model.Categories)
+                        {
+                            <a href="#" class="tag">@category</a>
+                        }
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Featured News -->
-    <div class="section mb-5">
-        <h2>Featured Story</h2>
-        <div class="card">
-            <div class="card-body p-0">
-                <div class="row g-0">
-                    <div class="col-md-4">
-                        <img src="https://via.placeholder.com/300x200" class="img-fluid" alt="Featured story image">
+    @if (Model.FeaturedNews != null)
+    {
+        <div class="section mb-5">
+            <h2 class="section-title">Featured News</h2>
+            <div class="card">
+                <div class="card-body p-0">
+                    <div class="row g-0">
+                        <div class="col-md-5">
+                            <img src="@Model.FeaturedNews.ImageUrl" class="img-fluid rounded-start" alt="Featured news image" style="height: 100%; object-fit: cover;">
+                        </div>
+                        <div class="col-md-7">
+                            <div class="card-body">
+                                <span class="badge bg-@Model.FeaturedNews.CategoryBadgeColor mb-2">@Model.FeaturedNews.Category</span>
+                                <h3 class="card-title">@Model.FeaturedNews.Title</h3>
+                                <p class="card-text text-muted">
+                                    <span><i class="far fa-calendar-alt me-1"></i> @Model.FeaturedNews.PublishedDate.ToString("MMMM d, yyyy")</span>
+                                    <span class="ms-3"><i class="fas fa-external-link-alt me-1"></i> @Model.FeaturedNews.Source</span>
+                                </p>
+                                <p class="card-text">
+                                    @Model.FeaturedNews.Summary
+                                </p>
+                                <a href="@Model.FeaturedNews.SourceUrl" target="_blank" class="btn btn-primary">Read Full Story</a>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md-8">
-                        <div class="card-body">
-                            <h3 class="card-title">Microsoft Announces Revolutionary AI Features for Visual Studio 2025</h3>
-                            <p class="card-text text-muted">July 15, 2025 | 5 min read</p>
-                            <p class="card-text">
-                                Microsoft has unveiled groundbreaking AI features for the upcoming Visual Studio 2025 release. 
-                                The new tools promise to revolutionize code analysis, refactoring, and debugging processes, 
-                                potentially saving developers hundreds of hours annually.
-                            </p>
-                            <a href="#" class="btn btn-primary">Read More</a>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- News Items -->
+    <div class="row mb-5">
+        @foreach (var news in Model.RecentNews.Where(n => !n.IsFeatured))
+        {
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 blog-post">
+                    <img src="@news.ImageUrl" class="card-img-top" alt="News image">
+                    <div class="card-body">
+                        <span class="badge bg-@news.CategoryBadgeColor mb-2">@news.Category</span>
+                        <h4 class="card-title">@news.Title</h4>
+                        <div class="blog-post-meta">
+                            <span><i class="far fa-calendar-alt me-1"></i> @news.PublishedDate.ToString("MMMM d, yyyy")</span>
+                            <span class="ms-3"><i class="fas fa-external-link-alt me-1"></i> @news.Source</span>
+                        </div>
+                        <p class="card-text">
+                            @news.Summary
+                        </p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a href="@news.SourceUrl" target="_blank" class="btn btn-sm btn-outline-primary">Read Story</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Pagination -->
+    <div class="d-flex justify-content-center mb-5">
+        <nav aria-label="News pagination">
+            <ul class="pagination">
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                </li>
+                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#">Next</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Industry Insights Section -->
+    <div class="section mb-5">
+        <h2 class="section-title"><i class="fas fa-chart-line me-2"></i>Industry Insights</h2>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Tech Trends for 2025</h5>
+                <p>Based on recent news and developments, here are the key technology trends to watch in the coming year:</p>
+                
+                <div class="row mt-4">
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-brain me-2 text-primary"></i>AI Integration</h5>
+                                <p class="card-text">AI continues to be integrated into mainstream applications, with a focus on practical business solutions and productivity tools.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-microchip me-2 text-success"></i>Edge Computing</h5>
+                                <p class="card-text">Processing data closer to where it's generated, reducing latency and improving real-time applications.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-shield-alt me-2 text-danger"></i>Cybersecurity</h5>
+                                <p class="card-text">With increasing threats and regulatory focus, security-by-design is becoming a fundamental requirement for all systems.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -54,139 +141,23 @@
         </div>
     </div>
 
-    <!-- News Categories -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="d-flex flex-wrap gap-2">
-                <button class="btn btn-sm btn-primary">All News</button>
-                <button class="btn btn-sm btn-outline-secondary">Industry Updates</button>
-                <button class="btn btn-sm btn-outline-secondary">Project Updates</button>
-                <button class="btn btn-sm btn-outline-secondary">Tech Trends</button>
-                <button class="btn btn-sm btn-outline-secondary">Events</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- News List -->
-    <div class="row">
-        <!-- News Item 1 -->
-        <div class="col-md-6 mb-4">
-            <div class="card h-100">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <span class="badge bg-primary">Industry Updates</span>
-                    <small class="text-muted">July 10, 2025</small>
-                </div>
-                <div class="card-body">
-                    <h4>C# 12 Features That Will Change How You Code</h4>
-                    <p>
-                        The latest version of C# introduces several game-changing features that will significantly 
-                        improve developer productivity and code quality.
-                    </p>
-                </div>
-                <div class="card-footer bg-white border-top-0">
-                    <a href="#" class="btn btn-sm btn-outline-primary">Read Article</a>
-                    <div class="float-end">
-                        <span class="text-muted"><i class="far fa-eye me-1"></i>243</span>
-                        <span class="text-muted ms-2"><i class="far fa-comment me-1"></i>18</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- News Item 2 -->
-        <div class="col-md-6 mb-4">
-            <div class="card h-100">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <span class="badge bg-info">Project Updates</span>
-                    <small class="text-muted">July 5, 2025</small>
-                </div>
-                <div class="card-body">
-                    <h4>How We Improved API Response Time by 300%</h4>
-                    <p>
-                        A detailed case study of how our team optimized a heavily-used API service to 
-                        dramatically improve response times and user experience.
-                    </p>
-                </div>
-                <div class="card-footer bg-white border-top-0">
-                    <a href="#" class="btn btn-sm btn-outline-primary">Read Article</a>
-                    <div class="float-end">
-                        <span class="text-muted"><i class="far fa-eye me-1"></i>187</span>
-                        <span class="text-muted ms-2"><i class="far fa-comment me-1"></i>24</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- News Item 3 -->
-        <div class="col-md-6 mb-4">
-            <div class="card h-100">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <span class="badge bg-secondary">Tech Trends</span>
-                    <small class="text-muted">June 28, 2025</small>
-                </div>
-                <div class="card-body">
-                    <h4>The Rise of Edge Computing in Enterprise Applications</h4>
-                    <p>
-                        Exploring how edge computing is transforming enterprise applications and why 
-                        every development team should be considering this approach.
-                    </p>
-                </div>
-                <div class="card-footer bg-white border-top-0">
-                    <a href="#" class="btn btn-sm btn-outline-primary">Read Article</a>
-                    <div class="float-end">
-                        <span class="text-muted"><i class="far fa-eye me-1"></i>156</span>
-                        <span class="text-muted ms-2"><i class="far fa-comment me-1"></i>12</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- News Item 4 -->
-        <div class="col-md-6 mb-4">
-            <div class="card h-100">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <span class="badge bg-success">Events</span>
-                    <small class="text-muted">June 20, 2025</small>
-                </div>
-                <div class="card-body">
-                    <h4>Join Me at DevCon 2025: Speaking on Microservices Best Practices</h4>
-                    <p>
-                        I'm excited to announce that I'll be speaking at DevCon 2025 on the topic of 
-                        "Microservices in Practice: Lessons from the Trenches."
-                    </p>
-                </div>
-                <div class="card-footer bg-white border-top-0">
-                    <a href="#" class="btn btn-sm btn-outline-primary">Read Article</a>
-                    <div class="float-end">
-                        <span class="text-muted"><i class="far fa-eye me-1"></i>132</span>
-                        <span class="text-muted ms-2"><i class="far fa-comment me-1"></i>9</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="text-center mt-4 mb-5">
-        <button class="btn btn-outline-primary">Load More News</button>
-    </div>
-
-    <!-- Newsletter -->
+    <!-- Subscribe Section -->
     <div class="section mb-5">
         <div class="card bg-light">
             <div class="card-body p-4 text-center">
-                <h3><i class="fas fa-envelope-open-text me-2"></i>Weekly Tech Digest</h3>
+                <h3><i class="fas fa-envelope me-2"></i>Subscribe to News Updates</h3>
                 <p class="lead mb-4">
-                    Get a curated list of the best articles, news, and resources delivered to your inbox every week.
+                    Get the latest tech news and industry insights delivered directly to your inbox.
                 </p>
                 <div class="row justify-content-center">
                     <div class="col-md-6">
-                        <form>
+                        <form method="post">
                             <div class="input-group mb-3">
                                 <input type="email" class="form-control" placeholder="Your email" aria-label="Your email">
                                 <button class="btn btn-primary" type="button">Subscribe</button>
                             </div>
                         </form>
-                        <small class="text-muted">No spam, unsubscribe anytime.</small>
+                        <small class="text-muted">Weekly digest. Unsubscribe at any time.</small>
                     </div>
                 </div>
             </div>

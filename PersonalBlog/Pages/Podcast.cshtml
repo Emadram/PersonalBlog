@@ -1,26 +1,28 @@
 @page
 @model PersonalBlog.Pages.PodcastModel
-@{    
+@{
     ViewData["Title"] = "Podcast";
 }
 
 <div class="container">
     <div class="row mb-5">
-        <div class="col-md-8">
-            <h1 class="mb-4"><i class="fas fa-microphone me-2"></i>Tech Talk Podcast</h1>
+        <div class="col-lg-8">
+            <h1 class="mb-4 section-title"><i class="fas fa-microphone me-2"></i>DevTalk Podcast</h1>
             <p class="lead">
-                Join me as I discuss software development, project management, and the latest tech trends.
-                New episodes every week!
+                A podcast for developers by developers. Join me as I chat with industry experts about software 
+                development, career growth, and emerging technologies.
             </p>
         </div>
-        <div class="col-md-4">
+        <div class="col-lg-4">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Subscribe</h5>
-                    <div class="d-flex flex-column gap-2">
-                        <a href="#" class="btn btn-outline-dark"><i class="fab fa-spotify me-2"></i>Spotify</a>
-                        <a href="#" class="btn btn-outline-dark"><i class="fab fa-apple me-2"></i>Apple Podcasts</a>
-                        <a href="#" class="btn btn-outline-dark"><i class="fas fa-rss me-2"></i>RSS Feed</a>
+                    <h5 class="card-title">Podcast Categories</h5>
+                    <div class="d-flex flex-wrap gap-2 mt-3">
+                        <a href="#" class="tag">All Episodes</a>
+                        @foreach (var category in Model.Categories)
+                        {
+                            <a href="#" class="tag">@category</a>
+                        }
                     </div>
                 </div>
             </div>
@@ -28,130 +30,196 @@
     </div>
 
     <!-- Featured Episode -->
-    <div class="section mb-5">
-        <h2>Latest Episode</h2>
-        <div class="card">
-            <div class="card-body">
-                <h3>EP 42: Microservices Architecture in 2025</h3>
-                <p class="text-muted">Published on July 15, 2025</p>
-                <p>
-                    In this episode, I discuss the evolution of microservices architecture and how it 
-                    has transformed over the past five years. Learn about the best practices, common pitfalls,
-                    and future trends in this architectural approach.
-                </p>
-                <div class="mb-4">
-                    <audio controls class="w-100">
-                        <source src="#" type="audio/mpeg">
-                        Your browser does not support the audio element.
-                    </audio>
+    @if (Model.FeaturedEpisode != null)
+    {
+        <div class="section mb-5">
+            <h2 class="section-title">Featured Episode</h2>
+            <div class="card">
+                <div class="card-body p-0">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <img src="@Model.FeaturedEpisode.ImageUrl" class="img-fluid rounded-start" alt="Podcast episode image" style="height: 100%; object-fit: cover;">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <span class="badge bg-@Model.FeaturedEpisode.CategoryBadgeColor">@Model.FeaturedEpisode.Category</span>
+                                    <span class="text-muted">@Model.FeaturedEpisode.EpisodeNumber</span>
+                                </div>
+                                <h3 class="card-title">@Model.FeaturedEpisode.Title</h3>
+                                <p class="text-muted">
+                                    <i class="far fa-calendar-alt me-1"></i> @Model.FeaturedEpisode.PublishedDate.ToString("MMMM d, yyyy")
+                                    <span class="mx-2">|</span>
+                                    <i class="far fa-clock me-1"></i> @Model.FeaturedEpisode.DurationMinutes min
+                                </p>
+                                <p class="card-text">
+                                    @Model.FeaturedEpisode.Summary
+                                </p>
+                                <p class="text-muted">
+                                    <strong>Guests:</strong> @Model.FeaturedEpisode.Guests
+                                </p>
+                                <div class="d-flex">
+                                    <a href="@Model.FeaturedEpisode.AudioUrl" class="btn btn-primary me-2">
+                                        <i class="fas fa-play me-1"></i> Listen Now
+                                    </a>
+                                    <a href="#" class="btn btn-outline-secondary">
+                                        <i class="fas fa-info-circle me-1"></i> Show Notes
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <span class="tag">Microservices</span>
-                    <span class="tag">Architecture</span>
-                    <span class="tag">Best Practices</span>
+            </div>
+        </div>
+    }
+
+    <!-- Episodes List -->
+    <div class="section mb-5">
+        <h2 class="section-title">Recent Episodes</h2>
+        <div class="row">
+            @foreach (var episode in Model.RecentEpisodes.Where(e => !e.IsFeatured))
+            {
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <img src="@episode.ImageUrl" class="card-img-top" alt="Podcast episode image">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <span class="badge bg-@episode.CategoryBadgeColor">@episode.Category</span>
+                                <span class="text-muted">@episode.EpisodeNumber</span>
+                            </div>
+                            <h4 class="card-title">@episode.Title</h4>
+                            <p class="text-muted small">
+                                <i class="far fa-calendar-alt me-1"></i> @episode.PublishedDate.ToString("MMMM d, yyyy")
+                                <span class="mx-2">|</span>
+                                <i class="far fa-clock me-1"></i> @episode.DurationMinutes min
+                            </p>
+                            <p class="card-text">@episode.Summary</p>
+                            <p class="text-muted small"><strong>Guests:</strong> @episode.Guests</p>
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                                <a href="@episode.AudioUrl" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-play me-1"></i> Listen
+                                </a>
+                                <a href="#" class="btn btn-sm btn-outline-secondary">
+                                    <i class="fas fa-info-circle me-1"></i> Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="d-flex justify-content-center mb-5">
+        <nav aria-label="Podcast pagination">
+            <ul class="pagination">
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                </li>
+                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#">Next</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Listen On Section -->
+    <div class="section mb-5">
+        <h2 class="section-title"><i class="fas fa-headphones me-2"></i>Listen On</h2>
+        <div class="row text-center">
+            <div class="col-md-3 col-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <i class="fab fa-spotify fa-3x mb-3 text-success"></i>
+                        <h5 class="card-title">Spotify</h5>
+                        <a href="#" class="btn btn-sm btn-outline-success">Subscribe</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <i class="fab fa-apple fa-3x mb-3 text-dark"></i>
+                        <h5 class="card-title">Apple Podcasts</h5>
+                        <a href="#" class="btn btn-sm btn-outline-dark">Subscribe</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <i class="fab fa-google fa-3x mb-3 text-primary"></i>
+                        <h5 class="card-title">Google Podcasts</h5>
+                        <a href="#" class="btn btn-sm btn-outline-primary">Subscribe</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <i class="fas fa-rss fa-3x mb-3 text-warning"></i>
+                        <h5 class="card-title">RSS Feed</h5>
+                        <a href="#" class="btn btn-sm btn-outline-warning">Subscribe</a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Episode List -->
+    <!-- Contact Section -->
     <div class="section mb-5">
-        <h2>All Episodes</h2>
-        
-        <!-- Episode item -->
-        <div class="card mb-3">
-            <div class="card-body">
+        <div class="card bg-light">
+            <div class="card-body p-4">
                 <div class="row">
-                    <div class="col-md-2 text-center">
-                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto" style="width: 80px; height: 80px;">
-                            <span style="font-size: 1.5rem;">EP 42</span>
+                    <div class="col-md-7">
+                        <h3><i class="fas fa-envelope me-2"></i>Want to Be a Guest?</h3>
+                        <p class="lead mb-4">
+                            I'm always looking for interesting guests with unique insights and experiences 
+                            to share with my audience. If you think you'd be a good fit, please reach out!
+                        </p>
+                        <form method="post">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" placeholder="Your name">
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="email" class="form-control" placeholder="Your email">
+                                </div>
+                                <div class="col-12">
+                                    <input type="text" class="form-control" placeholder="Topic proposal">
+                                </div>
+                                <div class="col-12">
+                                    <textarea class="form-control" rows="3" placeholder="Tell me a bit about yourself and why you'd be a great guest"></textarea>
+                                </div>
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-paper-plane me-2"></i>Submit Proposal
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="card h-100 mt-md-0 mt-4">
+                            <div class="card-body">
+                                <h5 class="card-title">Guest Requirements</h5>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Relevant expertise in software development, tech leadership, or related field</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Interesting stories or insights to share</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Good audio setup (microphone recommended)</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> 45-60 minutes of availability for recording</li>
+                                </ul>
+                                <hr>
+                                <p class="text-muted mb-0">Episodes are typically published within 2 weeks of recording. You'll receive a link to preview the episode before it goes live.</p>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-10">
-                        <h4>Microservices Architecture in 2025</h4>
-                        <p class="text-muted mb-2">July 15, 2025 | 48 minutes</p>
-                        <p>
-                            In this episode, I discuss the evolution of microservices architecture and how it 
-                            has transformed over the past five years.
-                        </p>
-                        <button class="btn btn-sm btn-primary"><i class="fas fa-play me-1"></i>Listen Now</button>
-                    </div>
                 </div>
-            </div>
-        </div>
-        
-        <div class="card mb-3">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-2 text-center">
-                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto" style="width: 80px; height: 80px;">
-                            <span style="font-size: 1.5rem;">EP 41</span>
-                        </div>
-                    </div>
-                    <div class="col-md-10">
-                        <h4>Agile Project Management: Beyond the Buzzwords</h4>
-                        <p class="text-muted mb-2">July 8, 2025 | 52 minutes</p>
-                        <p>
-                            A deep dive into agile project management techniques that actually work in the real world.
-                        </p>
-                        <button class="btn btn-sm btn-primary"><i class="fas fa-play me-1"></i>Listen Now</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="card mb-3">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-2 text-center">
-                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto" style="width: 80px; height: 80px;">
-                            <span style="font-size: 1.5rem;">EP 40</span>
-                        </div>
-                    </div>
-                    <div class="col-md-10">
-                        <h4>The Future of .NET: What's Coming in .NET 8</h4>
-                        <p class="text-muted mb-2">July 1, 2025 | 45 minutes</p>
-                        <p>
-                            Exploring the upcoming features in .NET 8 and how they'll impact application development.
-                        </p>
-                        <button class="btn btn-sm btn-primary"><i class="fas fa-play me-1"></i>Listen Now</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="card mb-3">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-2 text-center">
-                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto" style="width: 80px; height: 80px;">
-                            <span style="font-size: 1.5rem;">EP 39</span>
-                        </div>
-                    </div>
-                    <div class="col-md-10">
-                        <h4>DevOps Pipelines: Automation Best Practices</h4>
-                        <p class="text-muted mb-2">June 24, 2025 | 50 minutes</p>
-                        <p>
-                            Learn how to build efficient CI/CD pipelines and automate your software delivery process.
-                        </p>
-                        <button class="btn btn-sm btn-primary"><i class="fas fa-play me-1"></i>Listen Now</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="text-center mt-4">
-            <button class="btn btn-outline-primary">Load More Episodes</button>
-        </div>
-    </div>
-
-    <!-- Call to Action -->
-    <div class="section mb-5">
-        <div class="card bg-primary text-white">
-            <div class="card-body text-center p-5">
-                <h3>Have a topic suggestion?</h3>
-                <p class="lead">I'm always looking for interesting tech topics to discuss on the podcast!</p>
-                <button class="btn btn-light btn-lg mt-3">Suggest a Topic</button>
             </div>
         </div>
     </div>

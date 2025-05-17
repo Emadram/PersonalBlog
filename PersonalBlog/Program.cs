@@ -1,7 +1,21 @@
+using Microsoft.EntityFrameworkCore;
+using PersonalBlog.Data;
+using PersonalBlog.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+
+// Add database context
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseInMemoryDatabase("PersonalBlogDb"));
+
+// Register services
+builder.Services.AddScoped<IProfileService, ProfileService>();
+builder.Services.AddScoped<IBlogService, BlogService>();
+builder.Services.AddScoped<IPodcastService, PodcastService>();
+builder.Services.AddScoped<INewsService, NewsService>();
 
 var app = builder.Build();
 
@@ -21,5 +35,12 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapRazorPages();
+
+// Seed the database when the application starts
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    context.Database.EnsureCreated();
+}
 
 app.Run();
