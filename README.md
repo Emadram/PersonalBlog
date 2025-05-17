@@ -1,60 +1,68 @@
 # Personal Blog
 
-A modern, responsive personal blog and portfolio website built with ASP.NET Core Razor Pages. This application allows you to showcase your skills, experience, education, blog posts, podcasts, and news articles.
+<div align="center">
+  <img src="https://img.shields.io/badge/ASP.NET%20Core-8.0-512BD4?style=for-the-badge&logo=dotnet&logoColor=white" alt="ASP.NET Core" />
+  <img src="https://img.shields.io/badge/Entity%20Framework-7.0-512BD4?style=for-the-badge&logo=dotnet&logoColor=white" alt="Entity Framework" />
+  <img src="https://img.shields.io/badge/SQLite-3.39-003B57?style=for-the-badge&logo=sqlite&logoColor=white" alt="SQLite" />
+  <img src="https://img.shields.io/badge/Bootstrap-5.3-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white" alt="Bootstrap" />
+  <img src="https://img.shields.io/badge/License-MIT-success?style=for-the-badge" alt="License" />
+  <br/><br/>
+  <p>A modern, responsive personal blog and portfolio website built with ASP.NET Core Razor Pages.</p>
+</div>
 
-## Features
+## <img src="https://api.iconify.design/octicon:rocket.svg" width="20" height="20"/> Features
 
-- **Personal Profile**: Display your professional information, skills, experience, and education
-- **Blog**: Share your thoughts and expertise through blog posts
-- **Podcast**: Host and present your podcast episodes
-- **News**: Share industry news and updates
-- **Admin Panel**: Manage all content through a secure admin interface
-- **Responsive Design**: Works on mobile, tablet, and desktop devices
-- **Dark Mode**: Toggle between light and dark themes
-- **Persistent Storage**: Data stored in SQLite database
+- <img src="https://api.iconify.design/octicon:person.svg" width="16" height="16"/> **Personal Profile**: Display your professional information, skills, experience, and education
+- <img src="https://api.iconify.design/octicon:pencil.svg" width="16" height="16"/> **Blog**: Share your thoughts and expertise through blog posts
+- <img src="https://api.iconify.design/octicon:broadcast.svg" width="16" height="16"/> **Podcast**: Host and present your podcast episodes
+- <img src="https://api.iconify.design/octicon:globe.svg" width="16" height="16"/> **News**: Share industry news and updates
+- <img src="https://api.iconify.design/octicon:shield-lock.svg" width="16" height="16"/> **Admin Panel**: Manage all content through a secure admin interface
+- <img src="https://api.iconify.design/octicon:device-mobile.svg" width="16" height="16"/> **Responsive Design**: Works on mobile, tablet, and desktop devices
+- <img src="https://api.iconify.design/octicon:moon.svg" width="16" height="16"/> **Dark Mode**: Toggle between light and dark themes
+- <img src="https://api.iconify.design/octicon:database.svg" width="16" height="16"/> **Persistent Storage**: Data stored in SQLite database
 
-## Technology Stack
+## <img src="https://api.iconify.design/octicon:stack.svg" width="20" height="20"/> Technology Stack
 
-- **ASP.NET Core 8.0**: Modern web framework
-- **Entity Framework Core**: ORM for data access
-- **SQLite**: Lightweight database
-- **Razor Pages**: Server-side rendering
-- **Bootstrap 5**: Responsive UI framework
-- **Font Awesome**: Icon library
-- **JavaScript/jQuery**: Client-side functionality
+- <img src="https://api.iconify.design/logos:dotnet.svg" width="16" height="16"/> **ASP.NET Core 8.0**: Modern web framework
+- <img src="https://api.iconify.design/logos:microsoft.svg" width="16" height="16"/> **Entity Framework Core**: ORM for data access
+- <img src="https://api.iconify.design/logos:sqlite.svg" width="16" height="16"/> **SQLite**: Lightweight database
+- <img src="https://api.iconify.design/logos:c-sharp.svg" width="16" height="16"/> **Razor Pages**: Server-side rendering
+- <img src="https://api.iconify.design/logos:bootstrap.svg" width="16" height="16"/> **Bootstrap 5**: Responsive UI framework
+- <img src="https://api.iconify.design/logos:font-awesome.svg" width="16" height="16"/> **Font Awesome**: Icon library
+- <img src="https://api.iconify.design/logos:javascript.svg" width="16" height="16"/> **JavaScript/jQuery**: Client-side functionality
 
-## Getting Started
+## <img src="https://api.iconify.design/octicon:play.svg" width="20" height="20"/> Getting Started
 
-### Prerequisites
+### <img src="https://api.iconify.design/octicon:checklist.svg" width="16" height="16"/> Prerequisites
 
 - [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) or newer
 - Visual Studio, VS Code, or any IDE with C# support
 
-### Installation
+### <img src="https://api.iconify.design/octicon:desktop-download.svg" width="16" height="16"/> Installation
 
 1. Clone the repository
-   ```
+   ```bash
    git clone https://github.com/Emadram/PersonalBlog.git
    ```
 
 2. Navigate to the project directory
-   ```
+   ```bash
    cd PersonalBlog
    ```
 
 3. Restore NuGet packages
-   ```
+   ```bash
    dotnet restore
    ```
 
 4. Run the application
-   ```
+   ```bash
    dotnet run
    ```
 
 5. Access the website at `https://localhost:5219` or `http://localhost:5000`
 
-### Database Setup
+### <img src="https://api.iconify.design/octicon:database.svg" width="16" height="16"/> Database Setup
 
 The application uses Entity Framework Core with SQLite. The database will be automatically created and seeded when you first run the application.
 
@@ -71,35 +79,35 @@ dotnet ef migrations add [MigrationName]
 dotnet ef database update
 ```
 
-## Admin Access
+## <img src="https://api.iconify.design/octicon:shield-lock.svg" width="20" height="20"/> Admin Access
 
 Access the admin panel at `/Admin/Login` with the following credentials:
-- Username: admin
-- Password: Admin123!
+- <img src="https://api.iconify.design/octicon:person.svg" width="16" height="16"/> Username: admin
+- <img src="https://api.iconify.design/octicon:key.svg" width="16" height="16"/> Password: Admin123!
 
-## Project Structure
+## <img src="https://api.iconify.design/octicon:file-directory.svg" width="20" height="20"/> Project Structure
 
-- **Models**: Data models representing entities like Person, BlogPost, etc.
-- **Data**: Database context and data seeding
-- **Services**: Business logic and data access
-- **Pages**: Razor Pages for UI rendering
-- **wwwroot**: Static files (CSS, JS, images)
+- <img src="https://api.iconify.design/octicon:database.svg" width="16" height="16"/> **Models**: Data models representing entities like Person, BlogPost, etc.
+- <img src="https://api.iconify.design/octicon:package.svg" width="16" height="16"/> **Data**: Database context and data seeding
+- <img src="https://api.iconify.design/octicon:gear.svg" width="16" height="16"/> **Services**: Business logic and data access
+- <img src="https://api.iconify.design/octicon:file.svg" width="16" height="16"/> **Pages**: Razor Pages for UI rendering
+- <img src="https://api.iconify.design/octicon:browser.svg" width="16" height="16"/> **wwwroot**: Static files (CSS, JS, images)
 
-## Customization
+## <img src="https://api.iconify.design/octicon:gear.svg" width="20" height="20"/> Customization
 
-### Profile Information
+### <img src="https://api.iconify.design/octicon:person.svg" width="16" height="16"/> Profile Information
 
 Update your personal information through the Admin panel at `/Admin/Profile`.
 
-### Content Management
+### <img src="https://api.iconify.design/octicon:pencil.svg" width="16" height="16"/> Content Management
 
 Manage all content through the Admin panel:
-- Blog posts: `/Admin/Blogs`
-- Podcast episodes: `/Admin/Podcasts`
-- News articles: `/Admin/News`
-- Site settings: `/Admin/Settings`
+- <img src="https://api.iconify.design/octicon:book.svg" width="16" height="16"/> Blog posts: `/Admin/Blogs`
+- <img src="https://api.iconify.design/octicon:broadcast.svg" width="16" height="16"/> Podcast episodes: `/Admin/Podcasts`
+- <img src="https://api.iconify.design/octicon:globe.svg" width="16" height="16"/> News articles: `/Admin/News`
+- <img src="https://api.iconify.design/octicon:settings.svg" width="16" height="16"/> Site settings: `/Admin/Settings`
 
-## Contributing
+## <img src="https://api.iconify.design/octicon:git-pull-request.svg" width="20" height="20"/> Contributing
 
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feature/my-feature`
@@ -107,11 +115,11 @@ Manage all content through the Admin panel:
 4. Push to the branch: `git push origin feature/my-feature`
 5. Open a pull request
 
-## License
+## <img src="https://api.iconify.design/octicon:law.svg" width="20" height="20"/> License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## Acknowledgments
+## <img src="https://api.iconify.design/octicon:heart.svg" width="20" height="20"/> Acknowledgments
 
 - ASP.NET Core Team
 - Entity Framework Core Team
