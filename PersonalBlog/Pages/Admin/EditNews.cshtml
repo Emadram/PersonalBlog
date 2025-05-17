@@ -1,0 +1,214 @@
+@page "{id:int?}"
+@model PersonalBlog.Pages.Admin.EditNewsModel
+@{
+    ViewData["Title"] = Model.IsNew ? "Create News Item" : "Edit News Item";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>
+            <i class="fas fa-newspaper me-2"></i>
+            @(Model.IsNew ? "Create News Item" : "Edit News Item")
+        </h2>
+    </div>
+
+    <form method="post">
+        <input type="hidden" asp-for="NewsItem.Id" />
+        
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">News Content</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label asp-for="NewsItem.Title" class="form-label">Title</label>
+                            <input asp-for="NewsItem.Title" class="form-control" />
+                            <span asp-validation-for="NewsItem.Title" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="NewsItem.Slug" class="form-label">Slug</label>
+                            <div class="input-group">
+                                <span class="input-group-text">/news/</span>
+                                <input asp-for="NewsItem.Slug" class="form-control" placeholder="Generated from title if empty" />
+                            </div>
+                            <span asp-validation-for="NewsItem.Slug" class="text-danger"></span>
+                            <small class="text-muted">Leave empty to generate automatically from title.</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="NewsItem.Summary" class="form-label">Summary</label>
+                            <textarea asp-for="NewsItem.Summary" class="form-control" rows="3"></textarea>
+                            <span asp-validation-for="NewsItem.Summary" class="text-danger"></span>
+                            <small class="text-muted">A brief description that appears in news lists.</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="NewsItem.Content" class="form-label">Content</label>
+                            <textarea asp-for="NewsItem.Content" class="form-control" rows="10"></textarea>
+                            <span asp-validation-for="NewsItem.Content" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="NewsItem.Source" class="form-label">Source</label>
+                            <input asp-for="NewsItem.Source" class="form-control" />
+                            <span asp-validation-for="NewsItem.Source" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="NewsItem.SourceUrl" class="form-label">Source URL</label>
+                            <input asp-for="NewsItem.SourceUrl" class="form-control" placeholder="https://" />
+                            <span asp-validation-for="NewsItem.SourceUrl" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Settings</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label asp-for="NewsItem.PublishedDate" class="form-label">Publish Date</label>
+                            <input type="date" asp-for="NewsItem.PublishedDate" class="form-control" value="@Model.NewsItem.PublishedDate.ToString("yyyy-MM-dd")" />
+                            <span asp-validation-for="NewsItem.PublishedDate" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="NewsItem.Category" class="form-label">Category</label>
+                            <div class="input-group">
+                                <select asp-for="NewsItem.Category" class="form-select">
+                                    <option value="">-- Select Category --</option>
+                                    @foreach (var category in Model.Categories)
+                                    {
+                                        <option value="@category" selected="@(category == Model.NewsItem.Category)">@category</option>
+                                    }
+                                </select>
+                                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#newCategoryModal">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                            <span asp-validation-for="NewsItem.Category" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="NewsItem.CategoryBadgeColor" class="form-label">Badge Color</label>
+                            <select asp-for="NewsItem.CategoryBadgeColor" class="form-select">
+                                <option value="primary" selected="@(Model.NewsItem.CategoryBadgeColor == "primary")">Blue</option>
+                                <option value="secondary" selected="@(Model.NewsItem.CategoryBadgeColor == "secondary")">Gray</option>
+                                <option value="success" selected="@(Model.NewsItem.CategoryBadgeColor == "success")">Green</option>
+                                <option value="danger" selected="@(Model.NewsItem.CategoryBadgeColor == "danger")">Red</option>
+                                <option value="warning" selected="@(Model.NewsItem.CategoryBadgeColor == "warning")">Yellow</option>
+                                <option value="info" selected="@(Model.NewsItem.CategoryBadgeColor == "info")">Light Blue</option>
+                                <option value="dark" selected="@(Model.NewsItem.CategoryBadgeColor == "dark")">Dark</option>
+                            </select>
+                            <span asp-validation-for="NewsItem.CategoryBadgeColor" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="NewsItem.ImageUrl" class="form-label">Image URL</label>
+                            <input asp-for="NewsItem.ImageUrl" class="form-control" placeholder="https://" />
+                            <span asp-validation-for="NewsItem.ImageUrl" class="text-danger"></span>
+                            <small class="text-muted">URL to featured image for this news item.</small>
+                        </div>
+                        
+                        <div class="form-check mb-3">
+                            <input asp-for="NewsItem.IsFeatured" class="form-check-input" type="checkbox" />
+                            <label asp-for="NewsItem.IsFeatured" class="form-check-label">Featured News</label>
+                            <p class="text-muted small">Featured news appears at the top of the news page.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="d-flex justify-content-between">
+            <a asp-page="/Admin/News" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Back to News
+            </a>
+            <div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-2"></i>Save News
+                </button>
+            </div>
+        </div>
+    </form>
+    
+    <!-- New Category Modal -->
+    <div class="modal fade" id="newCategoryModal" tabindex="-1" aria-labelledby="newCategoryModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="newCategoryModalLabel">Add New Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="newCategory" class="form-label">Category Name</label>
+                        <input type="text" id="newCategory" class="form-control" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="addCategoryBtn">Add Category</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle adding new category
+            const addCategoryBtn = document.getElementById('addCategoryBtn');
+            const categoryInput = document.getElementById('newCategory');
+            const categorySelect = document.getElementById('NewsItem_Category');
+            
+            addCategoryBtn.addEventListener('click', function() {
+                const categoryName = categoryInput.value.trim();
+                if (categoryName) {
+                    // Check if category already exists
+                    let exists = false;
+                    for (let i = 0; i < categorySelect.options.length; i++) {
+                        if (categorySelect.options[i].value === categoryName) {
+                            exists = true;
+                            categorySelect.value = categoryName;
+                            break;
+                        }
+                    }
+                    
+                    // If it doesn't exist, add it
+                    if (!exists) {
+                        const option = document.createElement('option');
+                        option.value = categoryName;
+                        option.text = categoryName;
+                        option.selected = true;
+                        categorySelect.add(option);
+                    }
+                    
+                    // Close modal
+                    bootstrap.Modal.getInstance(document.getElementById('newCategoryModal')).hide();
+                    categoryInput.value = '';
+                }
+            });
+            
+            // Auto-generate slug when typing title
+            const titleInput = document.getElementById('NewsItem_Title');
+            const slugInput = document.getElementById('NewsItem_Slug');
+            
+            titleInput.addEventListener('input', function() {
+                if (slugInput.value === '') {
+                    slugInput.value = titleInput.value
+                        .toLowerCase()
+                        .replace(/[^a-z0-9\s]/g, '')
+                        .replace(/\s+/g, '-');
+                }
+            });
+        });
+    </script>
+} 
