@@ -1,0 +1,150 @@
+@page
+@model PersonalBlog.Pages.Admin.SettingsModel
+@{
+    ViewData["Title"] = "Website Settings";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-cog me-2"></i>Website Settings</h2>
+    </div>
+    
+    @if (Model.SuccessMessage != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>@Model.SuccessMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    
+    <form method="post">
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">General Settings</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label asp-for="Settings.SiteTitle" class="form-label">Site Title</label>
+                            <input asp-for="Settings.SiteTitle" class="form-control" />
+                            <span asp-validation-for="Settings.SiteTitle" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="Settings.SiteTagline" class="form-label">Site Tagline</label>
+                            <input asp-for="Settings.SiteTagline" class="form-control" />
+                            <span asp-validation-for="Settings.SiteTagline" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="Settings.FaviconUrl" class="form-label">Favicon URL</label>
+                            <input asp-for="Settings.FaviconUrl" class="form-control" placeholder="https://" />
+                            <span asp-validation-for="Settings.FaviconUrl" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Social Media</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label asp-for="Settings.TwitterUrl" class="form-label">Twitter URL</label>
+                            <input asp-for="Settings.TwitterUrl" class="form-control" placeholder="https://twitter.com/username" />
+                            <span asp-validation-for="Settings.TwitterUrl" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="Settings.LinkedInUrl" class="form-label">LinkedIn URL</label>
+                            <input asp-for="Settings.LinkedInUrl" class="form-control" placeholder="https://linkedin.com/in/username" />
+                            <span asp-validation-for="Settings.LinkedInUrl" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="Settings.GitHubUrl" class="form-label">GitHub URL</label>
+                            <input asp-for="Settings.GitHubUrl" class="form-control" placeholder="https://github.com/username" />
+                            <span asp-validation-for="Settings.GitHubUrl" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Content Settings</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label asp-for="Settings.PostsPerPage" class="form-label">Posts Per Page</label>
+                            <input asp-for="Settings.PostsPerPage" type="number" class="form-control" min="1" max="50" />
+                            <span asp-validation-for="Settings.PostsPerPage" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="Settings.EnableComments" class="form-label">Comments</label>
+                            <div class="form-check form-switch">
+                                <input asp-for="Settings.EnableComments" class="form-check-input" type="checkbox" />
+                                <label asp-for="Settings.EnableComments" class="form-check-label">Enable comments on posts</label>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="Settings.DefaultCategoryColor" class="form-label">Default Category Color</label>
+                            <select asp-for="Settings.DefaultCategoryColor" class="form-select">
+                                <option value="primary">Blue</option>
+                                <option value="secondary">Gray</option>
+                                <option value="success">Green</option>
+                                <option value="danger">Red</option>
+                                <option value="warning">Yellow</option>
+                                <option value="info">Light Blue</option>
+                                <option value="dark">Dark</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Analytics & SEO</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label asp-for="Settings.GoogleAnalyticsId" class="form-label">Google Analytics ID</label>
+                            <input asp-for="Settings.GoogleAnalyticsId" class="form-control" placeholder="G-XXXXXXXXXX" />
+                            <span asp-validation-for="Settings.GoogleAnalyticsId" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="Settings.MetaDescription" class="form-label">Meta Description</label>
+                            <textarea asp-for="Settings.MetaDescription" class="form-control" rows="3"></textarea>
+                            <span asp-validation-for="Settings.MetaDescription" class="text-danger"></span>
+                            <small class="text-muted">Brief description of your site for search engines.</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="Settings.MetaKeywords" class="form-label">Meta Keywords</label>
+                            <input asp-for="Settings.MetaKeywords" class="form-control" placeholder="keyword1, keyword2, keyword3" />
+                            <span asp-validation-for="Settings.MetaKeywords" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="d-flex justify-content-between mb-5">
+            <a asp-page="/Admin/Index" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+            </a>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save me-2"></i>Save Settings
+            </button>
+        </div>
+    </form>
+</div> 

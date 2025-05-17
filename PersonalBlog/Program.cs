@@ -8,19 +8,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 
-// Add authentication
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
-    {
-        options.LoginPath = "/Admin/Login";
-        options.AccessDeniedPath = "/Admin/Login";
-    });
-
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
-});
-
 // Add database context
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseInMemoryDatabase("PersonalBlogDb"));
@@ -30,6 +17,26 @@ builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<IBlogService, BlogService>();
 builder.Services.AddScoped<IPodcastService, PodcastService>();
 builder.Services.AddScoped<INewsService, NewsService>();
+builder.Services.AddScoped<ISettingsService, SettingsService>();
+
+// Add authentication 
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Admin/Login";
+        options.LogoutPath = "/Admin/Logout";
+        options.AccessDeniedPath = "/AccessDenied";
+    });
+
+// Add authorization policy
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy =>
+    {
+        policy.RequireAuthenticatedUser();
+        policy.RequireRole("Admin");
+    });
+});
 
 var app = builder.Build();
 
