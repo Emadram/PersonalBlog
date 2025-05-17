@@ -1,0 +1,155 @@
+/* Hacker News inspired styling */
+:root {
+  --hn-orange: #ff6600;
+  --hn-light-gray: #f6f6ef;
+  --hn-gray: #828282;
+  --hn-dark-gray: #5a5a5a;
+  --hn-link: #000000;
+  --hn-visited: #828282;
+  --hn-font: Verdana, Geneva, sans-serif;
+}
+
+.hn-container {
+  background-color: var(--hn-light-gray);
+  font-family: var(--hn-font);
+  font-size: 10pt;
+  color: var(--hn-dark-gray);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-bottom: 20px;
+}
+
+.hn-header {
+  background-color: var(--hn-orange);
+  padding: 2px;
+  color: #000;
+  display: flex;
+  align-items: center;
+}
+
+.hn-logo {
+  border: 1px solid white;
+  margin-right: 5px;
+  margin-left: 2px;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hn-title {
+  font-weight: bold;
+  margin-right: 10px;
+  font-size: 10pt;
+}
+
+.hn-nav {
+  display: inline;
+  font-size: 10pt;
+}
+
+.hn-nav a {
+  color: #000;
+  text-decoration: none;
+  margin-right: 10px;
+}
+
+.hn-nav a:hover {
+  text-decoration: underline;
+}
+
+.hn-content {
+  padding: 10px 0;
+}
+
+.hn-news-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.hn-news-item {
+  display: flex;
+  align-items: baseline;
+  line-height: 1.5;
+  padding: 3px 0;
+  margin-bottom: 5px;
+}
+
+.hn-news-position {
+  color: var(--hn-gray);
+  width: 30px;
+  text-align: right;
+  padding-right: 5px;
+}
+
+.hn-news-details {
+  flex-grow: 1;
+}
+
+.hn-news-title {
+  font-size: 10pt;
+  color: var(--hn-link);
+  text-decoration: none;
+}
+
+.hn-news-title:visited {
+  color: var(--hn-visited);
+}
+
+.hn-news-title:hover {
+  text-decoration: underline;
+}
+
+.hn-news-source {
+  color: var(--hn-gray);
+  font-size: 8pt;
+}
+
+.hn-news-meta {
+  color: var(--hn-gray);
+  font-size: 8pt;
+}
+
+.hn-news-meta a {
+  color: var(--hn-gray);
+  text-decoration: none;
+}
+
+.hn-news-meta a:hover {
+  text-decoration: underline;
+}
+
+.hn-footer {
+  border-top: 2px solid var(--hn-orange);
+  padding-top: 10px;
+  text-align: center;
+  font-size: 8pt;
+  color: var(--hn-gray);
+}
+
+.hn-footer a {
+  color: var(--hn-gray);
+  text-decoration: none;
+}
+
+.hn-footer a:hover {
+  text-decoration: underline;
+}
+
+/* Add margin between news items */
+.hn-news-item + .hn-news-item {
+  margin-top: 5px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .hn-news-position {
+    width: 20px;
+  }
+  
+  .hn-content {
+    padding: 5px;
+  }
+} 
