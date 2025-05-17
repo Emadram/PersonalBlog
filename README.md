@@ -34,7 +34,7 @@ A modern, responsive personal blog and portfolio website built with ASP.NET Core
 
 1. Clone the repository
    ```
-   git clone https://github.com/yourusername/PersonalBlog.git
+   git clone https://github.com/Emadram/PersonalBlog.git
    ```
 
 2. Navigate to the project directory
@@ -52,7 +52,7 @@ A modern, responsive personal blog and portfolio website built with ASP.NET Core
    dotnet run
    ```
 
-5. Access the website at `https://localhost:5001` or `http://localhost:5000`
+5. Access the website at `https://localhost:5219` or `http://localhost:5000`
 
 ### Database Setup
 
