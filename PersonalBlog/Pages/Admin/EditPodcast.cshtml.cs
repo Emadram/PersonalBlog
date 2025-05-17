@@ -49,7 +49,7 @@ public class EditPodcastModel : PageModel
                 PublishedDate = DateTime.Now,
                 CategoryBadgeColor = "primary",
                 DurationMinutes = 30,
-                EpisodeNumber = 1
+                EpisodeNumber = "1"
             };
         }
         
