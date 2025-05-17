@@ -42,6 +42,7 @@
         <!-- Personal Information Tab -->
         <div class="tab-pane fade show active" id="personal" role="tabpanel" aria-labelledby="personal-tab">
             <form method="post" asp-page-handler="UpdateProfile">
+                <input type="hidden" asp-for="Profile.Id" />
                 <div class="card mb-4">
                     <div class="card-header">
                         <h5 class="mb-0">Personal Information</h5>
@@ -408,11 +409,246 @@
     </div>
 </div>
 
+<!-- Add Experience Modal -->
+<div class="modal fade" id="addExperienceModal" tabindex="-1" aria-labelledby="addExperienceModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form method="post" asp-page-handler="AddExperience">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addExperienceModalLabel">Add New Experience</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="newExperienceTitle" class="form-label">Title/Position</label>
+                            <input type="text" class="form-control" id="newExperienceTitle" name="experience.Title" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="newExperienceCompany" class="form-label">Company</label>
+                            <input type="text" class="form-control" id="newExperienceCompany" name="experience.Company" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newExperienceDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="newExperienceDescription" name="experience.Description" rows="3"></textarea>
+                        <small class="text-muted">Describe your responsibilities, projects, and achievements.</small>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="newExperienceStartDate" class="form-label">Start Date</label>
+                            <input type="date" class="form-control" id="newExperienceStartDate" name="experience.StartDate" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="newExperienceEndDate" class="form-label">End Date</label>
+                            <input type="date" class="form-control" id="newExperienceEndDate" name="experience.EndDate">
+                            <div class="form-check mt-2">
+                                <input class="form-check-input" type="checkbox" id="newExperienceCurrentPosition">
+                                <label class="form-check-label" for="newExperienceCurrentPosition">
+                                    I currently work here
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            <label for="newExperienceTechnologies" class="form-label">Technologies Used</label>
+                            <input type="text" class="form-control" id="newExperienceTechnologies" name="experience.Technologies" placeholder="e.g., C#, ASP.NET Core, SQL Server">
+                            <small class="text-muted">Comma-separated list of technologies/skills used.</small>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="newExperienceOrder" class="form-label">Display Order</label>
+                            <input type="number" class="form-control" id="newExperienceOrder" name="experience.Order" value="1" min="1">
+                            <small class="text-muted">Lower numbers appear first.</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Experience</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Experience Modal -->
+<div class="modal fade" id="editExperienceModal" tabindex="-1" aria-labelledby="editExperienceModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form method="post" asp-page-handler="UpdateExperience">
+                <input type="hidden" id="editExperienceId" name="experience.Id" />
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editExperienceModalLabel">Edit Experience</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="editExperienceTitle" class="form-label">Title/Position</label>
+                            <input type="text" class="form-control" id="editExperienceTitle" name="experience.Title" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="editExperienceCompany" class="form-label">Company</label>
+                            <input type="text" class="form-control" id="editExperienceCompany" name="experience.Company" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editExperienceDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="editExperienceDescription" name="experience.Description" rows="3"></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="editExperienceStartDate" class="form-label">Start Date</label>
+                            <input type="date" class="form-control" id="editExperienceStartDate" name="experience.StartDate" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="editExperienceEndDate" class="form-label">End Date</label>
+                            <input type="date" class="form-control" id="editExperienceEndDate" name="experience.EndDate">
+                            <div class="form-check mt-2">
+                                <input class="form-check-input" type="checkbox" id="editExperienceCurrentPosition">
+                                <label class="form-check-label" for="editExperienceCurrentPosition">
+                                    I currently work here
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            <label for="editExperienceTechnologies" class="form-label">Technologies Used</label>
+                            <input type="text" class="form-control" id="editExperienceTechnologies" name="experience.Technologies">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="editExperienceOrder" class="form-label">Display Order</label>
+                            <input type="number" class="form-control" id="editExperienceOrder" name="experience.Order" min="1">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add Education Modal -->
+<div class="modal fade" id="addEducationModal" tabindex="-1" aria-labelledby="addEducationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form method="post" asp-page-handler="AddEducation">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addEducationModalLabel">Add New Education</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="newEducationDegree" class="form-label">Degree</label>
+                            <input type="text" class="form-control" id="newEducationDegree" name="education.Degree" required>
+                            <small class="text-muted">e.g., Bachelor of Science in Computer Science</small>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="newEducationInstitution" class="form-label">Institution</label>
+                            <input type="text" class="form-control" id="newEducationInstitution" name="education.Institution" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newEducationDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="newEducationDescription" name="education.Description" rows="3"></textarea>
+                        <small class="text-muted">Include honors, activities, relevant coursework, etc.</small>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="newEducationStartDate" class="form-label">Start Date</label>
+                            <input type="date" class="form-control" id="newEducationStartDate" name="education.StartDate" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="newEducationEndDate" class="form-label">End Date</label>
+                            <input type="date" class="form-control" id="newEducationEndDate" name="education.EndDate">
+                            <div class="form-check mt-2">
+                                <input class="form-check-input" type="checkbox" id="newEducationInProgress">
+                                <label class="form-check-label" for="newEducationInProgress">
+                                    In Progress
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newEducationOrder" class="form-label">Display Order</label>
+                        <input type="number" class="form-control" id="newEducationOrder" name="education.Order" value="1" min="1">
+                        <small class="text-muted">Lower numbers appear first.</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Education</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Education Modal -->
+<div class="modal fade" id="editEducationModal" tabindex="-1" aria-labelledby="editEducationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form method="post" asp-page-handler="UpdateEducation">
+                <input type="hidden" id="editEducationId" name="education.Id" />
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editEducationModalLabel">Edit Education</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="editEducationDegree" class="form-label">Degree</label>
+                            <input type="text" class="form-control" id="editEducationDegree" name="education.Degree" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="editEducationInstitution" class="form-label">Institution</label>
+                            <input type="text" class="form-control" id="editEducationInstitution" name="education.Institution" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editEducationDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="editEducationDescription" name="education.Description" rows="3"></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="editEducationStartDate" class="form-label">Start Date</label>
+                            <input type="date" class="form-control" id="editEducationStartDate" name="education.StartDate" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="editEducationEndDate" class="form-label">End Date</label>
+                            <input type="date" class="form-control" id="editEducationEndDate" name="education.EndDate">
+                            <div class="form-check mt-2">
+                                <input class="form-check-input" type="checkbox" id="editEducationInProgress">
+                                <label class="form-check-label" for="editEducationInProgress">
+                                    In Progress
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editEducationOrder" class="form-label">Display Order</label>
+                        <input type="number" class="form-control" id="editEducationOrder" name="education.Order" min="1">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script>
-        // Handle skill proficiency sliders
         document.addEventListener('DOMContentLoaded', function() {
-            // New skill slider
+            // Handle skill proficiency sliders
             const newSkillProficiency = document.getElementById('newSkillProficiency');
             const newSkillProficiencyValue = document.getElementById('newSkillProficiencyValue');
             if (newSkillProficiency && newSkillProficiencyValue) {
@@ -422,7 +658,6 @@
                 });
             }
             
-            // Edit skill slider
             const editSkillProficiency = document.getElementById('editSkillProficiency');
             const editSkillProficiencyValue = document.getElementById('editSkillProficiencyValue');
             if (editSkillProficiency && editSkillProficiencyValue) {
@@ -431,9 +666,9 @@
                 });
             }
             
-            // Edit skill buttons
-            const editButtons = document.querySelectorAll('.edit-skill-btn');
-            editButtons.forEach(button => {
+            // Handle skill edit button
+            const editSkillButtons = document.querySelectorAll('.edit-skill-btn');
+            editSkillButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     const id = this.getAttribute('data-id');
                     const name = this.getAttribute('data-name');
@@ -451,6 +686,133 @@
                     const editModal = new bootstrap.Modal(document.getElementById('editSkillModal'));
                     editModal.show();
                 });
+            });
+            
+            // Handle experience edit button
+            const editExperienceButtons = document.querySelectorAll('.edit-experience-btn');
+            editExperienceButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    fetch('/api/experience/' + id)
+                        .then(response => {
+                            if (!response.ok) {
+                                // Handle 404 or other HTTP errors
+                                const err = new Error('Experience not found');
+                                err.status = response.status;
+                                throw err;
+                            }
+                            return response.json();
+                        })
+                        .then(experience => {
+                            // Fill the form
+                            document.getElementById('editExperienceId').value = experience.id;
+                            document.getElementById('editExperienceTitle').value = experience.title;
+                            document.getElementById('editExperienceCompany').value = experience.company;
+                            document.getElementById('editExperienceDescription').value = experience.description;
+                            document.getElementById('editExperienceTechnologies').value = experience.technologies;
+                            document.getElementById('editExperienceOrder').value = experience.order;
+                            
+                            // Format dates for the date inputs
+                            if (experience.startDate) {
+                                document.getElementById('editExperienceStartDate').value = experience.startDate.substring(0, 10);
+                            }
+                            
+                            if (experience.endDate) {
+                                document.getElementById('editExperienceEndDate').value = experience.endDate.substring(0, 10);
+                                document.getElementById('editExperienceCurrentPosition').checked = false;
+                            } else {
+                                document.getElementById('editExperienceEndDate').value = '';
+                                document.getElementById('editExperienceCurrentPosition').checked = true;
+                            }
+                            
+                            const editModal = new bootstrap.Modal(document.getElementById('editExperienceModal'));
+                            editModal.show();
+                        })
+                        .catch(error => {
+                            console.error('Error fetching experience:', error);
+                            alert('Could not load experience data. Please try again.');
+                        });
+                });
+            });
+            
+            // Handle education edit button
+            const editEducationButtons = document.querySelectorAll('.edit-education-btn');
+            editEducationButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    fetch('/api/education/' + id)
+                        .then(response => {
+                            if (!response.ok) {
+                                // Handle 404 or other HTTP errors
+                                const err = new Error('Education not found');
+                                err.status = response.status;
+                                throw err;
+                            }
+                            return response.json();
+                        })
+                        .then(education => {
+                            // Fill the form
+                            document.getElementById('editEducationId').value = education.id;
+                            document.getElementById('editEducationDegree').value = education.degree;
+                            document.getElementById('editEducationInstitution').value = education.institution;
+                            document.getElementById('editEducationDescription').value = education.description;
+                            document.getElementById('editEducationOrder').value = education.order;
+                            
+                            // Format dates for the date inputs
+                            if (education.startDate) {
+                                document.getElementById('editEducationStartDate').value = education.startDate.substring(0, 10);
+                            }
+                            
+                            if (education.endDate) {
+                                document.getElementById('editEducationEndDate').value = education.endDate.substring(0, 10);
+                                document.getElementById('editEducationInProgress').checked = false;
+                            } else {
+                                document.getElementById('editEducationEndDate').value = '';
+                                document.getElementById('editEducationInProgress').checked = true;
+                            }
+                            
+                            const editModal = new bootstrap.Modal(document.getElementById('editEducationModal'));
+                            editModal.show();
+                        })
+                        .catch(error => {
+                            console.error('Error fetching education:', error);
+                            alert('Could not load education data. Please try again.');
+                        });
+                });
+            });
+            
+            // Handle "Currently work here" checkbox for Experience
+            document.getElementById('newExperienceCurrentPosition')?.addEventListener('change', function() {
+                const endDateInput = document.getElementById('newExperienceEndDate');
+                endDateInput.disabled = this.checked;
+                if (this.checked) {
+                    endDateInput.value = '';
+                }
+            });
+            
+            document.getElementById('editExperienceCurrentPosition')?.addEventListener('change', function() {
+                const endDateInput = document.getElementById('editExperienceEndDate');
+                endDateInput.disabled = this.checked;
+                if (this.checked) {
+                    endDateInput.value = '';
+                }
+            });
+            
+            // Handle "In Progress" checkbox for Education
+            document.getElementById('newEducationInProgress')?.addEventListener('change', function() {
+                const endDateInput = document.getElementById('newEducationEndDate');
+                endDateInput.disabled = this.checked;
+                if (this.checked) {
+                    endDateInput.value = '';
+                }
+            });
+            
+            document.getElementById('editEducationInProgress')?.addEventListener('change', function() {
+                const endDateInput = document.getElementById('editEducationEndDate');
+                endDateInput.disabled = this.checked;
+                if (this.checked) {
+                    endDateInput.value = '';
+                }
             });
             
             // Store the active tab in session storage

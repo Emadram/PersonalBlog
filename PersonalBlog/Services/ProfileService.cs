@@ -35,8 +35,13 @@ namespace PersonalBlog.Services
         
         public void UpdateProfile(Person profile)
         {
-            var existingProfile = _context.People.FirstOrDefault(p => p.Id == profile.Id);
-            if (existingProfile != null)
+            var existingProfile = _context.People.FirstOrDefault();
+            if (existingProfile == null)
+            {
+                // No profile yet, create new
+                _context.People.Add(profile);
+            }
+            else
             {
                 // Update properties
                 existingProfile.Name = profile.Name;
@@ -50,9 +55,8 @@ namespace PersonalBlog.Services
                 existingProfile.LinkedInUrl = profile.LinkedInUrl;
                 existingProfile.TwitterUrl = profile.TwitterUrl;
                 existingProfile.ResumeUrl = profile.ResumeUrl;
-                
-                _context.SaveChanges();
             }
+            _context.SaveChanges();
         }
         
         public void UpdateSkill(Skill skill)
@@ -81,6 +85,83 @@ namespace PersonalBlog.Services
             if (skill != null)
             {
                 _context.Skills.Remove(skill);
+                _context.SaveChanges();
+            }
+        }
+
+        // Implement Experience methods
+        public Experience GetExperienceById(int id)
+        {
+            return _context.Experiences.Find(id);
+        }
+
+        public void AddExperience(Experience experience)
+        {
+            _context.Experiences.Add(experience);
+            _context.SaveChanges();
+        }
+
+        public void UpdateExperience(Experience experience)
+        {
+            var existingExperience = _context.Experiences.Find(experience.Id);
+            if (existingExperience != null)
+            {
+                existingExperience.Title = experience.Title;
+                existingExperience.Company = experience.Company;
+                existingExperience.Description = experience.Description;
+                existingExperience.StartDate = experience.StartDate;
+                existingExperience.EndDate = experience.EndDate;
+                existingExperience.Technologies = experience.Technologies;
+                existingExperience.Order = experience.Order;
+                
+                _context.SaveChanges();
+            }
+        }
+
+        public void DeleteExperience(int experienceId)
+        {
+            var experience = _context.Experiences.Find(experienceId);
+            if (experience != null)
+            {
+                _context.Experiences.Remove(experience);
+                _context.SaveChanges();
+            }
+        }
+
+        // Implement Education methods
+        public Education GetEducationById(int id)
+        {
+            return _context.Educations.Find(id);
+        }
+
+        public void AddEducation(Education education)
+        {
+            _context.Educations.Add(education);
+            _context.SaveChanges();
+        }
+
+        public void UpdateEducation(Education education)
+        {
+            var existingEducation = _context.Educations.Find(education.Id);
+            if (existingEducation != null)
+            {
+                existingEducation.Degree = education.Degree;
+                existingEducation.Institution = education.Institution;
+                existingEducation.Description = education.Description;
+                existingEducation.StartDate = education.StartDate;
+                existingEducation.EndDate = education.EndDate;
+                existingEducation.Order = education.Order;
+                
+                _context.SaveChanges();
+            }
+        }
+
+        public void DeleteEducation(int educationId)
+        {
+            var education = _context.Educations.Find(educationId);
+            if (education != null)
+            {
+                _context.Educations.Remove(education);
                 _context.SaveChanges();
             }
         }

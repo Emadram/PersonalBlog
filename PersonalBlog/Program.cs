@@ -10,7 +10,7 @@ builder.Services.AddRazorPages();
 
 // Add database context
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseInMemoryDatabase("PersonalBlogDb"));
+    options.UseSqlite("Data Source=personalblog.db"));
 
 // Register services
 builder.Services.AddScoped<IProfileService, ProfileService>();
