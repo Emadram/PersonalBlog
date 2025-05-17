@@ -10,5 +10,12 @@ namespace PersonalBlog.Services
         BlogPost GetPostBySlug(string slug);
         IEnumerable<string> GetCategories();
         IEnumerable<BlogPost> GetPostsByCategory(string category);
+        
+        // CRUD operations
+        BlogPost GetPostById(int id);
+        void CreatePost(BlogPost post);
+        void UpdatePost(BlogPost post);
+        void DeletePost(int id);
+        void TogglePostFeatured(int id);
     }
 } 

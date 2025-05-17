@@ -32,5 +32,57 @@ namespace PersonalBlog.Services
         {
             return _context.Educations.OrderBy(e => e.Order).ToList();
         }
+        
+        public void UpdateProfile(Person profile)
+        {
+            var existingProfile = _context.People.FirstOrDefault(p => p.Id == profile.Id);
+            if (existingProfile != null)
+            {
+                // Update properties
+                existingProfile.Name = profile.Name;
+                existingProfile.Title = profile.Title;
+                existingProfile.Bio = profile.Bio;
+                existingProfile.Location = profile.Location;
+                existingProfile.Email = profile.Email;
+                existingProfile.Phone = profile.Phone;
+                existingProfile.ImageUrl = profile.ImageUrl;
+                existingProfile.GitHubUrl = profile.GitHubUrl;
+                existingProfile.LinkedInUrl = profile.LinkedInUrl;
+                existingProfile.TwitterUrl = profile.TwitterUrl;
+                existingProfile.ResumeUrl = profile.ResumeUrl;
+                
+                _context.SaveChanges();
+            }
+        }
+        
+        public void UpdateSkill(Skill skill)
+        {
+            var existingSkill = _context.Skills.FirstOrDefault(s => s.Id == skill.Id);
+            if (existingSkill != null)
+            {
+                existingSkill.Name = skill.Name;
+                existingSkill.Proficiency = skill.Proficiency;
+                existingSkill.Category = skill.Category;
+                existingSkill.IconClass = skill.IconClass;
+                
+                _context.SaveChanges();
+            }
+        }
+        
+        public void AddSkill(Skill skill)
+        {
+            _context.Skills.Add(skill);
+            _context.SaveChanges();
+        }
+        
+        public void DeleteSkill(int skillId)
+        {
+            var skill = _context.Skills.Find(skillId);
+            if (skill != null)
+            {
+                _context.Skills.Remove(skill);
+                _context.SaveChanges();
+            }
+        }
     }
 } 
