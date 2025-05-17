@@ -9,10 +9,10 @@ public class IndexModel : PageModel
 {
     private readonly IProfileService _profileService;
     
-    public Person Profile { get; set; }
-    public IEnumerable<Skill> Skills { get; set; }
-    public IEnumerable<Experience> Experiences { get; set; }
-    public IEnumerable<Education> Educations { get; set; }
+    public Person Profile { get; set; } = new Person();
+    public IEnumerable<Skill> Skills { get; set; } = new List<Skill>();
+    public IEnumerable<Experience> Experiences { get; set; } = new List<Experience>();
+    public IEnumerable<Education> Educations { get; set; } = new List<Education>();
 
     public IndexModel(IProfileService profileService)
     {

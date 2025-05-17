@@ -1,0 +1,112 @@
+@page
+@model PersonalBlog.Pages.Admin.ProfileModel
+@{
+    ViewData["Title"] = "Edit Profile";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4"><i class="fas fa-user-edit me-2"></i>Edit Profile</h2>
+    
+    @if (Model.SuccessMessage != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>@Model.SuccessMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    
+    <form method="post">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Personal Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Profile.Name" class="form-label">Name</label>
+                        <input asp-for="Profile.Name" class="form-control" />
+                        <span asp-validation-for="Profile.Name" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Profile.Title" class="form-label">Title/Position</label>
+                        <input asp-for="Profile.Title" class="form-control" />
+                        <span asp-validation-for="Profile.Title" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="col-md-12 mb-3">
+                        <label asp-for="Profile.Bio" class="form-label">Bio</label>
+                        <textarea asp-for="Profile.Bio" class="form-control" rows="4"></textarea>
+                        <span asp-validation-for="Profile.Bio" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Profile.Location" class="form-label">Location</label>
+                        <input asp-for="Profile.Location" class="form-control" />
+                        <span asp-validation-for="Profile.Location" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Profile.Email" class="form-label">Email</label>
+                        <input asp-for="Profile.Email" class="form-control" />
+                        <span asp-validation-for="Profile.Email" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Profile.Phone" class="form-label">Phone</label>
+                        <input asp-for="Profile.Phone" class="form-control" />
+                        <span asp-validation-for="Profile.Phone" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Profile.ImageUrl" class="form-label">Profile Image URL</label>
+                        <input asp-for="Profile.ImageUrl" class="form-control" />
+                        <span asp-validation-for="Profile.ImageUrl" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Social Links</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Profile.GitHubUrl" class="form-label">GitHub URL</label>
+                        <input asp-for="Profile.GitHubUrl" class="form-control" />
+                        <span asp-validation-for="Profile.GitHubUrl" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Profile.LinkedInUrl" class="form-label">LinkedIn URL</label>
+                        <input asp-for="Profile.LinkedInUrl" class="form-control" />
+                        <span asp-validation-for="Profile.LinkedInUrl" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Profile.TwitterUrl" class="form-label">Twitter URL</label>
+                        <input asp-for="Profile.TwitterUrl" class="form-control" />
+                        <span asp-validation-for="Profile.TwitterUrl" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Profile.ResumeUrl" class="form-label">Resume URL</label>
+                        <input asp-for="Profile.ResumeUrl" class="form-control" />
+                        <span asp-validation-for="Profile.ResumeUrl" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="d-flex justify-content-between">
+            <a asp-page="/Admin/Index" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+            </a>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save me-2"></i>Save Changes
+            </button>
+        </div>
+    </form>
+</div> 

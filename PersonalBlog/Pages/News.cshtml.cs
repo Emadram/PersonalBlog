@@ -9,9 +9,9 @@ public class NewsModel : PageModel
 {
     private readonly INewsService _newsService;
 
-    public News FeaturedNews { get; set; }
-    public IEnumerable<News> RecentNews { get; set; }
-    public IEnumerable<string> Categories { get; set; }
+    public News? FeaturedNews { get; set; }
+    public IEnumerable<News> RecentNews { get; set; } = new List<News>();
+    public IEnumerable<string> Categories { get; set; } = new List<string>();
 
     public NewsModel(INewsService newsService)
     {
@@ -21,7 +21,8 @@ public class NewsModel : PageModel
     public void OnGet()
     {
         FeaturedNews = _newsService.GetFeaturedNews();
-        RecentNews = _newsService.GetRecentNews(6);
+        // Get all news items, we'll display them in numbered list
+        RecentNews = _newsService.GetAllNews().Where(n => !n.IsFeatured).Take(30);
         Categories = _newsService.GetCategories();
     }
 } 

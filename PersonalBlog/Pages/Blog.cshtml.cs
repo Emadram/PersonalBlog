@@ -9,9 +9,9 @@ public class BlogModel : PageModel
 {
     private readonly IBlogService _blogService;
 
-    public BlogPost FeaturedPost { get; set; }
-    public IEnumerable<BlogPost> RecentPosts { get; set; }
-    public IEnumerable<string> Categories { get; set; }
+    public BlogPost? FeaturedPost { get; set; }
+    public IEnumerable<BlogPost> RecentPosts { get; set; } = new List<BlogPost>();
+    public IEnumerable<string> Categories { get; set; } = new List<string>();
 
     public BlogModel(IBlogService blogService)
     {
@@ -21,7 +21,7 @@ public class BlogModel : PageModel
     public void OnGet()
     {
         FeaturedPost = _blogService.GetFeaturedPost();
-        RecentPosts = _blogService.GetRecentPosts(4);
+        RecentPosts = _blogService.GetRecentPosts(6);
         Categories = _blogService.GetCategories();
     }
 } 

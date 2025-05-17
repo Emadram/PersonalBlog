@@ -1,9 +1,9 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - PersonalBlog</title>
+    <title>@ViewData["Title"] - Personal Blog</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/PersonalBlog.styles.css" asp-append-version="true" />
@@ -12,10 +12,10 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-light border-bottom mb-3">
+        <nav class="navbar navbar-expand-sm navbar-light shadow-sm py-3">
             <div class="container">
-                <a class="navbar-brand d-flex align-items-center" asp-area="" asp-page="/Index">
-                    <i class="fas fa-code me-2"></i>Personal Blog
+                <a class="navbar-brand d-flex align-items-center @(ViewContext.RouteData.Values["Page"].ToString() == "/Index" ? "active" : "")" asp-area="" asp-page="/Index">
+                    <i class="fas fa-code me-2 @(ViewContext.RouteData.Values["Page"].ToString() == "/Index" ? "text-primary" : "")"></i><span class="fw-bold @(ViewContext.RouteData.Values["Page"].ToString() == "/Index" ? "text-primary" : "")">Emad Ramezani</span>
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -24,67 +24,39 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Index">
-                                <i class="fas fa-user me-1"></i> About
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Blog">
+                            <a class="nav-link @(ViewContext.RouteData.Values["Page"].ToString() == "/Blog" ? "active" : "")" asp-area="" asp-page="/Blog">
                                 <i class="fas fa-blog me-1"></i> Blog
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Podcast">
+                            <a class="nav-link @(ViewContext.RouteData.Values["Page"].ToString() == "/Podcast" ? "active" : "")" asp-area="" asp-page="/Podcast">
                                 <i class="fas fa-microphone me-1"></i> Podcast
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/News">
+                            <a class="nav-link @(ViewContext.RouteData.Values["Page"].ToString() == "/News" ? "active" : "")" asp-area="" asp-page="/News">
                                 <i class="fas fa-newspaper me-1"></i> News
                             </a>
                         </li>
                     </ul>
-                    <div class="d-flex">
-                        <a href="https://github.com/username" target="_blank" class="nav-link">
-                            <i class="fab fa-github"></i>
-                        </a>
-                        <a href="https://linkedin.com/in/username" target="_blank" class="nav-link">
-                            <i class="fab fa-linkedin"></i>
-                        </a>
-                        <a href="https://twitter.com/username" target="_blank" class="nav-link">
-                            <i class="fab fa-twitter"></i>
-                        </a>
+                    <div class="d-flex align-items-center">
+                        <div id="theme-toggle" class="theme-toggle ms-2" title="Toggle dark mode">
+                            <i class="fas fa-users-cog"></i>
+                        </div>
                     </div>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+    <div>
+        <main role="main">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer">
-        <div class="container py-4">
-            <div class="row">
-                <div class="col-md-6">
-                    <h5>Personal Blog</h5>
-                    <p class="text-muted">A personal blog & portfolio showcasing work as a developer and project manager.</p>
-                </div>
-                <div class="col-md-3">
-                    <h5>Connect</h5>
-                    <ul class="list-unstyled">
-                        <li class="mb-2"><a href="https://github.com/username"><i class="fab fa-github me-2"></i>GitHub</a></li>
-                        <li class="mb-2"><a href="https://linkedin.com/in/username"><i class="fab fa-linkedin me-2"></i>LinkedIn</a></li>
-                        <li class="mb-2"><a href="https://twitter.com/username"><i class="fab fa-twitter me-2"></i>Twitter</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-3 text-md-end">
-                    <p>&copy; @DateTime.Now.Year - Personal Blog</p>
-                    <a asp-area="" asp-page="/Privacy">Privacy</a>
-                </div>
-            </div>
+    <footer class="mt-5 py-4 border-top">
+        <div class="container text-center">
+            <p class="mb-0">&copy; @DateTime.Now.Year Emad Ramezani - All rights reserved</p>
         </div>
     </footer>
 

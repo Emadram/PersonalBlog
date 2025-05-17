@@ -1,0 +1,84 @@
+@page
+@model PersonalBlog.Pages.Admin.IndexModel
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4"><i class="fas fa-tachometer-alt me-2"></i>Admin Dashboard</h2>
+    
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Welcome, @User.Identity?.Name!</h5>
+                    <p class="card-text">Use the links below to manage your website content.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-user me-2"></i>Profile</h5>
+                    <p class="card-text">Manage your personal information, skills, experiences, and education.</p>
+                    <a asp-page="/Admin/Profile" class="btn btn-primary">Edit Profile</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-blog me-2"></i>Blog Posts</h5>
+                    <p class="card-text">Add, edit, or delete blog posts on your website.</p>
+                    <a asp-page="/Admin/BlogPosts" class="btn btn-primary">Manage Blog</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-microphone me-2"></i>Podcast Episodes</h5>
+                    <p class="card-text">Add, edit, or delete podcast episodes on your website.</p>
+                    <a asp-page="/Admin/PodcastEpisodes" class="btn btn-primary">Manage Podcast</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-newspaper me-2"></i>News</h5>
+                    <p class="card-text">Add, edit, or delete news items on your website.</p>
+                    <a asp-page="/Admin/News" class="btn btn-primary">Manage News</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-cog me-2"></i>Settings</h5>
+                    <p class="card-text">Manage website settings and configurations.</p>
+                    <a asp-page="/Admin/Settings" class="btn btn-primary">Edit Settings</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-sign-out-alt me-2"></i>Logout</h5>
+                    <p class="card-text">Sign out from the admin dashboard.</p>
+                    <form method="post" asp-page="/Admin/Logout">
+                        <button type="submit" class="btn btn-danger">Logout</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

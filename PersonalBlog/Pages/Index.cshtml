@@ -4,61 +4,87 @@
     ViewData["Title"] = "About Me";
 }
 
-<div class="container">
-    <div class="row mb-5">
-        <div class="col-md-8">
-            <h1 class="mb-4">Hello, I'm <span class="text-primary">@Model.Profile.Name</span></h1>
-            <h3 class="text-secondary mb-4">@Model.Profile.Title</h3>
-            
-            <p class="lead mb-4">
-                @Model.Profile.Bio
-            </p>
-            
-            <div class="d-flex gap-2 mb-5">
+<div class="container mt-5">
+    <!-- Header Section -->
+    <div class="row mb-5 align-items-center">
+        <div class="col-md-9">
+            <h1 class="fw-bold mb-3">Hi there 👋 I'm <span class="text-primary">Emad Ramezani</span></h1>
+            <div class="mb-4">
+                <span class="badge bg-light text-dark border me-2 px-3 py-2">@Model.Profile.Title</span>
+            </div>
+            <div class="mb-4">
+                <p class="fs-5">@Model.Profile.Bio</p>
+            </div>
+            <div class="d-flex gap-2 mb-3">
                 <a href="@Model.Profile.ResumeUrl" class="btn btn-primary">
-                    <i class="fas fa-download me-2"></i>Download Resume
+                    <i class="fas fa-download me-2"></i>Resume
                 </a>
-                <a href="#contact" class="btn btn-outline-primary">
-                    <i class="fas fa-envelope me-2"></i>Contact Me
+                <a href="#contact" class="btn btn-outline-secondary">
+                    <i class="fas fa-envelope me-2"></i>Contact
+                </a>
+                <a href="@Model.Profile.GitHubUrl" target="_blank" class="btn btn-outline-dark">
+                    <i class="fab fa-github me-2"></i>GitHub
+                </a>
+                <a href="@Model.Profile.LinkedInUrl" target="_blank" class="btn btn-outline-primary">
+                    <i class="fab fa-linkedin me-2"></i>LinkedIn
                 </a>
             </div>
         </div>
-        <div class="col-md-4 text-center">
-            <div class="card p-3">
-                <img src="@Model.Profile.ImageUrl" alt="Profile Photo" class="rounded-circle mx-auto mb-3" style="width: 200px;">
-                <div class="card-body">
-                    <p class="card-text">
-                        <i class="fas fa-map-marker-alt me-2"></i> @Model.Profile.Location<br>
-                        <i class="fas fa-envelope me-2"></i> @Model.Profile.Email<br>
-                        <i class="fas fa-phone me-2"></i> @Model.Profile.Phone
-                    </p>
-                </div>
+        <div class="col-md-3 text-center">
+            <img src="@Model.Profile.ImageUrl" alt="Profile Photo" class="rounded-circle img-thumbnail" style="width: 200px; height: 200px; object-fit: cover;">
+            <div class="mt-3">
+                <p><i class="fas fa-map-marker-alt me-2"></i>@Model.Profile.Location</p>
             </div>
         </div>
     </div>
 
-    <!-- Skills Section -->
-    <div class="section mb-5">
-        <h2 class="section-title"><i class="fas fa-code me-2"></i>Technical Skills</h2>
+    <!-- About Me Section -->
+    <div class="mb-5">
+        <div class="d-flex align-items-center mb-4">
+            <div class="border-bottom flex-grow-1" style="height: 1px;"></div>
+            <h2 class="mx-3 my-0">About Me</h2>
+            <div class="border-bottom flex-grow-1" style="height: 1px;"></div>
+        </div>
         <div class="row">
-            <div class="col-md-6">
-                <h4>Programming Languages</h4>
+            <div class="col-md-7">
+                <p>@Model.Profile.Bio</p>
+                <p><i class="fas fa-envelope me-2"></i>@Model.Profile.Email</p>
+                <p><i class="fas fa-phone me-2"></i>@Model.Profile.Phone</p>
+            </div>
+    </div>
+
+    <!-- Tech Stack Section -->
+    <div class="mb-5">
+        <div class="d-flex align-items-center mb-4">
+            <div class="border-bottom flex-grow-1" style="height: 1px;"></div>
+            <h2 class="mx-3 my-0">Tech Stack</h2>
+            <div class="border-bottom flex-grow-1" style="height: 1px;"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <h4 class="mb-3">Programming Languages</h4>
                 @foreach (var skill in Model.Skills.Where(s => s.Category == "Programming Languages"))
                 {
-                    <div>
-                        <p class="mb-1">@skill.Name</p>
-                        <div class="skill-bar">
-                            <div class="skill-progress" style="width: @(skill.Proficiency)%"></div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span><i class="@skill.IconClass me-2"></i> @skill.Name</span>
+                            <span>@skill.Proficiency%</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar" role="progressbar" style="width: @(skill.Proficiency)%;" 
+                                 aria-valuenow="@skill.Proficiency" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                     </div>
                 }
             </div>
-            <div class="col-md-6">
-                <h4>Frameworks & Tools</h4>
-                <div class="d-flex flex-wrap">
+            <div class="col-md-6 mb-4">
+                <h4 class="mb-3">Frameworks & Tools</h4>
+                <div class="d-flex flex-wrap gap-2">
                     @foreach (var skill in Model.Skills.Where(s => s.Category == "Frameworks & Tools"))
                     {
-                        <span class="tag"><i class="@skill.IconClass me-1"></i> @skill.Name</span>
+                        <span class="badge bg-light text-dark border px-3 py-2">
+                            <i class="@skill.IconClass me-1"></i> @skill.Name
+                        </span>
                     }
                 </div>
             </div>
@@ -66,80 +92,124 @@
     </div>
 
     <!-- Experience Section -->
-    <div class="section mb-5">
-        <h2 class="section-title"><i class="fas fa-briefcase me-2"></i>Work Experience</h2>
+    <div class="mb-5">
+        <div class="d-flex align-items-center mb-4">
+            <div class="border-bottom flex-grow-1" style="height: 1px;"></div>
+            <h2 class="mx-3 my-0">Experience</h2>
+            <div class="border-bottom flex-grow-1" style="height: 1px;"></div>
+        </div>
         
         <div class="timeline">
             @foreach (var exp in Model.Experiences)
             {
-                <div class="timeline-item">
-                    <h4>@exp.Title</h4>
-                    <h5>@exp.Company</h5>
-                    <p class="text-muted">
-                        @exp.StartDate.ToString("MMM yyyy") - 
-                        @(exp.EndDate.HasValue ? exp.EndDate.Value.ToString("MMM yyyy") : "Present")
-                    </p>
-                    <p>@exp.Description</p>
-                    <code>@exp.Technologies</code>
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <h4 class="card-title mb-1">@exp.Title</h4>
+                                    <span class="text-muted">
+                                        @exp.StartDate.ToString("MMM yyyy") - 
+                                        @(exp.EndDate.HasValue ? exp.EndDate.Value.ToString("MMM yyyy") : "Present")
+                                    </span>
+                                </div>
+                                <h5 class="text-muted mb-3">@exp.Company</h5>
+                                <p>@exp.Description</p>
+                                <div class="d-flex flex-wrap gap-2">
+                                    @foreach (var tech in exp.Technologies.Split(','))
+                                    {
+                                        <span class="badge bg-light text-dark border px-2 py-1">@tech.Trim()</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             }
         </div>
     </div>
 
     <!-- Education Section -->
-    <div class="section mb-5">
-        <h2 class="section-title"><i class="fas fa-graduation-cap me-2"></i>Education</h2>
+    <div class="mb-5">
+        <div class="d-flex align-items-center mb-4">
+            <div class="border-bottom flex-grow-1" style="height: 1px;"></div>
+            <h2 class="mx-3 my-0">Education</h2>
+            <div class="border-bottom flex-grow-1" style="height: 1px;"></div>
+        </div>
         
-        <div class="timeline">
+        <div class="row">
             @foreach (var edu in Model.Educations)
             {
-                <div class="timeline-item">
-                    <h4>@edu.Degree</h4>
-                    <h5>@edu.Institution</h5>
-                    <p class="text-muted">
-                        @edu.StartDate.ToString("yyyy") - @edu.EndDate?.ToString("yyyy")
-                    </p>
-                    <p>@edu.Description</p>
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <h4 class="card-title mb-1">@edu.Degree</h4>
+                                <span class="text-muted">
+                                    @edu.StartDate.ToString("yyyy") - @edu.EndDate?.ToString("yyyy")
+                                </span>
+                            </div>
+                            <h5 class="text-muted mb-3">@edu.Institution</h5>
+                            <p>@edu.Description</p>
+                        </div>
+                    </div>
                 </div>
             }
         </div>
     </div>
 
     <!-- Contact Section -->
-    <div id="contact" class="section mb-5">
-        <h2 class="section-title"><i class="fas fa-envelope me-2"></i>Get In Touch</h2>
+    <div id="contact" class="mb-5">
+        <div class="d-flex align-items-center mb-4">
+            <div class="border-bottom flex-grow-1" style="height: 1px;"></div>
+            <h2 class="mx-3 my-0">Contact Me</h2>
+            <div class="border-bottom flex-grow-1" style="height: 1px;"></div>
+        </div>
         
         <div class="row">
-            <div class="col-md-6">
-                <form method="post">
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Name</label>
-                        <input type="text" class="form-control" id="name" placeholder="Your name">
-                    </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" placeholder="your.email@example.com">
-                    </div>
-                    <div class="mb-3">
-                        <label for="message" class="form-label">Message</label>
-                        <textarea class="form-control" id="message" rows="4" placeholder="Your message"></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-paper-plane me-2"></i>Send Message
-                    </button>
-                </form>
-            </div>
-            <div class="col-md-6">
+            <div class="col-md-6 mb-4">
                 <div class="card h-100">
                     <div class="card-body">
-                        <h5 class="card-title">Connect with me</h5>
-                        <p>I'm always interested in new projects and opportunities. Feel free to reach out!</p>
+                        <h4 class="mb-3">Send a Message</h4>
+                        <form method="post">
+                            <div class="mb-3">
+                                <input type="text" class="form-control" id="name" placeholder="Your name">
+                            </div>
+                            <div class="mb-3">
+                                <input type="email" class="form-control" id="email" placeholder="your.email@example.com">
+                            </div>
+                            <div class="mb-3">
+                                <textarea class="form-control" id="message" rows="4" placeholder="Your message"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane me-2"></i>Send Message
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h4 class="mb-3">Connect with me</h4>
+                        <p>I'm always interested in new projects and opportunities. Feel free to reach out through any of these channels:</p>
                         <ul class="list-unstyled">
-                            <li class="mb-2"><i class="fas fa-envelope me-2"></i> @Model.Profile.Email</li>
-                            <li class="mb-2"><i class="fas fa-phone me-2"></i> @Model.Profile.Phone</li>
-                            <li class="mb-2"><i class="fab fa-github me-2"></i> <a href="@Model.Profile.GitHubUrl" target="_blank">GitHub</a></li>
-                            <li class="mb-2"><i class="fab fa-linkedin me-2"></i> <a href="@Model.Profile.LinkedInUrl" target="_blank">LinkedIn</a></li>
-                            <li class="mb-2"><i class="fab fa-twitter me-2"></i> <a href="@Model.Profile.TwitterUrl" target="_blank">Twitter</a></li>
+                            <li class="mb-3">
+                                <i class="fas fa-envelope me-2"></i>
+                                <a href="mailto:@Model.Profile.Email">@Model.Profile.Email</a>
+                            </li>
+                            <li class="mb-3">
+                                <i class="fas fa-phone me-2"></i>
+                                <a href="tel:@Model.Profile.Phone">@Model.Profile.Phone</a>
+                            </li>
+                            <li class="mb-3">
+                                <i class="fab fa-github me-2"></i>
+                                <a href="@Model.Profile.GitHubUrl" target="_blank">@Model.Profile.GitHubUrl.Replace("https://", "")</a>
+                            </li>
+                            <li class="mb-3">
+                                <i class="fab fa-linkedin me-2"></i>
+                                <a href="@Model.Profile.LinkedInUrl" target="_blank">@Model.Profile.LinkedInUrl.Replace("https://", "")</a>
+                            </li>
                         </ul>
                     </div>
                 </div>

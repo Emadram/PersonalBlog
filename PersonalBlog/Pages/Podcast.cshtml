@@ -4,69 +4,58 @@
     ViewData["Title"] = "Podcast";
 }
 
-<div class="container">
-    <div class="row mb-5">
-        <div class="col-lg-8">
-            <h1 class="mb-4 section-title"><i class="fas fa-microphone me-2"></i>DevTalk Podcast</h1>
-            <p class="lead">
-                A podcast for developers by developers. Join me as I chat with industry experts about software 
-                development, career growth, and emerging technologies.
-            </p>
+<div class="container mt-4">
+    <!-- Header Section -->
+    <div class="mb-5">
+        <div class="d-flex align-items-center mb-4">
+            <div class="border-bottom flex-grow-1" style="height: 1px;"></div>
+            <h2 class="mx-3 my-0"><i class="fas fa-microphone me-2"></i>DevTalk Podcast</h2>
+            <div class="border-bottom flex-grow-1" style="height: 1px;"></div>
         </div>
-        <div class="col-lg-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Podcast Categories</h5>
-                    <div class="d-flex flex-wrap gap-2 mt-3">
-                        <a href="#" class="tag">All Episodes</a>
-                        @foreach (var category in Model.Categories)
-                        {
-                            <a href="#" class="tag">@category</a>
-                        }
-                    </div>
-                </div>
-            </div>
+        <p class="lead text-center mb-4">
+            A podcast for developers by developers. Join me as I chat with industry experts about software 
+            development, career growth, and emerging technologies.
+        </p>
+        
+        <div class="d-flex justify-content-center flex-wrap gap-2 mb-4">
+            <a href="#" class="btn btn-sm btn-outline-secondary">All Episodes</a>
+            @foreach (var category in Model.Categories)
+            {
+                <a href="#" class="btn btn-sm btn-outline-secondary">@category</a>
+            }
         </div>
     </div>
 
     <!-- Featured Episode -->
     @if (Model.FeaturedEpisode != null)
     {
-        <div class="section mb-5">
-            <h2 class="section-title">Featured Episode</h2>
-            <div class="card">
-                <div class="card-body p-0">
-                    <div class="row g-0">
-                        <div class="col-md-4">
-                            <img src="@Model.FeaturedEpisode.ImageUrl" class="img-fluid rounded-start" alt="Podcast episode image" style="height: 100%; object-fit: cover;">
+        <div class="card mb-4 border-0 shadow-sm">
+            <div class="card-header bg-transparent border-0">
+                <h5 class="mb-0 text-primary"><i class="fas fa-star me-2"></i>Featured Episode</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 mb-3 mb-md-0">
+                        <img src="@Model.FeaturedEpisode.ImageUrl" class="img-fluid rounded" alt="@Model.FeaturedEpisode.Title">
+                    </div>
+                    <div class="col-md-9">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <span class="badge bg-@Model.FeaturedEpisode.CategoryBadgeColor">@Model.FeaturedEpisode.Category</span>
+                            <span class="text-muted">@Model.FeaturedEpisode.EpisodeNumber</span>
                         </div>
-                        <div class="col-md-8">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <span class="badge bg-@Model.FeaturedEpisode.CategoryBadgeColor">@Model.FeaturedEpisode.Category</span>
-                                    <span class="text-muted">@Model.FeaturedEpisode.EpisodeNumber</span>
-                                </div>
-                                <h3 class="card-title">@Model.FeaturedEpisode.Title</h3>
-                                <p class="text-muted">
-                                    <i class="far fa-calendar-alt me-1"></i> @Model.FeaturedEpisode.PublishedDate.ToString("MMMM d, yyyy")
-                                    <span class="mx-2">|</span>
-                                    <i class="far fa-clock me-1"></i> @Model.FeaturedEpisode.DurationMinutes min
-                                </p>
-                                <p class="card-text">
-                                    @Model.FeaturedEpisode.Summary
-                                </p>
-                                <p class="text-muted">
-                                    <strong>Guests:</strong> @Model.FeaturedEpisode.Guests
-                                </p>
-                                <div class="d-flex">
-                                    <a href="@Model.FeaturedEpisode.AudioUrl" class="btn btn-primary me-2">
-                                        <i class="fas fa-play me-1"></i> Listen Now
-                                    </a>
-                                    <a href="#" class="btn btn-outline-secondary">
-                                        <i class="fas fa-info-circle me-1"></i> Show Notes
-                                    </a>
-                                </div>
-                            </div>
+                        <h3>@Model.FeaturedEpisode.Title</h3>
+                        <p class="text-muted small">
+                            <i class="far fa-calendar-alt me-1"></i> @Model.FeaturedEpisode.PublishedDate.ToString("MMM d, yyyy")
+                            <span class="mx-2">|</span>
+                            <i class="far fa-clock me-1"></i> @Model.FeaturedEpisode.DurationMinutes min
+                            <span class="mx-2">|</span>
+                            <i class="fas fa-user me-1"></i> @Model.FeaturedEpisode.Guests
+                        </p>
+                        <p>@Model.FeaturedEpisode.Summary</p>
+                        <div>
+                            <a href="@Model.FeaturedEpisode.AudioUrl" class="btn btn-primary">
+                                <i class="fas fa-play me-1"></i> Listen Now
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -74,153 +63,109 @@
         </div>
     }
 
-    <!-- Episodes List -->
-    <div class="section mb-5">
-        <h2 class="section-title">Recent Episodes</h2>
-        <div class="row">
-            @foreach (var episode in Model.RecentEpisodes.Where(e => !e.IsFeatured))
+    <!-- Episodes List as Accordion -->
+    <h5 class="mb-3">All Episodes</h5>
+    <div class="accordion mb-5" id="episodesAccordion">
+        @{
+            int index = 0;
+            foreach (var episode in Model.RecentEpisodes)
             {
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100">
-                        <img src="@episode.ImageUrl" class="card-img-top" alt="Podcast episode image">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <span class="badge bg-@episode.CategoryBadgeColor">@episode.Category</span>
-                                <span class="text-muted">@episode.EpisodeNumber</span>
+                index++;
+                string collapseId = $"collapse{index}";
+                string headingId = $"heading{index}";
+                bool isFirst = index == 1 && Model.FeaturedEpisode == null || 
+                              Model.FeaturedEpisode != null && episode.Id == Model.FeaturedEpisode.Id;
+                
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="@headingId">
+                        <button class="accordion-button @(isFirst ? "" : "collapsed")" type="button" 
+                                data-bs-toggle="collapse" data-bs-target="#@collapseId" 
+                                aria-expanded="@(isFirst ? "true" : "false")" aria-controls="@collapseId">
+                            <div class="d-flex justify-content-between align-items-center w-100 pe-3">
+                                <div>
+                                    <span class="badge bg-@episode.CategoryBadgeColor me-2">@episode.Category</span>
+                                    <span class="text-muted me-2">@episode.EpisodeNumber</span>
+                                    <strong>@episode.Title</strong>
+                                </div>
+                                <span class="text-muted small d-none d-md-inline">@episode.PublishedDate.ToString("MMM d, yyyy") • @episode.DurationMinutes min</span>
                             </div>
-                            <h4 class="card-title">@episode.Title</h4>
-                            <p class="text-muted small">
-                                <i class="far fa-calendar-alt me-1"></i> @episode.PublishedDate.ToString("MMMM d, yyyy")
-                                <span class="mx-2">|</span>
-                                <i class="far fa-clock me-1"></i> @episode.DurationMinutes min
-                            </p>
-                            <p class="card-text">@episode.Summary</p>
-                            <p class="text-muted small"><strong>Guests:</strong> @episode.Guests</p>
-                            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-                                <a href="@episode.AudioUrl" class="btn btn-sm btn-primary">
-                                    <i class="fas fa-play me-1"></i> Listen
-                                </a>
-                                <a href="#" class="btn btn-sm btn-outline-secondary">
-                                    <i class="fas fa-info-circle me-1"></i> Details
-                                </a>
+                        </button>
+                    </h2>
+                    <div id="@collapseId" class="accordion-collapse collapse @(isFirst ? "show" : "")" 
+                         aria-labelledby="@headingId" data-bs-parent="#episodesAccordion">
+                        <div class="accordion-body">
+                            <div class="row">
+                                <div class="col-md-3 mb-3 mb-md-0">
+                                    <img src="@episode.ImageUrl" class="img-fluid rounded" alt="@episode.Title">
+                                </div>
+                                <div class="col-md-9">
+                                    <p class="text-muted small d-md-none">
+                                        <i class="far fa-calendar-alt me-1"></i> @episode.PublishedDate.ToString("MMM d, yyyy")
+                                        <span class="mx-2">|</span>
+                                        <i class="far fa-clock me-1"></i> @episode.DurationMinutes min
+                                    </p>
+                                    <p>@episode.Summary</p>
+                                    <p class="text-muted"><strong>Guests:</strong> @episode.Guests</p>
+                                    <div>
+                                        <audio controls class="w-100 mb-3">
+                                            <source src="@episode.AudioUrl" type="audio/mpeg">
+                                            Your browser does not support the audio element.
+                                        </audio>
+                                        <div>
+                                            <a href="@episode.AudioUrl" class="btn btn-sm btn-outline-primary me-2" download>
+                                                <i class="fas fa-download me-1"></i> Download
+                                            </a>
+                                            <a href="#" class="btn btn-sm btn-outline-secondary">
+                                                <i class="fas fa-share-alt me-1"></i> Share
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             }
+        }
+    </div>
+
+    <!-- Listen On Section - More Minimal -->
+    <div class="mb-5">
+        <div class="d-flex align-items-center mb-3">
+            <div class="border-bottom flex-grow-1" style="height: 1px;"></div>
+            <h5 class="mx-3 my-0"><i class="fas fa-headphones me-2"></i>Listen On</h5>
+            <div class="border-bottom flex-grow-1" style="height: 1px;"></div>
+        </div>
+        <div class="d-flex justify-content-center gap-3 flex-wrap mt-4">
+            <a href="#" class="text-decoration-none text-center">
+                <i class="fab fa-spotify fa-2x d-block mb-2 text-success"></i>
+                <span>Spotify</span>
+            </a>
+            <a href="#" class="text-decoration-none text-center">
+                <i class="fab fa-apple fa-2x d-block mb-2"></i>
+                <span>Apple Podcasts</span>
+            </a>
+            <a href="#" class="text-decoration-none text-center">
+                <i class="fab fa-google fa-2x d-block mb-2 text-primary"></i>
+                <span>Google Podcasts</span>
+            </a>
+            <a href="#" class="text-decoration-none text-center">
+                <i class="fas fa-rss fa-2x d-block mb-2 text-warning"></i>
+                <span>RSS Feed</span>
+            </a>
         </div>
     </div>
 
-    <!-- Pagination -->
-    <div class="d-flex justify-content-center mb-5">
-        <nav aria-label="Podcast pagination">
-            <ul class="pagination">
-                <li class="page-item disabled">
-                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-                </li>
-                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="#">Next</a>
-                </li>
-            </ul>
-        </nav>
-    </div>
-
-    <!-- Listen On Section -->
-    <div class="section mb-5">
-        <h2 class="section-title"><i class="fas fa-headphones me-2"></i>Listen On</h2>
-        <div class="row text-center">
-            <div class="col-md-3 col-6 mb-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <i class="fab fa-spotify fa-3x mb-3 text-success"></i>
-                        <h5 class="card-title">Spotify</h5>
-                        <a href="#" class="btn btn-sm btn-outline-success">Subscribe</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-6 mb-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <i class="fab fa-apple fa-3x mb-3 text-dark"></i>
-                        <h5 class="card-title">Apple Podcasts</h5>
-                        <a href="#" class="btn btn-sm btn-outline-dark">Subscribe</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-6 mb-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <i class="fab fa-google fa-3x mb-3 text-primary"></i>
-                        <h5 class="card-title">Google Podcasts</h5>
-                        <a href="#" class="btn btn-sm btn-outline-primary">Subscribe</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-6 mb-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <i class="fas fa-rss fa-3x mb-3 text-warning"></i>
-                        <h5 class="card-title">RSS Feed</h5>
-                        <a href="#" class="btn btn-sm btn-outline-warning">Subscribe</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Contact Section -->
-    <div class="section mb-5">
-        <div class="card bg-light">
-            <div class="card-body p-4">
-                <div class="row">
-                    <div class="col-md-7">
-                        <h3><i class="fas fa-envelope me-2"></i>Want to Be a Guest?</h3>
-                        <p class="lead mb-4">
-                            I'm always looking for interesting guests with unique insights and experiences 
-                            to share with my audience. If you think you'd be a good fit, please reach out!
-                        </p>
-                        <form method="post">
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <input type="text" class="form-control" placeholder="Your name">
-                                </div>
-                                <div class="col-md-6">
-                                    <input type="email" class="form-control" placeholder="Your email">
-                                </div>
-                                <div class="col-12">
-                                    <input type="text" class="form-control" placeholder="Topic proposal">
-                                </div>
-                                <div class="col-12">
-                                    <textarea class="form-control" rows="3" placeholder="Tell me a bit about yourself and why you'd be a great guest"></textarea>
-                                </div>
-                                <div class="col-12">
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="fas fa-paper-plane me-2"></i>Submit Proposal
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="col-md-5">
-                        <div class="card h-100 mt-md-0 mt-4">
-                            <div class="card-body">
-                                <h5 class="card-title">Guest Requirements</h5>
-                                <ul class="list-unstyled">
-                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Relevant expertise in software development, tech leadership, or related field</li>
-                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Interesting stories or insights to share</li>
-                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Good audio setup (microphone recommended)</li>
-                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> 45-60 minutes of availability for recording</li>
-                                </ul>
-                                <hr>
-                                <p class="text-muted mb-0">Episodes are typically published within 2 weeks of recording. You'll receive a link to preview the episode before it goes live.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <!-- Simple Contact CTA -->
+    <div class="card bg-light mb-5">
+        <div class="card-body text-center p-4">
+            <h5 class="mb-3"><i class="fas fa-microphone-alt me-2"></i>Want to Be a Guest?</h5>
+            <p class="mb-3">
+                I'm always looking for interesting guests with unique insights to share.
+            </p>
+            <a href="mailto:contact@example.com" class="btn btn-primary">
+                <i class="fas fa-envelope me-1"></i> Email Me
+            </a>
         </div>
     </div>
 </div> 

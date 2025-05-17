@@ -9,9 +9,9 @@ public class PodcastModel : PageModel
 {
     private readonly IPodcastService _podcastService;
 
-    public PodcastEpisode FeaturedEpisode { get; set; }
-    public IEnumerable<PodcastEpisode> RecentEpisodes { get; set; }
-    public IEnumerable<string> Categories { get; set; }
+    public PodcastEpisode? FeaturedEpisode { get; set; }
+    public IEnumerable<PodcastEpisode> RecentEpisodes { get; set; } = new List<PodcastEpisode>();
+    public IEnumerable<string> Categories { get; set; } = new List<string>();
 
     public PodcastModel(IPodcastService podcastService)
     {
