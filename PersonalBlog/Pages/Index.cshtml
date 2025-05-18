@@ -1,67 +1,42 @@
-﻿@page
+@page
 @model IndexModel
 @{
     ViewData["Title"] = "About Me";
 }
 
-<div class="container mt-5">
-    <!-- Header Section -->
-    <div class="row mb-5 align-items-center">
-        <div class="col-md-9">
-            <h1 class="fw-bold mb-3">Hi there 👋 I'm <span class="text-primary">Emad Ramezani</span></h1>
-            <div class="mb-4">
-                <span class="badge bg-light text-dark border me-2 px-3 py-2">@Model.Profile.Title</span>
+<div class="container">
+    <!-- Profile Header Section -->
+    <div class="profile-header animate__animated animate-on-scroll" data-animation="animate__fadeIn">
+        <img src="@Model.Profile.ImageUrl" alt="Profile Photo" class="profile-image">
+        <div>
+            <h1 class="fw-bold mb-3 typing-animation"><span class="text-primary">@Model.Profile.Name</span></h1>
+            <div class="mb-3">
+                <span class="tech-badge">@Model.Profile.Title</span>
+                <span class="tech-badge"><i class="fas fa-map-marker-alt me-1"></i>@Model.Profile.Location</span>
             </div>
-            <div class="mb-4">
-                <p class="fs-5">@Model.Profile.Bio</p>
+            <div class="profile-bio mb-4">
+                @Model.Profile.Bio
             </div>
-            <div class="d-flex gap-2 mb-3">
-                <a href="@Model.Profile.ResumeUrl" class="btn btn-primary">
+            <div class="social-links">
+                <a href="@Model.Profile.ResumeUrl" class="btn btn-primary me-2">
                     <i class="fas fa-download me-2"></i>Resume
                 </a>
-                <a href="#contact" class="btn btn-outline-secondary">
-                    <i class="fas fa-envelope me-2"></i>Contact
-                </a>
-                <a href="@Model.Profile.GitHubUrl" target="_blank" class="btn btn-outline-dark">
-                    <i class="fab fa-github me-2"></i>GitHub
-                </a>
-                <a href="@Model.Profile.LinkedInUrl" target="_blank" class="btn btn-outline-primary">
-                    <i class="fab fa-linkedin me-2"></i>LinkedIn
-                </a>
-            </div>
-        </div>
-        <div class="col-md-3 text-center">
-            <img src="@Model.Profile.ImageUrl" alt="Profile Photo" class="rounded-circle img-thumbnail" style="width: 200px; height: 200px; object-fit: cover;">
-            <div class="mt-3">
-                <p><i class="fas fa-map-marker-alt me-2"></i>@Model.Profile.Location</p>
             </div>
         </div>
     </div>
 
     <!-- About Me Section -->
-    <div class="mb-5">
-        <div class="d-flex align-items-center mb-4">
-            <div class="border-bottom flex-grow-1" style="height: 1px;"></div>
-            <h2 class="mx-3 my-0">About Me</h2>
-            <div class="border-bottom flex-grow-1" style="height: 1px;"></div>
-        </div>
-        <div class="row">
-            <div class="col-md-7">
-                <p>@Model.Profile.Bio</p>
-                <p><i class="fas fa-envelope me-2"></i>@Model.Profile.Email</p>
-                <p><i class="fas fa-phone me-2"></i>@Model.Profile.Phone</p>
-            </div>
+    <div class="mb-5 animate__animated animate-on-scroll" data-animation="animate__fadeInUp">
+        <h2 class="section-header">About Me</h2>
+        <p>@Model.Profile.Bio</p>
+        <p><i class="fas fa-envelope me-2"></i>@Model.Profile.Email</p>
+        <p><i class="fas fa-phone me-2"></i>@Model.Profile.Phone</p>
     </div>
 
     <!-- Tech Stack Section -->
-    <div class="mb-5">
-        <div class="d-flex align-items-center mb-4">
-            <div class="border-bottom flex-grow-1" style="height: 1px;"></div>
-            <h2 class="mx-3 my-0">Tech Stack</h2>
-            <div class="border-bottom flex-grow-1" style="height: 1px;"></div>
-        </div>
+    <div class="mb-5 animate__animated animate-on-scroll stagger-children" data-animation="animate__fadeInUp">
+        <h2 class="section-header">Tech Stack</h2>
         
-        <!-- Group skills by category -->
         @{
             var skillCategories = Model.Skills
                 .GroupBy(s => s.Category)
@@ -73,7 +48,7 @@
         @foreach (var category in skillCategories)
         {
             <div class="mb-4">
-                <h4 class="mb-3">@category</h4>
+                <h3 class="mb-3">@category</h3>
                 <div class="row">
                     @foreach (var skill in Model.Skills.Where(s => s.Category == category).OrderByDescending(s => s.Proficiency))
                     {
@@ -94,36 +69,28 @@
     </div>
 
     <!-- Experience Section -->
-    <div class="mb-5">
-        <div class="d-flex align-items-center mb-4">
-            <div class="border-bottom flex-grow-1" style="height: 1px;"></div>
-            <h2 class="mx-3 my-0">Experience</h2>
-            <div class="border-bottom flex-grow-1" style="height: 1px;"></div>
-        </div>
+    <div class="mb-5 animate__animated animate-on-scroll stagger-children" data-animation="animate__fadeInLeft">
+        <h2 class="section-header">Experience</h2>
         
         <div class="timeline">
             @foreach (var exp in Model.Experiences)
             {
-                <div class="row mb-4">
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between">
-                                    <h4 class="card-title mb-1">@exp.Title</h4>
-                                    <span class="text-muted">
-                                        @exp.StartDate.ToString("MMM yyyy") - 
-                                        @(exp.EndDate.HasValue ? exp.EndDate.Value.ToString("MMM yyyy") : "Present")
-                                    </span>
-                                </div>
-                                <h5 class="text-muted mb-3">@exp.Company</h5>
-                                <p>@exp.Description</p>
-                                <div class="d-flex flex-wrap gap-2">
-                                    @foreach (var tech in exp.Technologies.Split(','))
-                                    {
-                                        <span class="badge bg-light text-dark border px-2 py-1">@tech.Trim()</span>
-                                    }
-                                </div>
-                            </div>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <h4 class="mb-1">@exp.Title</h4>
+                            <span class="text-muted">
+                                @exp.StartDate.ToString("MMM yyyy") - 
+                                @(exp.EndDate.HasValue ? exp.EndDate.Value.ToString("MMM yyyy") : "Present")
+                            </span>
+                        </div>
+                        <h5 class="text-muted mb-3">@exp.Company</h5>
+                        <p>@exp.Description</p>
+                        <div class="d-flex flex-wrap gap-2">
+                            @foreach (var tech in exp.Technologies.Split(','))
+                            {
+                                <span class="tech-badge">@tech.Trim()</span>
+                            }
                         </div>
                     </div>
                 </div>
@@ -132,12 +99,8 @@
     </div>
 
     <!-- Education Section -->
-    <div class="mb-5">
-        <div class="d-flex align-items-center mb-4">
-            <div class="border-bottom flex-grow-1" style="height: 1px;"></div>
-            <h2 class="mx-3 my-0">Education</h2>
-            <div class="border-bottom flex-grow-1" style="height: 1px;"></div>
-        </div>
+    <div class="mb-5 animate__animated animate-on-scroll stagger-children" data-animation="animate__fadeInRight">
+        <h2 class="section-header">Education</h2>
         
         <div class="row">
             @foreach (var edu in Model.Educations)
@@ -146,7 +109,7 @@
                     <div class="card h-100">
                         <div class="card-body">
                             <div class="d-flex justify-content-between">
-                                <h4 class="card-title mb-1">@edu.Degree</h4>
+                                <h4 class="mb-1">@edu.Degree</h4>
                                 <span class="text-muted">
                                     @edu.StartDate.ToString("yyyy") - @edu.EndDate?.ToString("yyyy")
                                 </span>
@@ -161,38 +124,30 @@
     </div>
 
     <!-- Contact Section -->
-    <div id="contact" class="mb-5">
-        <div class="d-flex align-items-center mb-4">
-            <div class="border-bottom flex-grow-1" style="height: 1px;"></div>
-            <h2 class="mx-3 my-0">Contact Me</h2>
-            <div class="border-bottom flex-grow-1" style="height: 1px;"></div>
-        </div>
+    <div id="contact" class="mb-5 animate__animated animate-on-scroll stagger-children" data-animation="animate__fadeInUp">
+        <h2 class="section-header">Contact Me</h2>
         
-        <div class="row">
-            <div class="col-md-6 mb-4">
-                <div class="card h-100">
-                    <div class="card-body">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-4 mb-md-0">
                         <h4 class="mb-3">Send a Message</h4>
                         <form method="post">
                             <div class="mb-3">
-                                <input type="text" class="form-control" id="name" placeholder="Your name">
+                                <input type="text" class="form-control theme-input" id="name" placeholder="Your name">
                             </div>
                             <div class="mb-3">
-                                <input type="email" class="form-control" id="email" placeholder="your.email@example.com">
+                                <input type="email" class="form-control theme-input" id="email" placeholder="your.email@example.com">
                             </div>
                             <div class="mb-3">
-                                <textarea class="form-control" id="message" rows="4" placeholder="Your message"></textarea>
+                                <textarea class="form-control theme-input" id="message" rows="4" placeholder="Your message"></textarea>
                             </div>
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-paper-plane me-2"></i>Send Message
                             </button>
                         </form>
                     </div>
-                </div>
-            </div>
-            <div class="col-md-6 mb-4">
-                <div class="card h-100">
-                    <div class="card-body">
+                    <div class="col-md-6">
                         <h4 class="mb-3">Connect with me</h4>
                         <p>I'm always interested in new projects and opportunities. Feel free to reach out through any of these channels:</p>
                         <ul class="list-unstyled">

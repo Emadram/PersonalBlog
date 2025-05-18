@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html id="htmlElement" lang="en" data-bs-theme="light">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Admin Dashboard</title>
+    
+    <!-- Early theme application script - prevents flash of wrong theme -->
+    <script>
+        (function() {
+            // Apply theme immediately before any rendering occurs
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-bs-theme', savedTheme);
+            
+            // Apply theme to htmlElement - ensure consistent theme before any content loads
+            document.addEventListener('DOMContentLoaded', function() {
+                const htmlElement = document.getElementById('htmlElement');
+                if (htmlElement) {
+                    htmlElement.setAttribute('data-bs-theme', savedTheme);
+                }
+                
+                // Pre-update theme icon before page becomes visible
+                const themeIcon = document.getElementById('themeIcon');
+                if (themeIcon) {
+                    if (savedTheme === 'light') {
+                        themeIcon.className = 'fas fa-user-tie'; // Project Manager icon for light mode
+                    } else {
+                        themeIcon.className = 'fas fa-laptop-code'; // Developer icon for dark mode
+                    }
+                }
+            });
+            
+            // Create and append a style element to prevent FOUC and ensure critical theme styles are applied early
+            const style = document.createElement('style');
+            style.textContent = `
+                body { opacity: 0; transition: opacity 0.2s ease; }
+                body.theme-ready { opacity: 1; }
+                
+                /* Critical admin panel theme styles applied early to prevent flashing */
+                [data-bs-theme=dark] .form-control,
+                [data-bs-theme=dark] .theme-input {
+                    background-color: #2c3034 !important;
+                    border-color: #495057 !important;
+                    color: #e9ecef !important;
+                }
+                
+                [data-bs-theme=dark] .card {
+                    background-color: #1e2327 !important;
+                    border-color: #444 !important;
+                }
+                
+                [data-bs-theme=dark] .nav-tabs .nav-link.active {
+                    color: #00bfff !important;
+                    border-color: #00bfff !important;
+                    text-shadow: 0 0 5px rgba(0, 191, 255, 0.5) !important;
+                }
+                
+                [data-bs-theme=light] .nav-tabs .nav-link.active {
+                    color: #3498db !important;
+                    border-color: #3498db !important;
+                }
+                
+                [data-bs-theme=dark] .sidebar {
+                    background-color: #1a2533 !important;
+                }
+                
+                [data-bs-theme=dark] .sidebar-menu .nav-link.active {
+                    background-color: #00bfff !important;
+                }
+                
+                [data-bs-theme=light] .sidebar-menu .nav-link.active {
+                    background-color: #3498db !important;
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // When DOM is ready, mark theme as ready to show content
+            window.addEventListener('DOMContentLoaded', function() {
+                setTimeout(function() {
+                    document.body.classList.add('theme-ready');
+                }, 50);
+            });
+        })();
+    </script>
+    
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/PersonalBlog.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    @await RenderSectionAsync("Styles", required: false)
+    <style>
+        :root {
+            --sidebar-width: 250px;
+            --header-height: 60px;
+            --sidebar-bg: #2c3e50;
+            --sidebar-active-bg: #3498db;
+            --sidebar-hover-bg: #34495e;
+        }
+        
+        /* Light mode styles */
+        [data-bs-theme=light] {
+            --sidebar-bg: #2c3e50;
+            --sidebar-active-bg: #3498db; /* Light blue for light mode */
+            --sidebar-hover-bg: #34495e;
+            --body-bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #2c3e50;
+            --header-bg: #ffffff;
+            --tab-active-color: #3498db;
+            --tab-active-border: #3498db;
+            --tab-hover-bg: rgba(52, 152, 219, 0.1);
+            --input-bg: #ffffff;
+            --input-border: #ced4da;
+            --dropdown-bg: #ffffff;
+            --modal-bg: #ffffff;
+            --tooltip-bg: #000;
+            --btn-default-bg: #f8f9fa;
+            --btn-default-border: #ced4da;
+        }
+        
+        /* Dark mode styles */
+        [data-bs-theme=dark] {
+            --sidebar-bg: #1a2533;
+            --sidebar-active-bg: #00bfff; /* Neon blue for dark mode */
+            --sidebar-hover-bg: #212e3e;
+            --body-bg: #121212;
+            --card-bg: #1e2327;
+            --text-color: #ecf0f1;
+            --header-bg: #1e2327;
+            --tab-active-color: #00bfff;
+            --tab-active-border: #00bfff;
+            --tab-hover-bg: rgba(0, 191, 255, 0.2);
+            --input-bg: #2c3034;
+            --input-border: #495057;
+            --dropdown-bg: #2c3034;
+            --modal-bg: #1e2327;
+            --tooltip-bg: #212529;
+            --btn-default-bg: #2c3034;
+            --btn-default-border: #495057;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--body-bg);
+            color: var(--text-color);
+        }
+        
+        .admin-wrapper {
+            display: flex;
+            min-height: 100vh;
+            padding-top: var(--header-height);
+        }
+        
+        .admin-sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: var(--sidebar-bg);
+            color: #fff;
+            padding-top: var(--header-height);
+            transition: all 0.3s;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        
+        .admin-sidebar.collapsed {
+            left: calc(-1 * var(--sidebar-width) + 60px);
+        }
+        
+        .admin-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 20px;
+            transition: all 0.3s;
+        }
+        
+        .admin-content.expanded {
+            margin-left: 60px;
+        }
+        
+        .admin-header {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 0;
+            height: var(--header-height);
+            background: var(--header-bg);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            justify-content: space-between;
+        }
+        
+        .sidebar-toggle {
+            background: none;
+            border: none;
+            color: #2c3e50;
+            font-size: 1.25rem;
+            cursor: pointer;
+            padding: 10px;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .sidebar-menu li {
+            position: relative;
+        }
+        
+        .sidebar-menu li a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: #ecf0f1;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .sidebar-menu li a:hover,
+        .sidebar-menu li a.active {
+            background: var(--sidebar-hover-bg);
+            color: #fff;
+        }
+        
+        .sidebar-menu li a.active {
+            background: var(--sidebar-active-bg);
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.5);
+        }
+        
+        [data-bs-theme=dark] .sidebar-menu li a.active {
+            box-shadow: 0 0 15px rgba(0, 191, 255, 0.7);
+        }
+        
+        /* Website tab styling */
+        .nav-tabs .nav-link {
+            position: relative;
+            color: var(--text-color);
+            background-color: transparent;
+            border: 1px solid transparent;
+            border-top-left-radius: 0.25rem;
+            border-top-right-radius: 0.25rem;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        /* Hover animation for tabs */
+        .nav-tabs .nav-link:hover {
+            background-color: var(--tab-hover-bg);
+            border-color: transparent;
+            transform: translateY(-2px);
+        }
+        
+        /* Add subtle glow animation on hover */
+        .nav-tabs .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 50%;
+            background-color: var(--tab-active-color);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+            opacity: 0;
+        }
+        
+        .nav-tabs .nav-link:hover::after {
+            width: 70%;
+            opacity: 0.7;
+        }
+        
+        .nav-tabs .nav-link.active::after {
+            width: 100%;
+            opacity: 1;
+        }
+        
+        .nav-tabs .nav-link.active {
+            color: var(--tab-active-color);
+            border-color: var(--tab-active-border);
+            border-bottom-color: transparent;
+        }
+        
+        [data-bs-theme=dark] .nav-tabs .nav-link.active {
+            background-color: var(--card-bg);
+            border-bottom-color: var(--card-bg);
+        }
+        
+        /* Add glowing effect to active tabs in dark mode */
+        [data-bs-theme=dark] .nav-tabs .nav-link.active {
+            text-shadow: 0 0 5px rgba(0, 191, 255, 0.5);
+        }
+        
+        /* Style pill tabs as well */
+        .nav-pills .nav-link.active {
+            background-color: var(--tab-active-color);
+            color: white;
+        }
+        
+        /* Smooth tab content transitions to prevent flash */
+        .tab-content {
+            position: relative;
+        }
+        
+        .tab-pane {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            opacity: 0;
+            transform: translateY(10px);
+            position: absolute;
+            width: 100%;
+            left: 0;
+            top: 0;
+            z-index: 0;
+        }
+        
+        .tab-pane.active {
+            opacity: 1;
+            transform: translateY(0);
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Use a different approach to include keyframes in Razor */
+@{  
+        // Using write to output raw CSS with @ symbol
+        WriteLiteral("@keyframes fadeIn {\n");
+        WriteLiteral("            from { opacity: 0; }\n");
+        WriteLiteral("            to { opacity: 1; }\n");
+        WriteLiteral("        }\n");
+}
+        
+        .sidebar-menu li i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .sidebar-menu .menu-text {
+            transition: opacity 0.3s;
+        }
+        
+        .sidebar-menu.collapsed .menu-text {
+            opacity: 0;
+            width: 0;
+            display: none;
+        }
+        
+        .sidebar-menu .badge {
+            margin-left: auto;
+        }
+        
+        /* Form element styling for dark mode */
+        [data-bs-theme=dark] .form-control,
+        [data-bs-theme=dark] .form-select,
+        [data-bs-theme=dark] .input-group-text {
+            background-color: var(--input-bg);
+            border-color: var(--input-border);
+            color: var(--text-color);
+        }
+        
+        [data-bs-theme=dark] .form-control:focus,
+        [data-bs-theme=dark] .form-select:focus {
+            border-color: var(--sidebar-active-bg);
+            box-shadow: 0 0 0 0.25rem rgba(0, 191, 255, 0.25);
+        }
+        
+        [data-bs-theme=dark] .btn-outline-secondary {
+            color: #adb5bd;
+            border-color: #495057;
+        }
+        
+        [data-bs-theme=dark] .btn-outline-secondary:hover {
+            background-color: #495057;
+            color: #fff;
+        }
+        
+        [data-bs-theme=dark] .modal-content {
+            background-color: var(--modal-bg);
+            border-color: var(--input-border);
+        }
+        
+        [data-bs-theme=dark] .dropdown-menu {
+            background-color: var(--dropdown-bg);
+            border-color: var(--input-border);
+        }
+        
+        [data-bs-theme=dark] .dropdown-item {
+            color: var(--text-color);
+        }
+        
+        [data-bs-theme=dark] .dropdown-item:hover,
+        [data-bs-theme=dark] .dropdown-item:focus {
+            background-color: var(--sidebar-hover-bg);
+            color: var(--text-color);
+        }
+        
+        [data-bs-theme=dark] .dropdown-item.active {
+            background-color: var(--sidebar-active-bg);
+            color: #fff;
+        }
+        
+        [data-bs-theme=dark] .table {
+            color: var(--text-color);
+        }
+        
+        [data-bs-theme=dark] .table-striped > tbody > tr:nth-of-type(odd) > * {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        [data-bs-theme=dark] .table-hover > tbody > tr:hover > * {
+            background-color: rgba(255, 255, 255, 0.075);
+        }
+        
+        .user-dropdown {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            margin-right: 10px;
+            object-fit: cover;
+        }
+        
+        .dropdown-menu {
+            min-width: 200px;
+        }
+        
+        .section-title {
+            padding: 10px 20px;
+            color: #95a5a6;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        
+        .sidebar-menu.collapsed .section-title {
+            text-align: center;
+            padding: 10px 5px;
+        }
+        
+        /* Responsive adjustments */
+        @@media (max-width: 992px) {
+            .admin-sidebar {
+                left: calc(-1 * var(--sidebar-width) + 60px);
+            }
+            
+            .admin-sidebar.show {
+                left: 0;
+            }
+            
+            .admin-content {
+                margin-left: 60px;
+            }
+            
+            .admin-sidebar.collapsed {
+                left: -60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="admin-header">
+        <div class="d-flex align-items-center">
+            <button class="sidebar-toggle me-3 d-lg-none" id="mobileToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <h4 class="mb-0">@ViewData["Title"]</h4>
+        </div>
+        
+        <div class="d-flex align-items-center">
+            <!-- Theme Toggle Button -->
+            <button id="themeToggle" class="btn btn-sm btn-outline-secondary me-3">
+                <i id="themeIcon" class="fas fa-user-tie"></i> <!-- Project Manager icon (light mode default) -->
+            </button>
+            
+            <div class="dropdown">
+                <div class="user-dropdown" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="https://ui-avatars.com/api/?name=Admin&background=3498db&color=fff" alt="Admin" class="user-avatar">
+                    <span class="d-none d-md-inline">Admin</span>
+                </div>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                <li><a class="dropdown-item" href="/Admin/Profile"><i class="fas fa-user me-2"></i>Profile</a></li>
+                <li><a class="dropdown-item" href="/Admin/Settings"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="/"><i class="fas fa-home me-2"></i>View Site</a></li>
+                <li><a class="dropdown-item" href="/Admin/Logout"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+            </ul>
+        </div>
+    </header>
+    
+    <div class="admin-wrapper">
+        <aside class="admin-sidebar" id="sidebar">
+            <div class="d-none d-lg-block text-end p-3">
+                <button class="btn btn-sm btn-outline-light" id="toggleSidebar">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            </div>
+            
+            <ul class="sidebar-menu" id="sidebarMenu">
+                <li class="section-title">Main</li>
+                <li>
+                    <a href="/Admin" class="@(ViewContext.RouteData.Values["Page"]?.ToString() == "/Admin/Index" ? "active" : "")">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span class="menu-text">Dashboard</span>
+                    </a>
+                </li>
+                
+                <li class="section-title mt-3">Content</li>
+                <li>
+                    <a href="/Admin/Profile" class="@(ViewContext.RouteData.Values["Page"]?.ToString() == "/Admin/Profile" ? "active" : "")">
+                        <i class="fas fa-user"></i>
+                        <span class="menu-text">Profile</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/Admin/BlogPosts" class="@(ViewContext.RouteData.Values["Page"]?.ToString()?.StartsWith("/Admin/Blog") == true ? "active" : "")">
+                        <i class="fas fa-blog"></i>
+                        <span class="menu-text">Blog Posts</span>
+                        @if (ViewContext.HttpContext.RequestServices.GetService(typeof(PersonalBlog.Services.IBlogService)) is PersonalBlog.Services.IBlogService blogService)
+                        {
+                            var blogCount = blogService.GetAllPosts().Count();
+                            if (blogCount > 0)
+                            {
+                                <span class="badge bg-primary rounded-pill">@blogCount</span>
+                            }
+                        }
+                    </a>
+                </li>
+                <li>
+                    <a href="/Admin/Podcasts" class="@(ViewContext.RouteData.Values["Page"]?.ToString()?.StartsWith("/Admin/Podcast") == true ? "active" : "")">
+                        <i class="fas fa-microphone"></i>
+                        <span class="menu-text">Podcasts</span>
+                        @if (ViewContext.HttpContext.RequestServices.GetService(typeof(PersonalBlog.Services.IPodcastService)) is PersonalBlog.Services.IPodcastService podcastService)
+                        {
+                            var podcastCount = podcastService.GetAllEpisodes().Count();
+                            if (podcastCount > 0)
+                            {
+                                <span class="badge bg-success rounded-pill">@podcastCount</span>
+                            }
+                        }
+                    </a>
+                </li>
+                <li>
+                    <a href="/Admin/News" class="@(ViewContext.RouteData.Values["Page"]?.ToString()?.StartsWith("/Admin/News") == true ? "active" : "")">
+                        <i class="fas fa-newspaper"></i>
+                        <span class="menu-text">News</span>
+                        @if (ViewContext.HttpContext.RequestServices.GetService(typeof(PersonalBlog.Services.INewsService)) is PersonalBlog.Services.INewsService newsService)
+                        {
+                            var newsCount = newsService.GetAllNews().Count();
+                            if (newsCount > 0)
+                            {
+                                <span class="badge bg-info rounded-pill">@newsCount</span>
+                            }
+                        }
+                    </a>
+                </li>
+                
+                <li class="section-title mt-3">Settings</li>
+                <li>
+                    <a href="/Admin/Settings" class="@(ViewContext.RouteData.Values["Page"]?.ToString() == "/Admin/Settings" ? "active" : "")">
+                        <i class="fas fa-cog"></i>
+                        <span class="menu-text">Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>
+        
+        <main class="admin-content" id="mainContent">
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+                    <i class="fas fa-check-circle me-2"></i> @TempData["SuccessMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            
+            @RenderBody()
+        </main>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Theme toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const htmlElement = document.getElementById('htmlElement');
+            const themeToggle = document.getElementById('themeToggle');
+            const themeIcon = document.getElementById('themeIcon');
+            
+            // Check if user preference is stored
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            htmlElement.setAttribute('data-bs-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            applyThemeToComponents(savedTheme);
+            
+            // Theme toggle click handler
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = htmlElement.getAttribute('data-bs-theme');
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                
+                // Apply theme change immediately
+                htmlElement.setAttribute('data-bs-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                
+                // Update all components with animation
+                updateThemeIcon(newTheme);
+                applyThemeToComponents(newTheme);
+                applyThemeToAll(newTheme);
+            });
+            
+            // Function to apply theme to ALL elements
+            function applyThemeToAll(theme) {
+                // Force immediate repaint of all elements
+                document.body.style.display = 'none';
+                void document.body.offsetHeight;
+                document.body.style.display = '';
+                
+                // Reset all inline styles that might interfere with theme
+                document.querySelectorAll('*').forEach(el => {
+                    if (el.style.backgroundColor) {
+                        el.style.backgroundColor = '';
+                    }
+                    if (el.style.color) {
+                        el.style.color = '';
+                    }
+                    if (el.style.borderColor) {
+                        el.style.borderColor = '';
+                    }
+                });
+                
+                // Force browser to apply new theme styles
+                document.querySelectorAll('input, textarea, select, .card, .dropdown-menu, .modal-content, .form-control').forEach(el => {
+                    const oldDisplay = el.style.display;
+                    el.style.display = 'none';
+                    void el.offsetHeight;
+                    el.style.display = oldDisplay;
+                });
+            }
+            
+            // Update theme icon based on current theme
+            function updateThemeIcon(theme) {
+                if (theme === 'light') {
+                    themeIcon.className = 'fas fa-user-tie'; // Project Manager icon for light mode
+                    themeToggle.setAttribute('title', 'Switch to Developer Mode (Dark)');
+                } else {
+                    themeIcon.className = 'fas fa-laptop-code'; // Developer icon for dark mode
+                    themeToggle.setAttribute('title', 'Switch to Project Manager Mode (Light)');
+                }
+            }
+            
+            // Apply theme to all Bootstrap components
+            function applyThemeToComponents(theme) {
+                // Apply theme to cards
+                document.querySelectorAll('.card').forEach(card => {
+                    if (theme === 'dark') {
+                        card.style.backgroundColor = 'var(--card-bg)';
+                        card.style.borderColor = 'var(--input-border)';
+                    } else {
+                        card.style.backgroundColor = '';
+                        card.style.borderColor = '';
+                    }
+                });
+                
+                // Apply theme to tables
+                document.querySelectorAll('.table').forEach(table => {
+                    if (theme === 'dark') {
+                        table.classList.add('table-dark');
+                    } else {
+                        table.classList.remove('table-dark');
+                    }
+                });
+                
+                // Apply theme to modals
+                document.querySelectorAll('.modal-content').forEach(modal => {
+                    if (theme === 'dark') {
+                        modal.style.backgroundColor = 'var(--modal-bg)';
+                        modal.style.borderColor = 'var(--input-border)';
+                    } else {
+                        modal.style.backgroundColor = '';
+                        modal.style.borderColor = '';
+                    }
+                });
+                
+                // Apply theme to dropdowns
+                document.querySelectorAll('.dropdown-menu').forEach(dropdown => {
+                    if (theme === 'dark') {
+                        dropdown.style.backgroundColor = 'var(--dropdown-bg)';
+                        dropdown.style.borderColor = 'var(--input-border)';
+                    } else {
+                        dropdown.style.backgroundColor = '';
+                        dropdown.style.borderColor = '';
+                    }
+                });
+            }
+        });
+        
+        // Toggle sidebar on desktop
+        document.getElementById('toggleSidebar').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+            document.getElementById('mainContent').classList.toggle('expanded');
+            
+            // Toggle icon
+            const icon = this.querySelector('i');
+            if (icon.classList.contains('fa-chevron-left')) {
+                icon.classList.remove('fa-chevron-left');
+                icon.classList.add('fa-chevron-right');
+            } else {
+                icon.classList.remove('fa-chevron-right');
+                icon.classList.add('fa-chevron-left');
+            }
+            
+            // Toggle menu text
+            document.querySelectorAll('.menu-text').forEach(el => {
+                el.style.display = el.style.display === 'none' ? 'inline-block' : 'none';
+            });
+            
+            // Toggle section titles
+            document.querySelectorAll('.section-title').forEach(el => {
+                if (el.style.textAlign === 'center') {
+                    el.style.textAlign = 'left';
+                    el.style.padding = '10px 20px';
+                } else {
+                    el.style.textAlign = 'center';
+                    el.style.padding = '10px 5px';
+                }
+            });
+        });
+        
+        // Mobile sidebar toggle
+        document.getElementById('mobileToggle').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('show');
+        });
+        
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const mobileToggle = document.getElementById('mobileToggle');
+            const isClickInsideSidebar = sidebar.contains(event.target);
+            const isClickOnToggle = mobileToggle.contains(event.target);
+            
+            if (!isClickInsideSidebar && !isClickOnToggle && window.innerWidth < 992) {
+                sidebar.classList.remove('show');
+            }
+        });
+        
+        // Handle active states for dropdown menus
+        document.querySelectorAll('.sidebar-menu li a').forEach(link => {
+            if (link.href === window.location.href) {
+                link.classList.add('active');
+                // Expand parent dropdown if exists
+                const parentDropdown = link.closest('.dropdown-menu');
+                if (parentDropdown) {
+                    parentDropdown.previousElementSibling.classList.add('active');
+                    parentDropdown.style.display = 'block';
+                }
+            }
+        });
+    </script>
+    
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

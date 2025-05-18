@@ -21,7 +21,8 @@ public class IndexModel : PageModel
 
     public void OnGet()
     {
-        Profile = _profileService.GetProfile();
+        // Handle possible null from GetProfile() method
+        Profile = _profileService.GetProfile() ?? new Person();
         Skills = _profileService.GetSkills();
         Experiences = _profileService.GetExperiences();
         Educations = _profileService.GetEducations();

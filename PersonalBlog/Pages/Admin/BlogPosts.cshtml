@@ -1,16 +1,21 @@
 @page
 @model PersonalBlog.Pages.Admin.BlogPostsModel
 @{
-    ViewData["Title"] = "Manage Blog Posts";
+    ViewData["Title"] = "Blog Posts";
+    Layout = "_AdminLayout";
 }
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2><i class="fas fa-blog me-2"></i>Manage Blog Posts</h2>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-0">Blog Posts</h1>
+        <p class="text-muted mb-0">Manage your blog posts and content</p>
+    </div>
+    <div>
         <a asp-page="/Admin/EditBlogPost" class="btn btn-primary">
-            <i class="fas fa-plus-circle me-2"></i>Add New Post
+            <i class="fas fa-plus-circle me-2"></i>New Post
         </a>
     </div>
+</div>
     
     @if (Model.SuccessMessage != null)
     {
@@ -20,87 +25,135 @@
         </div>
     }
     
-    <div class="card">
-        <div class="card-header bg-light">
-            <div class="row">
-                <div class="col">
-                    <div class="input-group">
-                        <span class="input-group-text bg-white">
-                            <i class="fas fa-search text-muted"></i>
-                        </span>
-                        <input type="text" id="searchInput" class="form-control border-start-0" placeholder="Search posts...">
-                    </div>
-                </div>
-                <div class="col-auto">
-                    <select class="form-select" id="categoryFilter">
-                        <option value="">All Categories</option>
-                        @foreach (var category in Model.Categories)
-                        {
-                            <option value="@category">@category</option>
-                        }
-                    </select>
+    <div class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-white border-0 py-3">
+        <div class="row g-3 align-items-center">
+            <div class="col-md-4">
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0">
+                        <i class="fas fa-search text-muted"></i>
+                    </span>
+                    <input type="text" id="searchInput" class="form-control border-start-0" placeholder="Search posts...">
                 </div>
             </div>
+            <div class="col-md-3">
+                <select class="form-select" id="categoryFilter">
+                    <option value="">All Categories</option>
+                    @foreach (var category in Model.Categories)
+                    {
+                        <option value="@category">@category</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select class="form-select" id="statusFilter">
+                    <option value="">All Status</option>
+                    <option value="published">Published</option>
+                    <option value="draft">Draft</option>
+                    <option value="scheduled">Scheduled</option>
+                </select>
+            </div>
+            <div class="col-md-2 text-md-end">
+                <button class="btn btn-outline-secondary" type="button" id="filterButton">
+                    <i class="fas fa-filter me-1"></i> Filter
+                </button>
+            </div>
         </div>
+    </div>
         <div class="table-responsive">
-            <table class="table table-hover mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th style="width: 50px;"></th>
-                        <th>Title</th>
-                        <th>Category</th>
-                        <th>Published Date</th>
-                        <th style="width: 120px;">Featured</th>
-                        <th style="width: 120px;">Actions</th>
-                    </tr>
-                </thead>
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th style="width: 50px;">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="selectAll">
+                        </div>
+                    </th>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Status</th>
+                    <th>Published Date</th>
+                    <th>Featured</th>
+                    <th style="width: 120px;">Actions</th>
+                </tr>
+            </thead>
                 <tbody>
                     @foreach (var post in Model.Posts)
                     {
-                        <tr class="post-row" data-category="@post.Category">
-                            <td class="text-center">
+                        <tr class="post-row" data-category="@post.Category" data-status="@(post.PublishedDate <= DateTime.Now ? "published" : "scheduled")">
+                    <td>
+                        <div class="form-check">
+                            <input class="form-check-input row-checkbox" type="checkbox" value="@post.Id">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0 me-3">
                                 @if (!string.IsNullOrEmpty(post.ImageUrl))
                                 {
-                                    <img src="@post.ImageUrl" alt="@post.Title" class="rounded" style="width: 40px; height: 40px; object-fit: cover;" />
+                                    <img src="@post.ImageUrl" alt="@post.Title" class="rounded" style="width: 48px; height: 48px; object-fit: cover;" />
                                 }
                                 else
                                 {
-                                    <div class="rounded bg-light d-flex justify-content-center align-items-center" style="width: 40px; height: 40px;">
+                                    <div class="rounded bg-light d-flex justify-content-center align-items-center" style="width: 48px; height: 48px;">
                                         <i class="fas fa-image text-muted"></i>
                                     </div>
                                 }
-                            </td>
-                            <td>
-                                <div>@post.Title</div>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="mb-0">@post.Title</h6>
                                 <small class="text-muted">@post.Slug</small>
-                            </td>
-                            <td>
-                                <span class="badge bg-@post.CategoryBadgeColor">@post.Category</span>
-                            </td>
-                            <td>@post.PublishedDate.ToString("MMM d, yyyy")</td>
-                            <td class="text-center">
-                                <form method="post" asp-page-handler="ToggleFeatured" asp-route-id="@post.Id">
-                                    <button type="submit" class="btn btn-sm @(post.IsFeatured ? "btn-warning" : "btn-outline-secondary")">
-                                        @if (post.IsFeatured)
-                                        {
-                                            <i class="fas fa-star me-1"></i> <span>Featured</span>
-                                        }
-                                        else
-                                        {
-                                            <i class="far fa-star me-1"></i> <span>Feature</span>
-                                        }
-                                    </button>
-                                </form>
-                            </td>
-                            <td>
-                                <div class="d-flex gap-2">
-                                    <a asp-page="/Admin/EditBlogPost" asp-route-id="@post.Id" class="btn btn-sm btn-primary">
-                                        <i class="fas fa-edit"></i>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="badge bg-@post.CategoryBadgeColor">@post.Category</span>
+                    </td>
+                    <td>
+                        @if (post.PublishedDate <= DateTime.Now)
+                        {
+                            <span class="badge bg-success">Published</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning">Scheduled</span>
+                        }
+                    </td>
+                    <td>@post.PublishedDate.ToString("MMM d, yyyy")</td>
+                    <td>
+                        <div class="form-check form-switch d-inline-block">
+                            <form method="post" asp-page-handler="ToggleFeatured" asp-route-id="@post.Id" class="d-inline">
+                                <input class="form-check-input" type="checkbox" @(post.IsFeatured ? "checked" : "") 
+                                       onchange="this.form.submit()" role="switch" id="featured-@post.Id">
+                                <label class="form-check-label" for="featured-@post.Id">
+                                    @(post.IsFeatured ? "Yes" : "No")
+                                </label>
+                            </form>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton-@post.Id" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton-@post.Id">
+                                <li>
+                                    <a class="dropdown-item" href="/blog/@post.Slug" target="_blank">
+                                        <i class="fas fa-eye me-2"></i>View
                                     </a>
-                                    <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal-@post.Id">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="/Admin/EditBlogPost/@post.Id">
+                                        <i class="fas fa-edit me-2"></i>Edit
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item text-danger" href="#" data-bs-toggle="modal" data-bs-target="#deleteModal-@post.Id">
+                                        <i class="fas fa-trash-alt me-2"></i>Delete
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                                 
                                 <!-- Delete Modal -->
                                 <div class="modal fade" id="deleteModal-@post.Id" tabindex="-1" aria-labelledby="deleteModalLabel-@post.Id" aria-hidden="true">
@@ -141,36 +194,215 @@
         </div>
     </div>
     
-    <div class="mt-3">
-        <a asp-page="/Admin/Index" class="btn btn-secondary">
-            <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
-        </a>
+    <!-- Bulk Actions -->
+<div class="card border-0 shadow-sm mt-4">
+    <div class="card-body py-2">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="form-check d-flex align-items-center">
+                <input class="form-check-input me-2" type="checkbox" id="selectAllBottom">
+                <label class="form-check-label text-muted small" for="selectAllBottom">
+                    Select all <span id="selectedCount">0</span> items
+                </label>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="btn btn-sm btn-outline-secondary" id="bulkPublishBtn">
+                    <i class="fas fa-check-circle me-1"></i> Publish
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" id="bulkUnpublishBtn">
+                    <i class="fas fa-ban me-1"></i> Unpublish
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-danger" id="bulkDeleteBtn">
+                    <i class="fas fa-trash-alt me-1"></i> Delete
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 
+<!-- Pagination -->
+<nav aria-label="Page navigation" class="mt-4">
+    <ul class="pagination justify-content-center">
+        <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                <i class="fas fa-chevron-left"></i>
+            </a>
+        </li>
+        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+        <li class="page-item"><a class="page-link" href="#">2</a></li>
+        <li class="page-item"><a class="page-link" href="#">3</a></li>
+        <li class="page-item">
+            <a class="page-link" href="#">
+                <i class="fas fa-chevron-right"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+@section Styles {
+    <style>
+        .table th {
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #6c757d;
+            border-top: none;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .table td {
+            vertical-align: middle;
+            padding: 1rem 0.75rem;
+        }
+        
+        .form-check-input:checked {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+        
+        .dropdown-toggle::after {
+            display: none;
+        }
+        
+        .form-switch .form-check-input {
+            width: 2.5em;
+            margin-left: -2.5em;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%28(,var%28--bs-body-bg-rgb%29,.5)'/%3e%3c/svg%3e");
+        }
+        
+        .form-switch .form-check-input:checked {
+            background-position: right center;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
+        }
+        
+        .pagination .page-link {
+            color: #495057;
+            border: 1px solid #dee2e6;
+            margin: 0 2px;
+            border-radius: 4px;
+            min-width: 36px;
+            text-align: center;
+        }
+        
+        .pagination .page-item.active .page-link {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+        
+        .pagination .page-item.disabled .page-link {
+            color: #6c757d;
+            background-color: #fff;
+            border-color: #dee2e6;
+        }
+    </style>
+}
+
 @section Scripts {
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Search functionality
-            const searchInput = document.getElementById('searchInput');
-            const categoryFilter = document.getElementById('categoryFilter');
-            const postRows = document.querySelectorAll('.post-row');
+        $(document).ready(function() {
+            // Search functionality with debounce
+            let searchTimer;
+            $("#searchInput").on("keyup", function() {
+                clearTimeout(searchTimer);
+                const $this = $(this);
+                searchTimer = setTimeout(function() {
+                    const value = $this.val().toLowerCase();
+                    $(".post-row").each(function() {
+                        const $row = $(this);
+                        const text = $row.text().toLowerCase();
+                        $row.toggle(text.indexOf(value) > -1);
+                    });
+                }, 300);
+            });
             
-            function filterPosts() {
-                const searchTerm = searchInput.value.toLowerCase();
-                const categoryValue = categoryFilter.value;
+            // Category filter
+            $("#categoryFilter, #statusFilter").on("change", function() {
+                const category = $("#categoryFilter").val().toLowerCase();
+                const status = $("#statusFilter").val().toLowerCase();
                 
-                postRows.forEach(row => {
-                    const titleContent = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
-                    const rowCategory = row.getAttribute('data-category');
+                $(".post-row").each(function() {
+                    const $row = $(this);
+                    const rowCategory = $row.data("category").toLowerCase();
+                    const rowStatus = $row.data("status").toLowerCase();
                     
-                    const matchesSearch = titleContent.includes(searchTerm);
-                    const matchesCategory = categoryValue === '' || rowCategory === categoryValue;
+                    const categoryMatch = category === "" || rowCategory === category;
+                    const statusMatch = status === "" || rowStatus === status;
                     
-                    row.style.display = (matchesSearch && matchesCategory) ? '' : 'none';
+                    $row.toggle(categoryMatch && statusMatch);
                 });
+            });
+            
+            // Row selection
+            function updateSelectedCount() {
+                const count = $(".row-checkbox:checked").length;
+                $("#selectedCount").text(count);
+                $("#selectAll, #selectAllBottom").prop("checked", 
+                    count > 0 && count === $(".row-checkbox").length);
             }
             
+            $(".row-checkbox").on("change", updateSelectedCount);
+            
+            // Select all checkboxes
+            $("#selectAll, #selectAllBottom").on("change", function() {
+                const isChecked = $(this).is(":checked");
+                $(".row-checkbox, #selectAll, #selectAllBottom").prop("checked", isChecked);
+                updateSelectedCount();
+            });
+            
+            // Bulk actions
+            $("#bulkPublishBtn").on("click", function() {
+                const selectedIds = [];
+                $(".row-checkbox:checked").each(function() {
+                    selectedIds.push($(this).val());
+                });
+                
+                if (selectedIds.length > 0) {
+                    if (confirm(`Publish ${selectedIds.length} selected posts?`)) {
+                        // Implement publish logic here
+                        console.log("Publishing posts:", selectedIds);
+                    }
+                } else {
+                    alert("Please select at least one post to publish.");
+                }
+            });
+            
+            $("#bulkUnpublishBtn").on("click", function() {
+                const selectedIds = [];
+                $(".row-checkbox:checked").each(function() {
+                    selectedIds.push($(this).val());
+                });
+                
+                if (selectedIds.length > 0) {
+                    if (confirm(`Unpublish ${selectedIds.length} selected posts?`)) {
+                        // Implement unpublish logic here
+                        console.log("Unpublishing posts:", selectedIds);
+                    }
+                } else {
+                    alert("Please select at least one post to unpublish.");
+                }
+            });
+            
+            $("#bulkDeleteBtn").on("click", function() {
+                const selectedIds = [];
+                $(".row-checkbox:checked").each(function() {
+                    selectedIds.push($(this).val());
+                });
+                
+                if (selectedIds.length > 0) {
+                    if (confirm(`Are you sure you want to delete ${selectedIds.length} selected posts? This action cannot be undone.`)) {
+                        // Implement delete logic here
+                        console.log("Deleting posts:", selectedIds);
+                    }
+                } else {
+                    alert("Please select at least one post to delete.");
+                }
+            });
+            
+            // Initialize tooltips
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
             searchInput.addEventListener('input', filterPosts);
             categoryFilter.addEventListener('change', filterPosts);
         });

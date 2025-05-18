@@ -1,109 +1,677 @@
 @page
 @model PersonalBlog.Pages.Admin.IndexModel
 @{
-    ViewData["Title"] = "Admin Dashboard";
+    ViewData["Title"] = "Dashboard";
+    Layout = "_AdminLayout";
 }
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><i class="fas fa-tachometer-alt me-2"></i>Admin Dashboard</h1>
-    </div>
-    
+<div class="container-fluid">
+    <!-- Welcome Card -->
     @if (!string.IsNullOrEmpty(Model.WelcomeMessage))
     {
-        <div class="alert alert-info" role="alert">
-            <i class="fas fa-info-circle me-2"></i> @Model.WelcomeMessage
+        <div class="alert alert-info d-flex align-items-center mb-4" role="alert">
+            <i class="fas fa-info-circle me-2"></i>
+            <div>@Model.WelcomeMessage</div>
         </div>
     }
     
+    <!-- Stats Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100 animate__animated animate__fadeInUp">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="bg-primary bg-opacity-10 p-3 rounded-circle">
+                            <i class="fas fa-blog text-primary fa-bounce"></i>
+                        </div>
+                        <div class="text-end">
+                            <h2 class="mb-0 count-up">@Model.BlogPostCount</h2>
+                            <span class="text-muted small">Blog Posts</span>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center small text-muted mb-2">
+                        <span>This month: @Model.BlogPostsThisMonth</span>
+                        <span>Total: @Model.BlogPostCount</span>
+                    </div>
+                    <div class="progress" style="height: 5px;">
+                        @{
+                            var blogProgress = Model.BlogPostCount > 0 ? 
+                                (int)Math.Min(100, (Model.BlogPostsThisMonth / (double)Math.Max(1, Model.BlogPostCount)) * 100) : 0;
+                        }
+                        <div class="progress-bar bg-primary animate-progress" role="progressbar" 
+                             data-progress="@blogProgress" style="width: 0%" 
+                             aria-valuenow="@blogProgress" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <a href="/Admin/BlogPosts" class="stretched-link"></a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100 animate__animated animate__fadeInUp" style="animation-delay: 0.1s">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="bg-success bg-opacity-10 p-3 rounded-circle">
+                            <i class="fas fa-microphone text-success fa-flip"></i>
+                        </div>
+                        <div class="text-end">
+                            <h2 class="mb-0 count-up">@Model.PodcastCount</h2>
+                            <span class="text-muted small">Podcasts</span>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center small text-muted mb-2">
+                        <span>This month: @Model.PodcastsThisMonth</span>
+                        <span>Total: @Model.PodcastCount</span>
+                    </div>
+                    <div class="progress" style="height: 5px;">
+                        @{
+                            var podcastProgress = Model.PodcastCount > 0 ? 
+                                (int)Math.Min(100, (Model.PodcastsThisMonth / (double)Math.Max(1, Model.PodcastCount)) * 100) : 0;
+                        }
+                        <div class="progress-bar bg-success animate-progress" role="progressbar" 
+                             data-progress="@podcastProgress" style="width: 0%" 
+                             aria-valuenow="@podcastProgress" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <a href="/Admin/Podcasts" class="stretched-link"></a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100 animate__animated animate__fadeInUp" style="animation-delay: 0.2s">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="bg-info bg-opacity-10 p-3 rounded-circle">
+                            <i class="fas fa-newspaper text-info fa-beat"></i>
+                        </div>
+                        <div class="text-end">
+                            <h2 class="mb-0 count-up">@Model.NewsCount</h2>
+                            <span class="text-muted small">News Items</span>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center small text-muted mb-2">
+                        <span>This month: @Model.NewsThisMonth</span>
+                        <span>Total: @Model.NewsCount</span>
+                    </div>
+                    <div class="progress" style="height: 5px;">
+                        @{
+                            var newsProgress = Model.NewsCount > 0 ? 
+                                (int)Math.Min(100, (Model.NewsThisMonth / (double)Math.Max(1, Model.NewsCount)) * 100) : 0;
+                        }
+                        <div class="progress-bar bg-info animate-progress" role="progressbar" 
+                             data-progress="@newsProgress" style="width: 0%" 
+                             aria-valuenow="@newsProgress" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <a href="/Admin/News" class="stretched-link"></a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100 animate__animated animate__fadeInUp" style="animation-delay: 0.3s">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="bg-warning bg-opacity-10 p-3 rounded-circle">
+                            <i class="fas fa-comments text-warning fa-shake"></i>
+                        </div>
+                        <div class="text-end">
+                            <h2 class="mb-0 count-up">@Model.CommentCount</h2>
+                            <span class="text-muted small">Comments</span>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center small text-muted mb-2">
+                        <span>Pending: 0</span>
+                        <span>Total: @Model.CommentCount</span>
+                    </div>
+                    <div class="progress" style="height: 5px;">
+                        <div class="progress-bar bg-warning animate-progress" role="progressbar" 
+                             data-progress="100" style="width: 0%" 
+                             aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <a href="#" class="stretched-link"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="row g-4 mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="mb-0">Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-3 col-6">
+                            <a href="/Admin/EditBlogPost" class="btn btn-outline-primary w-100 h-100 d-flex flex-column align-items-center justify-content-center p-3 rounded-3">
+                                <i class="fas fa-plus-circle fa-2x mb-2"></i>
+                                <span>New Post</span>
+                            </a>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <a href="/Admin/EditPodcast" class="btn btn-outline-success w-100 h-100 d-flex flex-column align-items-center justify-content-center p-3 rounded-3">
+                                <i class="fas fa-podcast fa-2x mb-2"></i>
+                                <span>New Podcast</span>
+                            </a>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <a href="/Admin/EditNews" class="btn btn-outline-info w-100 h-100 d-flex flex-column align-items-center justify-content-center p-3 rounded-3">
+                                <i class="fas fa-newspaper fa-2x mb-2"></i>
+                                <span>Add News</span>
+                            </a>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <a href="/Admin/Settings" class="btn btn-outline-secondary w-100 h-100 d-flex flex-column align-items-center justify-content-center p-3 rounded-3">
+                                <i class="fas fa-cog fa-2x mb-2"></i>
+                                <span>Settings</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Activity -->
     <div class="row">
-        <div class="col-md-6 mb-4">
-            <div class="card h-100">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="fas fa-user me-2"></i>Profile</h5>
+        <div class="col-lg-8 mb-4">
+            <div class="card border-0 shadow-sm h-100 animate__animated animate__fadeInUp" style="animation-delay: 0.4s">
+                <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Recent Activity</h5>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="activityFilter" data-bs-toggle="dropdown" aria-expanded="false">
+                            All Activities
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="activityFilter">
+                            <li><a class="dropdown-item active" href="#">All Activities</a></li>
+                            <li><a class="dropdown-item" href="#">Blog Posts</a></li>
+                            <li><a class="dropdown-item" href="#">Podcasts</a></li>
+                            <li><a class="dropdown-item" href="#">News</a></li>
+                        </ul>
+                    </div>
                 </div>
-                <div class="card-body d-flex flex-column">
-                    <p>Manage your personal information displayed on the website.</p>
-                    <div class="mt-auto">
-                        <a asp-page="/Admin/Profile" class="btn btn-outline-primary">
-                            <i class="fas fa-edit me-2"></i>Edit Profile
-                        </a>
+                <div class="card-body p-0">
+                    <div class="timeline p-3">
+                        @if (Model.RecentBlogPosts.Any() || Model.RecentPodcasts.Any() || Model.RecentNews.Any())
+                        {
+                            <!-- Blog Posts -->
+                            @foreach (var post in Model.RecentBlogPosts.Take(2))
+                            {
+                                <div class="timeline-item animate__animated animate__fadeInRight" style="animation-delay: 0.1s">
+                                    <div class="timeline-badge bg-primary"><i class="fas fa-blog"></i></div>
+                                    <div class="timeline-content">
+                                        <div class="d-flex justify-content-between">
+                                            <h6 class="mb-1">Blog Post Published</h6>
+                                            <small class="text-muted">@post.PublishedDate.ToShortDateString()</small>
+                                        </div>
+                                        <p class="mb-0 text-truncate">@post.Title</p>
+                                        <div class="d-flex gap-2 mt-2">
+                                            <a href="/blog/@post.Slug" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-eye me-1"></i> View
+                                            </a>
+                                            <a href="/Admin/EditBlogPost/@post.Id" class="btn btn-sm btn-outline-secondary">
+                                                <i class="fas fa-edit me-1"></i> Edit
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            
+                            <!-- Podcasts -->
+                            @foreach (var episode in Model.RecentPodcasts.Take(2))
+                            {
+                                <div class="timeline-item animate__animated animate__fadeInRight" style="animation-delay: 0.2s">
+                                    <div class="timeline-badge bg-success"><i class="fas fa-microphone"></i></div>
+                                    <div class="timeline-content">
+                                        <div class="d-flex justify-content-between">
+                                            <h6 class="mb-1">Podcast Episode @episode.EpisodeNumber</h6>
+                                            <small class="text-muted">@episode.PublishedDate.ToShortDateString()</small>
+                                        </div>
+                                        <p class="mb-0 text-truncate">@episode.Title</p>
+                                        <div class="d-flex gap-2 mt-2">
+                                            <a href="/podcast/@episode.Slug" target="_blank" class="btn btn-sm btn-outline-success">
+                                                <i class="fas fa-play me-1"></i> Listen
+                                            </a>
+                                            <a href="/Admin/EditPodcast/@episode.Id" class="btn btn-sm btn-outline-secondary">
+                                                <i class="fas fa-edit me-1"></i> Edit
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            
+                            <!-- News -->
+                            @foreach (var news in Model.RecentNews.Take(2))
+                            {
+                                <div class="timeline-item animate__animated animate__fadeInRight" style="animation-delay: 0.3s">
+                                    <div class="timeline-badge bg-info"><i class="fas fa-newspaper"></i></div>
+                                    <div class="timeline-content">
+                                        <div class="d-flex justify-content-between">
+                                            <h6 class="mb-1">News Published</h6>
+                                            <small class="text-muted">@news.PublishedDate.ToShortDateString()</small>
+                                        </div>
+                                        <p class="mb-0 text-truncate">@news.Title</p>
+                                        <div class="d-flex gap-2 mt-2">
+                                            <a href="/news/@news.Slug" target="_blank" class="btn btn-sm btn-outline-info">
+                                                <i class="fas fa-eye me-1"></i> View
+                                            </a>
+                                            <a href="/Admin/EditNews/@news.Id" class="btn btn-sm btn-outline-secondary">
+                                                <i class="fas fa-edit me-1"></i> Edit
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="text-center py-5">
+                                <div class="mb-3">
+                                    <i class="fas fa-inbox fa-3x text-muted"></i>
+                                </div>
+                                <h6 class="text-muted">No recent activity found</h6>
+                                <p class="small text-muted">Start creating content to see your activity here</p>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
         </div>
-
-        <div class="col-md-6 mb-4">
-            <div class="card h-100">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="fas fa-blog me-2"></i>Blog Posts</h5>
+        
+        <!-- Quick Stats -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm mb-4 animate__animated animate__fadeInUp" style="animation-delay: 0.5s">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="mb-0">Content Overview</h5>
                 </div>
-                <div class="card-body d-flex flex-column">
-                    <p>Create, edit, and manage your blog posts.</p>
-                    <div class="mt-auto">
-                        <a asp-page="/Admin/BlogPosts" class="btn btn-outline-primary">
-                            <i class="fas fa-list me-2"></i>Manage Posts
-                        </a>
-                        <a asp-page="/Admin/EditBlogPost" class="btn btn-outline-success ms-2">
-                            <i class="fas fa-plus-circle me-2"></i>New Post
-                        </a>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between mb-1 align-items-center">
+                            <span>Blog Posts</span>
+                            <span class="badge bg-primary">@Model.BlogPostCount total</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            @{
+                                var featuredPostPercent = Model.BlogPostCount > 0 ? 
+                                    (int)(Model.RecentBlogPosts.Count(p => p.IsFeatured) / (double)Model.BlogPostCount * 100) : 0;
+                            }
+                            <div class="progress-bar bg-primary animate-progress" role="progressbar" 
+                                 data-progress="@featuredPostPercent" style="width: 0%" 
+                                 aria-valuenow="@featuredPostPercent" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <small class="text-muted">@Model.RecentBlogPosts.Count(p => p.IsFeatured) featured posts</small>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between mb-1 align-items-center">
+                            <span>Podcast Episodes</span>
+                            <span class="badge bg-success">@Model.PodcastCount total</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            @{
+                                var featuredPodcastPercent = Model.PodcastCount > 0 ? 
+                                    (int)(Model.RecentPodcasts.Count(p => p.IsFeatured) / (double)Model.PodcastCount * 100) : 0;
+                            }
+                            <div class="progress-bar bg-success animate-progress" role="progressbar" 
+                                 data-progress="@featuredPodcastPercent" style="width: 0%" 
+                                 aria-valuenow="@featuredPodcastPercent" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <small class="text-muted">@Model.RecentPodcasts.Count(p => p.IsFeatured) featured episodes</small>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between mb-1 align-items-center">
+                            <span>News Articles</span>
+                            <span class="badge bg-info">@Model.NewsCount total</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            @{
+                                var featuredNewsPercent = Model.NewsCount > 0 ? 
+                                    (int)(Model.RecentNews.Count(n => n.IsFeatured) / (double)Model.NewsCount * 100) : 0;
+                            }
+                            <div class="progress-bar bg-info animate-progress" role="progressbar" 
+                                 data-progress="@featuredNewsPercent" style="width: 0%" 
+                                 aria-valuenow="@featuredNewsPercent" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <small class="text-muted">@Model.RecentNews.Count(n => n.IsFeatured) featured articles</small>
+                    </div>
+                    
+                    <div class="mt-4 animate__animated animate__fadeInUp" style="animation-delay: 0.6s">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="mb-0">Recent Activity</h6>
+                            <span class="badge bg-secondary">Last 7 days</span>
+                        </div>
+                        
+                        @if (Model.CommentCount > 0)
+                        {
+                            <!-- When comments are implemented, this will show real comments -->
+                            <div class="d-flex align-items-start mb-3">
+                                <div class="bg-primary bg-opacity-10 p-2 rounded-circle me-2">
+                                    <i class="fas fa-comment text-primary"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-1">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <strong>New Comments</strong>
+                                        <small class="text-muted">Today</small>
+                                    </div>
+                                    <p class="mb-0 small">You have @Model.CommentCount new comments to review</p>
+                                    <button class="btn btn-sm btn-outline-primary mt-2">Review Comments</button>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <!-- Activity Log Items -->
+                            <div class="list-group list-group-flush">
+                                <!-- Blog Activity -->
+                                @if (Model.RecentBlogPosts.Any())
+                                {
+                                    <div class="list-group-item px-0 py-2 border-0">
+                                        <div class="d-flex">
+                                            <div class="bg-primary bg-opacity-10 p-2 rounded-circle me-2">
+                                                <i class="fas fa-pen text-primary"></i>
+                                            </div>
+                                            <div>
+                                                <div class="d-flex align-items-center mb-1">
+                                                    <span class="fw-medium">Blog Updates</span>
+                                                    <span class="ms-2 badge bg-primary bg-opacity-10 text-primary">@Model.BlogPostsThisMonth</span>
+                                                </div>
+                                                <p class="text-muted small mb-0">@Model.BlogPostsThisMonth new posts this month</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                
+                                <!-- Podcast Activity -->
+                                @if (Model.RecentPodcasts.Any())
+                                {
+                                    <div class="list-group-item px-0 py-2 border-0">
+                                        <div class="d-flex">
+                                            <div class="bg-success bg-opacity-10 p-2 rounded-circle me-2">
+                                                <i class="fas fa-microphone text-success"></i>
+                                            </div>
+                                            <div>
+                                                <div class="d-flex align-items-center mb-1">
+                                                    <span class="fw-medium">Podcast Episodes</span>
+                                                    <span class="ms-2 badge bg-success bg-opacity-10 text-success">@Model.PodcastsThisMonth</span>
+                                                </div>
+                                                <p class="text-muted small mb-0">@Model.PodcastsThisMonth new episodes this month</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                
+                                <!-- News Activity -->
+                                @if (Model.RecentNews.Any())
+                                {
+                                    <div class="list-group-item px-0 py-2 border-0">
+                                        <div class="d-flex">
+                                            <div class="bg-info bg-opacity-10 p-2 rounded-circle me-2">
+                                                <i class="fas fa-newspaper text-info"></i>
+                                            </div>
+                                            <div>
+                                                <div class="d-flex align-items-center mb-1">
+                                                    <span class="fw-medium">News Articles</span>
+                                                    <span class="ms-2 badge bg-info bg-opacity-10 text-info">@Model.NewsThisMonth</span>
+                                                </div>
+                                                <p class="text-muted small mb-0">@Model.NewsThisMonth new articles this month</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            
+                            @if (!Model.RecentBlogPosts.Any() && !Model.RecentPodcasts.Any() && !Model.RecentNews.Any())
+                            {
+                                <div class="text-center py-4">
+                                    <div class="mb-3">
+                                        <i class="fas fa-calendar-day fa-2x text-muted"></i>
+                                    </div>
+                                    <p class="text-muted mb-0">No recent activity to display</p>
+                                    <p class="small text-muted">Create new content to see activity here</p>
+                                </div>
+                            }
+                        }
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div class="col-md-6 mb-4">
-            <div class="card h-100">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="fas fa-microphone me-2"></i>Podcasts</h5>
+            
+            <!-- Quick Links -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="mb-0">Quick Links</h5>
                 </div>
-                <div class="card-body d-flex flex-column">
-                    <p>Create, edit, and manage your podcast episodes.</p>
-                    <div class="mt-auto">
-                        <a asp-page="/Admin/Podcasts" class="btn btn-outline-primary">
-                            <i class="fas fa-list me-2"></i>Manage Episodes
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        <a href="/Admin/Profile" class="list-group-item list-group-item-action d-flex align-items-center">
+                            <i class="fas fa-user-edit me-2 text-primary"></i>
+                            <span>Edit Profile</span>
+                            <i class="fas fa-chevron-right ms-auto text-muted small"></i>
                         </a>
-                        <a asp-page="/Admin/EditPodcast" class="btn btn-outline-success ms-2">
-                            <i class="fas fa-plus-circle me-2"></i>New Episode
+                        <a href="/Admin/BlogPosts" class="list-group-item list-group-item-action d-flex align-items-center">
+                            <i class="fas fa-blog me-2 text-success"></i>
+                            <span>Manage Blog Posts</span>
+                            <i class="fas fa-chevron-right ms-auto text-muted small"></i>
                         </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-6 mb-4">
-            <div class="card h-100">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="fas fa-newspaper me-2"></i>News</h5>
-                </div>
-                <div class="card-body d-flex flex-column">
-                    <p>Create, edit, and manage news items.</p>
-                    <div class="mt-auto">
-                        <a asp-page="/Admin/News" class="btn btn-outline-primary">
-                            <i class="fas fa-list me-2"></i>Manage News
+                        <a href="/Admin/Podcasts" class="list-group-item list-group-item-action d-flex align-items-center">
+                            <i class="fas fa-podcast me-2 text-info"></i>
+                            <span>Manage Podcasts</span>
+                            <i class="fas fa-chevron-right ms-auto text-muted small"></i>
                         </a>
-                        <a asp-page="/Admin/EditNews" class="btn btn-outline-success ms-2">
-                            <i class="fas fa-plus-circle me-2"></i>New Item
+                        <a href="/Admin/News" class="list-group-item list-group-item-action d-flex align-items-center">
+                            <i class="fas fa-newspaper me-2 text-warning"></i>
+                            <span>Manage News</span>
+                            <i class="fas fa-chevron-right ms-auto text-muted small"></i>
                         </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-6 mb-4">
-            <div class="card h-100">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="fas fa-cog me-2"></i>Settings</h5>
-                </div>
-                <div class="card-body d-flex flex-column">
-                    <p>Configure website settings and preferences.</p>
-                    <div class="mt-auto">
-                        <a asp-page="/Admin/Settings" class="btn btn-outline-primary">
-                            <i class="fas fa-sliders-h me-2"></i>Edit Settings
+                        <a href="/Admin/Settings" class="list-group-item list-group-item-action d-flex align-items-center">
+                            <i class="fas fa-cog me-2 text-secondary"></i>
+                            <span>Site Settings</span>
+                            <i class="fas fa-chevron-right ms-auto text-muted small"></i>
                         </a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div> 
+</div>
+
+<style>
+    .timeline {
+        position: relative;
+        padding-left: 2rem;
+        margin: 0 0 0 1.5rem;
+        border-left: 2px solid #e9ecef;
+    }
+    
+    .timeline-item {
+        position: relative;
+        padding-bottom: 1.5rem;
+    }
+    
+    .timeline-badge {
+        position: absolute;
+        left: -2.5rem;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 0.75rem;
+    }
+    
+    .timeline-content {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 0.5rem;
+    }
+    
+    .progress {
+        height: 8px;
+        border-radius: 4px;
+    }
+    
+    .card {
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    .btn-outline-primary {
+        --bs-btn-hover-bg: var(--bs-primary);
+        --bs-btn-hover-border-color: var(--bs-primary);
+    }
+    
+    .btn-outline-success {
+        --bs-btn-hover-bg: var(--bs-success);
+        --bs-btn-hover-border-color: var(--bs-success);
+    }
+    
+    .btn-outline-info {
+        --bs-btn-hover-bg: var(--bs-info);
+        --bs-btn-hover-border-color: var(--bs-info);
+    }
+    
+    .list-group-item {
+        border: none;
+        padding: 0.75rem 0;
+    }
+    
+    .list-group-item:first-child {
+        padding-top: 0;
+    }
+    
+    .list-group-item:last-child {
+        padding-bottom: 0;
+    }
+    
+    .list-group-item:hover {
+        background-color: transparent;
+    }
+    
+    .list-group-item-action:hover {
+        color: var(--bs-primary);
+    }
+</style>
+
+@section Scripts {
+    <script>
+        // Initialize tooltips
+        document.addEventListener('DOMContentLoaded', function() {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+            
+            // Update current time
+            function updateCurrentTime() {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+                const dateString = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+                document.getElementById('current-time').textContent = timeString;
+                document.getElementById('current-date').textContent = dateString;
+            }
+            updateCurrentTime();
+            setInterval(updateCurrentTime, 60000);
+            
+            // Animate progress bars
+            const animateProgressBars = () => {
+                const progressBars = document.querySelectorAll('.animate-progress');
+                progressBars.forEach(bar => {
+                    const targetWidth = bar.getAttribute('data-progress') + '%';
+                    setTimeout(() => {
+                        bar.style.width = targetWidth;
+                        bar.style.transition = 'width 1s ease-in-out';
+                    }, 300);
+                });
+            };
+            
+            // Animate count up numbers
+            const animateCountUp = () => {
+                const countElements = document.querySelectorAll('.count-up');
+                countElements.forEach(element => {
+                    const target = parseInt(element.textContent);
+                    let count = 0;
+                    const duration = 1500; // ms
+                    const step = Math.ceil(target / (duration / 30));
+                    const timer = setInterval(() => {
+                        count += step;
+                        if (count >= target) {
+                            clearInterval(timer);
+                            element.textContent = target;
+                        } else {
+                            element.textContent = count;
+                        }
+                    }, 30);
+                });
+            };
+            
+            // Run animations
+            setTimeout(() => {
+                animateProgressBars();
+                animateCountUp();
+            }, 500);
+            
+            // Add hover effects to cards
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    card.style.transform = 'translateY(-5px)';
+                    card.style.boxShadow = '0 0.5rem 1rem rgba(0, 0, 0, 0.15)';
+                });
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'translateY(0)';
+                    card.style.boxShadow = '0 0.125rem 0.25rem rgba(0, 0, 0, 0.075)';
+                });
+            });
+            
+            // Activity filter functionality
+            const activityFilter = document.getElementById('activityFilter');
+            if (activityFilter) {
+                const dropdownItems = document.querySelectorAll('.dropdown-menu .dropdown-item');
+                dropdownItems.forEach(item => {
+                    item.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const filterText = this.textContent.trim();
+                        activityFilter.textContent = filterText;
+                        
+                        // Remove active class from all items
+                        dropdownItems.forEach(i => i.classList.remove('active'));
+                        // Add active class to clicked item
+                        this.classList.add('active');
+                        
+                        // Here we would normally filter the timeline items
+                        // For now just show an animation effect
+                        const timelineItems = document.querySelectorAll('.timeline-item');
+                        timelineItems.forEach(item => {
+                            item.classList.add('animate__animated', 'animate__fadeOut');
+                            setTimeout(() => {
+                                item.classList.remove('animate__fadeOut');
+                                item.classList.add('animate__fadeIn');
+                            }, 500);
+                        });
+                    });
+                });
+            }
+                const options = { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                };
+                document.getElementById('currentTime').textContent = now.toLocaleDateString('en-US', options);
+            }
+            
+            updateCurrentTime();
+            setInterval(updateCurrentTime, 1000);
+        });
+    </script>
+}

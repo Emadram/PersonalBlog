@@ -1,11 +1,21 @@
 @page
 @model PersonalBlog.Pages.Admin.ProfileModel
 @{
-    ViewData["Title"] = "Edit Profile";
+    ViewData["Title"] = "Profile";
+    Layout = "_AdminLayout";
 }
 
-<div class="container mt-4">
-    <h2 class="mb-4"><i class="fas fa-user-edit me-2"></i>Edit Profile</h2>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-0">Manage Profile</h1>
+        <p class="text-muted mb-0">Customize your personal information and resume</p>
+    </div>
+    <div>
+        <button type="button" class="btn btn-primary" onclick="document.getElementById('saveProfileBtn').click()">
+            <i class="fas fa-save me-2"></i>Save Changes
+        </button>
+    </div>
+</div>
     
     @if (Model.SuccessMessage != null)
     {
@@ -15,80 +25,143 @@
         </div>
     }
     
-    <ul class="nav nav-tabs mb-4" id="profileTabs" role="tablist">
-        <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="personal-tab" data-bs-toggle="tab" data-bs-target="#personal" type="button" role="tab" aria-controls="personal" aria-selected="true">
-                <i class="fas fa-user me-2"></i>Personal Info
-            </button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="skills-tab" data-bs-toggle="tab" data-bs-target="#skills" type="button" role="tab" aria-controls="skills" aria-selected="false">
-                <i class="fas fa-code me-2"></i>Skills
-            </button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="experience-tab" data-bs-toggle="tab" data-bs-target="#experience" type="button" role="tab" aria-controls="experience" aria-selected="false">
-                <i class="fas fa-briefcase me-2"></i>Experience
-            </button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="education-tab" data-bs-toggle="tab" data-bs-target="#education" type="button" role="tab" aria-controls="education" aria-selected="false">
-                <i class="fas fa-graduation-cap me-2"></i>Education
-            </button>
-        </li>
-    </ul>
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-0">
+            <ul class="nav nav-pills nav-fill nav-tabs-alt" id="profileTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link rounded-0 active" id="personal-tab" data-bs-toggle="tab" data-bs-target="#personal" type="button" role="tab" aria-controls="personal" aria-selected="true">
+                        <i class="fas fa-user me-2"></i>Personal Info
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link rounded-0" id="skills-tab" data-bs-toggle="tab" data-bs-target="#skills" type="button" role="tab" aria-controls="skills" aria-selected="false">
+                        <i class="fas fa-code me-2"></i>Skills
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link rounded-0" id="experience-tab" data-bs-toggle="tab" data-bs-target="#experience" type="button" role="tab" aria-controls="experience" aria-selected="false">
+                        <i class="fas fa-briefcase me-2"></i>Experience
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link rounded-0" id="education-tab" data-bs-toggle="tab" data-bs-target="#education" type="button" role="tab" aria-controls="education" aria-selected="false">
+                        <i class="fas fa-graduation-cap me-2"></i>Education
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
     
     <div class="tab-content" id="profileTabsContent">
         <!-- Personal Information Tab -->
         <div class="tab-pane fade show active" id="personal" role="tabpanel" aria-labelledby="personal-tab">
             <form method="post" asp-page-handler="UpdateProfile">
                 <input type="hidden" asp-for="Profile.Id" />
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5 class="mb-0">Personal Information</h5>
+                <div class="row">
+                    <div class="col-md-3 mb-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body text-center p-4">
+                                <div class="mb-3">
+                                    @if (!string.IsNullOrEmpty(Model.Profile.ImageUrl))
+                                    {
+                                        <img src="@Model.Profile.ImageUrl" class="rounded-circle mb-3" alt="@Model.Profile.Name" style="width: 120px; height: 120px; object-fit: cover;" />
+                                    }
+                                    else
+                                    {
+                                        <div class="avatar-placeholder rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center bg-light" style="width: 120px; height: 120px;">
+                                            <i class="fas fa-user fa-3x text-muted"></i>
+                                        </div>
+                                    }
+                                </div>
+                                <h5 class="mb-1">@Model.Profile.Name</h5>
+                                <p class="text-muted mb-3">@Model.Profile.Title</p>
+                                <div class="d-grid">
+                                    <button type="button" class="btn btn-outline-primary" id="changePhotoBtn">
+                                        <i class="fas fa-camera me-2"></i>Change Photo
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="Profile.Name" class="form-label">Name</label>
-                                <input asp-for="Profile.Name" class="form-control" />
-                                <span asp-validation-for="Profile.Name" class="text-danger"></span>
+                    <div class="col-md-9 mb-4">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-white py-3">
+                                <h5 class="mb-0">Personal Information</h5>
                             </div>
-                            
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="Profile.Title" class="form-label">Title/Position</label>
-                                <input asp-for="Profile.Title" class="form-control" />
-                                <span asp-validation-for="Profile.Title" class="text-danger"></span>
-                            </div>
-                            
-                            <div class="col-md-12 mb-3">
-                                <label asp-for="Profile.Bio" class="form-label">Bio</label>
-                                <textarea asp-for="Profile.Bio" class="form-control" rows="4"></textarea>
-                                <span asp-validation-for="Profile.Bio" class="text-danger"></span>
-                            </div>
-                            
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="Profile.Location" class="form-label">Location</label>
-                                <input asp-for="Profile.Location" class="form-control" />
-                                <span asp-validation-for="Profile.Location" class="text-danger"></span>
-                            </div>
-                            
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="Profile.Email" class="form-label">Email</label>
-                                <input asp-for="Profile.Email" class="form-control" />
-                                <span asp-validation-for="Profile.Email" class="text-danger"></span>
-                            </div>
-                            
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="Profile.Phone" class="form-label">Phone</label>
-                                <input asp-for="Profile.Phone" class="form-control" />
-                                <span asp-validation-for="Profile.Phone" class="text-danger"></span>
-                            </div>
-                            
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="Profile.ImageUrl" class="form-label">Profile Image URL</label>
-                                <input asp-for="Profile.ImageUrl" class="form-control" />
-                                <span asp-validation-for="Profile.ImageUrl" class="text-danger"></span>
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label asp-for="Profile.Name" class="form-label small text-muted">Full Name</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light border-end-0">
+                                                <i class="fas fa-user text-muted"></i>
+                                            </span>
+                                            <input asp-for="Profile.Name" class="form-control border-start-0" placeholder="Enter your full name" />
+                                        </div>
+                                        <span asp-validation-for="Profile.Name" class="text-danger small"></span>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <label asp-for="Profile.Title" class="form-label small text-muted">Title/Position</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light border-end-0">
+                                                <i class="fas fa-briefcase text-muted"></i>
+                                            </span>
+                                            <input asp-for="Profile.Title" class="form-control border-start-0" placeholder="e.g. Software Engineer" />
+                                        </div>
+                                        <span asp-validation-for="Profile.Title" class="text-danger small"></span>
+                                    </div>
+                                    
+                                    <div class="col-12">
+                                        <label asp-for="Profile.Bio" class="form-label small text-muted">Bio</label>
+                                        <textarea asp-for="Profile.Bio" class="form-control" rows="4" placeholder="A brief description about yourself"></textarea>
+                                        <span asp-validation-for="Profile.Bio" class="text-danger small"></span>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <label asp-for="Profile.Location" class="form-label small text-muted">Location</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light border-end-0">
+                                                <i class="fas fa-map-marker-alt text-muted"></i>
+                                            </span>
+                                            <input asp-for="Profile.Location" class="form-control border-start-0" placeholder="e.g. New York, NY" />
+                                        </div>
+                                        <span asp-validation-for="Profile.Location" class="text-danger small"></span>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <label asp-for="Profile.Email" class="form-label small text-muted">Email</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light border-end-0">
+                                                <i class="fas fa-envelope text-muted"></i>
+                                            </span>
+                                            <input asp-for="Profile.Email" class="form-control border-start-0" placeholder="your.email@example.com" />
+                                        </div>
+                                        <span asp-validation-for="Profile.Email" class="text-danger small"></span>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <label asp-for="Profile.Phone" class="form-label small text-muted">Phone</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light border-end-0">
+                                                <i class="fas fa-phone text-muted"></i>
+                                            </span>
+                                            <input asp-for="Profile.Phone" class="form-control border-start-0" placeholder="+1 (555) 123-4567" />
+                                        </div>
+                                        <span asp-validation-for="Profile.Phone" class="text-danger small"></span>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <label asp-for="Profile.ImageUrl" class="form-label small text-muted">Profile Image URL</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light border-end-0">
+                                                <i class="fas fa-image text-muted"></i>
+                                            </span>
+                                            <input asp-for="Profile.ImageUrl" class="form-control border-start-0" placeholder="https://" />
+                                        </div>
+                                        <span asp-validation-for="Profile.ImageUrl" class="text-danger small"></span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

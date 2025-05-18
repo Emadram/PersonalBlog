@@ -1,21 +1,737 @@
-﻿<!DOCTYPE html>
-<html lang="en" data-theme="light">
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light" id="htmlElement">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Personal Blog</title>
+    <title>@ViewData["Title"] - @(Model?.GetType().GetProperty("Profile")?.GetValue(Model, null)?.GetType().GetProperty("Name")?.GetValue(Model?.GetType().GetProperty("Profile")?.GetValue(Model, null), null) ?? "Personal Blog")</title>
+    
+    <!-- Early theme application script - prevents flash of wrong theme -->
+    <script>
+        (function() {
+            // Apply theme immediately before any rendering occurs
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-bs-theme', savedTheme);
+            
+            // Apply theme to html element - ensure consistent theme before any content loads
+            document.addEventListener('DOMContentLoaded', function() {
+                const htmlElement = document.getElementById('htmlElement');
+                if (htmlElement) {
+                    htmlElement.setAttribute('data-bs-theme', savedTheme);
+                }
+                
+                // Pre-update dual-persona icons before page becomes visible
+                const projectIcon = document.getElementById('projectIcon');
+                const devIcon = document.getElementById('devIcon');
+                
+                if (projectIcon && devIcon) {
+                    // Set initial icon states based on saved theme
+                    if (savedTheme === 'light') {
+                        projectIcon.style.opacity = '1';
+                        projectIcon.style.transform = 'scale(1)';
+                        devIcon.style.opacity = '0.5';
+                        devIcon.style.transform = 'scale(0.8)';
+                    } else {
+                        projectIcon.style.opacity = '0.5';
+                        projectIcon.style.transform = 'scale(0.8)';
+                        devIcon.style.opacity = '1';
+                        devIcon.style.transform = 'scale(1)';
+                    }
+                }
+            });
+            
+            // Create and append a style element to prevent FOUC (Flash of Unstyled Content)
+            const style = document.createElement('style');
+            style.textContent = `
+                body { opacity: 0; transition: opacity 0.2s ease; }
+                body.theme-ready { opacity: 1; }
+                
+                /* Critical theme styles applied early to prevent flashing */
+                [data-bs-theme=dark] .form-control,
+                [data-bs-theme=dark] .theme-input {
+                    background-color: #2c3034 !important;
+                    border-color: #495057 !important;
+                    color: #e9ecef !important;
+                }
+                
+                [data-bs-theme=dark] .card {
+                    background-color: #1e2327 !important;
+                    border-color: #444 !important;
+                }
+                
+                [data-bs-theme=dark] .navbar .nav-link.active {
+                    color: #00bfff !important;
+                    text-shadow: 0 0 5px rgba(0, 191, 255, 0.5) !important;
+                }
+                
+                [data-bs-theme=light] .navbar .nav-link.active {
+                    color: #3498db !important;
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // When DOM is ready, mark theme as ready to show content
+            window.addEventListener('DOMContentLoaded', function() {
+                setTimeout(function() {
+                    document.body.classList.add('theme-ready');
+                }, 50);
+            });
+        })();
+    </script>
+    
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/PersonalBlog.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Mixed Project Manager + Developer style */
+            /* Base colors */
+            --primary-color: #34c6eb; /* A mix between light blue and neon blue */
+            --secondary-color: #2c4363; /* Deeper and richer than standard */
+            --text-color: #333;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --footer-bg: #f0f2f5;
+            --header-bg: #ffffff;
+            --border-color: #dee2e6;
+            --nav-active-color: #34c6eb;
+            --nav-active-glow: 0 0 5px rgba(52, 198, 235, 0.3); /* Subtle glow even in light mode */
+            
+            /* Mixed style specific */
+            --project-color: #3498db; /* Project Manager color */
+            --dev-color: #00bfff;     /* Developer color */
+            --gradient-primary: linear-gradient(135deg, var(--project-color), var(--dev-color)); /* Blend both personas */
+            --accent-shadow: 0 5px 15px rgba(52, 198, 235, 0.2);
+        }
+        
+        /* Dark mode styles with dual-persona blend */
+        [data-bs-theme=dark] {
+            --primary-color: #30d0ff; /* Brighter version of the mixed blue */
+            --secondary-color: #1e2b40; /* Darker version for contrast */
+            --text-color: #f0f0f0;
+            --bg-color: #121820; /* Slightly blue-tinted dark background */
+            --card-bg: #1e2835; /* Slightly blue-tinted card background */
+            --footer-bg: #1a1a25; /* Slightly blue-tinted footer */
+            --header-bg: #1e2835;
+            --border-color: #364759; /* Blue-tinted borders */
+            --nav-active-color: #30d0ff;
+            --nav-active-glow: 0 0 12px rgba(48, 208, 255, 0.6);
+            
+            /* Mixed style specific for dark mode */
+            --project-color: #3498db; /* Project Manager color */
+            --dev-color: #00bfff;     /* Developer color */
+            --gradient-primary: linear-gradient(135deg, var(--dev-color), var(--project-color) 70%); /* Inverted for dark mode */
+            --accent-shadow: 0 5px 20px rgba(48, 208, 255, 0.3);
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        .navbar {
+            background-color: var(--header-bg);
+            transition: background-color 0.3s ease;
+        }
+        
+        /* Smoother tab transitions */
+        .navbar-light .navbar-nav .nav-link {
+            position: relative;
+            color: var(--text-color);
+            transition: color 0.3s ease, transform 0.2s ease;
+            padding: 0.5rem 1rem;
+            margin: 0 0.2rem;
+        }
+        
+        /* Hover effect for nav links */
+        .navbar-light .navbar-nav .nav-link:hover {
+            color: var(--nav-active-color);
+            transform: translateY(-2px);
+        }
+        
+        /* Active tab styling */
+        .navbar-light .navbar-nav .nav-link.active {
+            color: var(--nav-active-color);
+            text-shadow: var(--nav-active-glow);
+            font-weight: 500;
+        }
+        
+        /* Add underline animation on hover */
+        .navbar-light .navbar-nav .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 50%;
+            background-color: var(--nav-active-color);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+            opacity: 0;
+        }
+        
+        .navbar-light .navbar-nav .nav-link:hover::after,
+        .navbar-light .navbar-nav .nav-link.active::after {
+            width: 70%;
+            opacity: 1;
+        }
+        
+        .theme-toggle {
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .theme-toggle:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+        
+        [data-bs-theme=dark] .theme-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+        
+        .social-link:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateY(-3px);
+        }
+        
+        footer {
+            background-color: var(--footer-bg);
+            transition: background-color 0.3s ease;
+        }
+        
+        /* Tech badge styling */
+        .tech-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        [data-bs-theme=light] .tech-badge {
+            background-color: #f0f2f5;
+            color: #2c3e50;
+            border: 1px solid #dee2e6;
+        }
+        
+        [data-bs-theme=dark] .tech-badge {
+            background-color: #2c3034;
+            color: #ecf0f1;
+            border: 1px solid #495057;
+        }
+        
+        /* Contact section card styling */
+        [data-bs-theme=dark] .card {
+            background-color: var(--card-bg);
+            border-color: var(--border-color);
+            color: var(--text-color);
+        }
+        
+        [data-bs-theme=light] .card {
+            background-color: #ffffff;
+            border-color: #dee2e6;
+        }
+        
+        /* Form controls styling for both themes */
+        [data-bs-theme=light] .form-control, 
+        [data-bs-theme=light] .theme-input {
+            background-color: #ffffff !important;
+            border-color: #ced4da !important;
+            color: #212529 !important;
+        }
+        
+        [data-bs-theme=dark] .form-control,
+        [data-bs-theme=dark] .theme-input {
+            background-color: #2c3034 !important;
+            border-color: #495057 !important;
+            color: #e9ecef !important;
+        }
+        
+        /* Form control focus states */
+        [data-bs-theme=light] .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+        }
+        
+        [data-bs-theme=dark] .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(0, 191, 255, 0.25);
+        }
+        
+        /* Style for navbar brand when active */
+        .navbar-brand.active {
+            color: var(--nav-active-color) !important;
+            text-shadow: var(--nav-active-glow);
+        }
+        
+        /* Smooth tab content transitions to prevent flash */
+        .tab-content {
+            position: relative;
+        }
+        
+        .tab-pane {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            opacity: 0;
+            transform: translateY(10px);
+            position: absolute;
+            width: 100%;
+            left: 0;
+            top: 0;
+            z-index: 0;
+        }
+        
+        .tab-pane.active {
+            opacity: 1;
+            transform: translateY(0);
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Additional animation for page transitions */
+        main > .container {
+            animation: none;
+            transition: opacity 0.4s ease;
+        }
+        
+        /* Section animations and hover effects - visible by default */
+        .animate-on-scroll {
+            opacity: 1; /* Make visible by default */
+        }
+        
+        .animate__animated {
+            animation-duration: 0.8s;
+        }
+        
+        /* Staggered animations for child elements - visible by default */
+        .stagger-children > * {
+            opacity: 1; /* Make visible by default */
+            transform: translateY(0); /* Start with no transform */
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        
+        .section-hover.stagger-children > * {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: calc(var(--child-index, 0) * 0.1s);
+        }
+        
+        /* Typing animation for intro text */
+@{  
+        // Using WriteLiteral to output raw CSS with @ symbol
+        WriteLiteral("@keyframes typing {\n");
+        WriteLiteral("            from { width: 0 }\n");
+        WriteLiteral("            to { width: 100% }\n");
+        WriteLiteral("        }\n\n");
+        
+        WriteLiteral("@keyframes blink-caret {\n");
+        WriteLiteral("            from, to { border-color: transparent }\n");
+        WriteLiteral("            50% { border-color: var(--primary-color) }\n");
+        WriteLiteral("        }\n");
+}
+        
+        .typing-animation {
+            overflow: hidden;
+            white-space: nowrap;
+            margin: 0 auto;
+            animation: 
+                typing 3.5s steps(40, end),
+                blink-caret .75s step-end infinite;
+        }
+        
+        /* Pulse animation for tech badges */
+@{  
+        // Using WriteLiteral to output raw CSS with @ symbol
+        WriteLiteral("@keyframes pulse {\n");
+        WriteLiteral("            0% { transform: scale(1); }\n");
+        WriteLiteral("            50% { transform: scale(1.05); }\n");
+        WriteLiteral("            100% { transform: scale(1); }\n");
+        WriteLiteral("        }\n");
+}
+        
+        /* Tech badge dual-persona styling */
+        .tech-badge {
+            border: 1px solid rgba(52, 198, 235, 0.2);
+            box-shadow: 0 2px 5px rgba(52, 198, 235, 0.05);
+            transition: all 0.3s ease;
+            background-color: rgba(52, 198, 235, 0.05);
+        }
+        
+        [data-bs-theme=dark] .tech-badge {
+            border: 1px solid rgba(48, 208, 255, 0.2);
+            box-shadow: 0 2px 8px rgba(48, 208, 255, 0.1);
+            background-color: rgba(48, 208, 255, 0.1);
+        }
+        
+        .tech-badge:hover {
+            animation: pulse 1s infinite;
+            background: var(--gradient-primary) !important;
+            color: white !important;
+            cursor: pointer;
+            border-color: transparent;
+            box-shadow: var(--accent-shadow);
+        }
+        
+        /* Ripple effect for tech badges */
+        .tech-badge {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.7);
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            pointer-events: none;
+        }
+        
+@{  
+        // Using WriteLiteral to output raw CSS with @ symbol
+        WriteLiteral("@keyframes ripple {\n");
+        WriteLiteral("            to {\n");
+        WriteLiteral("                transform: scale(4);\n");
+        WriteLiteral("                opacity: 0;\n");
+        WriteLiteral("            }\n");
+        WriteLiteral("        }\n");
+}
+        
+        /* Enhanced profile header styling for dual-persona theme */
+        .profile-header {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            margin-bottom: 2.5rem;
+            padding: 30px;
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.05), rgba(0, 191, 255, 0.05));
+            box-shadow: var(--accent-shadow);
+            border: 1px solid rgba(52, 198, 235, 0.1);
+            transition: all 0.4s ease;
+        }
+        
+        [data-bs-theme=dark] .profile-header {
+            background: linear-gradient(135deg, rgba(0, 191, 255, 0.08), rgba(52, 152, 219, 0.08));
+            border-color: rgba(48, 208, 255, 0.15);
+        }
+        
+        .profile-header:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(52, 198, 235, 0.15);
+        }
+        
+        [data-bs-theme=dark] .profile-header:hover {
+            box-shadow: 0 15px 35px rgba(48, 208, 255, 0.2);
+        }
+        
+        /* Dual-persona profile image */
+        .profile-image {
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            border: 3px solid #fff;
+            position: relative;
+            border-radius: 50%;
+            z-index: 2;
+        }
+        
+        .profile-image::before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        .profile-image:hover::before {
+            opacity: 1;
+        }
+        
+        [data-bs-theme=dark] .profile-image {
+            border-color: var(--card-bg);
+            box-shadow: 0 5px 25px rgba(0, 191, 255, 0.3);
+        }
+        
+        .profile-image:hover {
+            transform: scale(1.05) rotate(5deg);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        [data-bs-theme=dark] .profile-image:hover {
+            box-shadow: 0 8px 30px rgba(0, 191, 255, 0.4);
+        }
+        
+        /* Enhanced section headers with dual-persona gradient */
+        .section-header {
+            position: relative;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            /* Subtle gradient text effect */
+            background: var(--gradient-primary);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        /* Dual stripe under section headers */
+        .section-header::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -8px;
+            height: 4px;
+            width: 50px;
+            transition: width 0.3s ease, height 0.3s ease;
+            background: var(--gradient-primary);
+            border-radius: 4px;
+        }
+        
+        /* Secondary line to represent both personas */
+        .section-header::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -16px;
+            height: 2px;
+            width: 80px;
+            transition: width 0.3s ease;
+            opacity: 0.5;
+            background: var(--gradient-primary);
+            border-radius: 4px;
+        }
+        
+        /* Hover effects */
+        .section-hover .section-header::after {
+            width: 100%;
+            height: 5px;
+        }
+        
+        .section-hover .section-header::before {
+            width: 140px;
+        }
+        
+        /* Hover effect for sections */
+        .section-hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        /* Apply hover styles for different themes */
+        [data-bs-theme=light] .section-hover {
+            background-color: rgba(52, 152, 219, 0.05);
+            border-left: 3px solid #3498db;
+            padding-left: 15px;
+        }
+        
+        [data-bs-theme=dark] .section-hover {
+            background-color: rgba(0, 191, 255, 0.05);
+            border-left: 3px solid #00bfff;
+            padding-left: 15px;
+        }
+        
+        /* Add smooth transitions to all sections with dual-persona accents */
+        .mb-5 {
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease, border-left 0.3s ease, padding-left 0.3s ease;
+            border-left: 3px solid transparent;
+            padding-left: 15px;
+            margin-left: -15px;
+            position: relative;
+        }
+        
+        /* Card styling with dual-persona accents */
+        .card {
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            border: 1px solid rgba(52, 198, 235, 0.1);
+        }
+        
+        [data-bs-theme=dark] .card {
+            border-color: rgba(48, 208, 255, 0.15);
+        }
+        
+        .card:hover {
+            box-shadow: var(--accent-shadow);
+            border-color: transparent;
+            transform: translateY(-3px);
+        }
+        
+        /* Dual-persona buttons with gradient */
+        .btn-primary {
+            background: var(--gradient-primary);
+            border: none;
+            box-shadow: var(--accent-shadow);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover, .btn-primary:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(52, 198, 235, 0.3);
+            background: var(--gradient-primary); /* Maintain gradient on hover */
+        }
+        
+        [data-bs-theme=dark] .btn-primary:hover, [data-bs-theme=dark] .btn-primary:focus {
+            box-shadow: 0 8px 25px rgba(48, 208, 255, 0.4);
+        }
+        
+        /* Dual persona outline buttons */
+        .btn-outline-secondary {
+            border-color: rgba(52, 198, 235, 0.4);
+            color: var(--primary-color);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-outline-secondary:hover {
+            background: var(--gradient-primary);
+            border-color: transparent;
+            color: white;
+        }
+        
+        /* Dual-persona theme toggle styling with improved animation */
+        .dual-persona-btn {
+            position: relative;
+            overflow: hidden;
+            padding: 0.375rem 0.75rem;
+            border-width: 2px;
+            background: linear-gradient(to right, rgba(52, 152, 219, 0.1), rgba(0, 191, 255, 0.1));
+            box-shadow: 0 2px 8px rgba(52, 198, 235, 0.1);
+            transform: translateY(0);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .dual-persona-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 198, 235, 0.2);
+        }
+        
+        [data-bs-theme=dark] .dual-persona-btn {
+            background: linear-gradient(to right, rgba(0, 191, 255, 0.2), rgba(52, 152, 219, 0.2));
+            box-shadow: 0 2px 12px rgba(48, 208, 255, 0.15);
+        }
+        
+        [data-bs-theme=dark] .dual-persona-btn:hover {
+            box-shadow: 0 4px 15px rgba(48, 208, 255, 0.25);
+        }
+        
+        .persona-icons {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        
+        /* Add subtle pulse effect to active icon */
+@{  
+        // Using WriteLiteral to output raw CSS with @ symbol
+        WriteLiteral("@keyframes subtle-pulse {\n");
+        WriteLiteral("            0% { text-shadow: 0 0 0 rgba(52, 198, 235, 0); }\n");
+        WriteLiteral("            50% { text-shadow: 0 0 8px rgba(52, 198, 235, 0.5); }\n");
+        WriteLiteral("            100% { text-shadow: 0 0 0 rgba(52, 198, 235, 0); }\n");
+        WriteLiteral("        }\n");
+}
+        
+        [data-bs-theme=light] #projectIcon {
+            animation: subtle-pulse 3s infinite;
+        }
+        
+        [data-bs-theme=dark] #devIcon {
+            animation: subtle-pulse 3s infinite;
+        }
+        
+        /* Adjust the dev icon to look smaller/subtle in light mode */
+        [data-bs-theme=light] .dev-icon {
+            opacity: 0.5;
+            transform: scale(0.8);
+            transition: all 0.3s ease;
+        }
+        
+        /* Adjust the project icon to look smaller/subtle in dark mode */
+        [data-bs-theme=dark] #themeIcon {
+            opacity: 0.5;
+            transform: scale(0.8);
+            transition: all 0.3s ease;
+        }
+        
+        /* Enhanced navbar styling */
+        .navbar {
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 2px 15px rgba(52, 198, 235, 0.1);
+        }
+        
+        [data-bs-theme=dark] .navbar {
+            box-shadow: 0 2px 20px rgba(48, 208, 255, 0.15);
+        }
+        
+        /* Enhance navbar brand with dual-persona style */
+        .navbar-brand {
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .navbar-brand::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -4px;
+            height: 2px;
+            width: 0;
+            background: var(--gradient-primary);
+            transition: width 0.3s ease;
+        }
+        
+        .navbar-brand:hover::after,
+        .navbar-brand.active::after {
+            width: 100%;
+        }
+        
+        /* Make cards within sections also have hover effects */
+        .mb-5 .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .section-hover .card {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+    </style>
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-light shadow-sm py-3">
             <div class="container">
-                <a class="navbar-brand d-flex align-items-center @(ViewContext.RouteData.Values["Page"].ToString() == "/Index" ? "active" : "")" asp-area="" asp-page="/Index">
-                    <i class="fas fa-code me-2 @(ViewContext.RouteData.Values["Page"].ToString() == "/Index" ? "text-primary" : "")"></i><span class="fw-bold @(ViewContext.RouteData.Values["Page"].ToString() == "/Index" ? "text-primary" : "")">Emad Ramezani</span>
+                <a class="navbar-brand d-flex align-items-center @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Index" ? "active" : "")" asp-area="" asp-page="/Index">
+                    <i class="fas fa-code me-2 @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Index" ? "text-primary" : "")"></i><span class="fw-bold @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Index" ? "text-primary" : "")">@(Model?.GetType().GetProperty("Profile")?.GetValue(Model, null)?.GetType().GetProperty("Name")?.GetValue(Model?.GetType().GetProperty("Profile")?.GetValue(Model, null), null) ?? "Personal Blog")</span>
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -24,25 +740,36 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link @(ViewContext.RouteData.Values["Page"].ToString() == "/Blog" ? "active" : "")" asp-area="" asp-page="/Blog">
+                            <a class="nav-link @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Blog" ? "active" : "")" asp-area="" asp-page="/Blog">
                                 <i class="fas fa-blog me-1"></i> Blog
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link @(ViewContext.RouteData.Values["Page"].ToString() == "/Podcast" ? "active" : "")" asp-area="" asp-page="/Podcast">
+                            <a class="nav-link @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Podcast" ? "active" : "")" asp-area="" asp-page="/Podcast">
                                 <i class="fas fa-microphone me-1"></i> Podcast
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link @(ViewContext.RouteData.Values["Page"].ToString() == "/News" ? "active" : "")" asp-area="" asp-page="/News">
+                            <a class="nav-link @(ViewContext.RouteData.Values["Page"]?.ToString() == "/News" ? "active" : "")" asp-area="" asp-page="/News">
                                 <i class="fas fa-newspaper me-1"></i> News
                             </a>
                         </li>
                     </ul>
                     <div class="d-flex align-items-center">
-                        <div id="theme-toggle" class="theme-toggle ms-2" title="Toggle dark mode">
-                            <i class="fas fa-users-cog"></i>
-                        </div>
+                        <!-- Social links in navbar -->
+                        <a href="@(Model?.GetType().GetProperty("Profile")?.GetValue(Model, null)?.GetType().GetProperty("GitHubUrl")?.GetValue(Model?.GetType().GetProperty("Profile")?.GetValue(Model, null), null))" target="_blank" class="btn btn-sm btn-outline-secondary me-2">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="@(Model?.GetType().GetProperty("Profile")?.GetValue(Model, null)?.GetType().GetProperty("LinkedInUrl")?.GetValue(Model?.GetType().GetProperty("Profile")?.GetValue(Model, null), null))" target="_blank" class="btn btn-sm btn-outline-secondary me-2">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <!-- Dual-persona theme toggle button -->
+                        <button id="themeToggle" class="dual-persona-btn btn btn-sm btn-outline-secondary me-2">
+                            <div class="persona-icons">
+                                <i id="projectIcon" class="fas fa-user-tie"></i> <!-- Project Manager icon -->
+                                <i id="devIcon" class="fas fa-laptop-code ms-1"></i> <!-- Developer icon -->
+                            </div>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -54,16 +781,279 @@
         </main>
     </div>
 
-    <footer class="mt-5 py-4 border-top">
-        <div class="container text-center">
-            <p class="mb-0">&copy; @DateTime.Now.Year Emad Ramezani - All rights reserved</p>
+    <footer class="text-center py-4 mt-5">
+        <div class="container">
+            <div class="d-flex justify-content-center gap-3 mb-3">
+                <a href="#" class="social-link">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="#" class="social-link">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+                <a href="#" class="social-link">
+                    <i class="fab fa-twitter"></i>
+                </a>
+            </div>
+            <p class="text-muted small mb-0">
+                &copy; @DateTime.Now.Year @(Model?.GetType().GetProperty("Profile")?.GetValue(Model, null)?.GetType().GetProperty("Name")?.GetValue(Model.GetType().GetProperty("Profile").GetValue(Model, null), null) ?? "Personal Blog")
+            </p>
         </div>
     </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    
+    <script>
+        // Theme toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const htmlElement = document.getElementById('htmlElement');
+            const themeToggle = document.getElementById('themeToggle');
+            const themeIcon = document.getElementById('themeIcon');
+            
+            // Check if user preference is stored
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            htmlElement.setAttribute('data-bs-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            applyThemeToComponents(savedTheme);
+            
+            // Theme toggle click handler
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = htmlElement.getAttribute('data-bs-theme');
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                
+                // Apply theme change immediately
+                htmlElement.setAttribute('data-bs-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                
+                // Update all components with animation
+                updateThemeIcon(newTheme);
+                applyThemeToComponents(newTheme);
+                applyThemeToAll(newTheme);
+            });
+            
+            // Function to apply theme to ALL elements
+            function applyThemeToAll(theme) {
+                // Force immediate repaint of all elements
+                document.body.style.display = 'none';
+                void document.body.offsetHeight;
+                document.body.style.display = '';
+                
+                // Apply theme to all components with inline style
+                document.querySelectorAll('*').forEach(el => {
+                    if (el.style.backgroundColor) {
+                        el.style.backgroundColor = '';
+                    }
+                    if (el.style.color) {
+                        el.style.color = '';
+                    }
+                    if (el.style.borderColor) {
+                        el.style.borderColor = '';
+                    }
+                });
+            }
+            
+            // Update theme visual indicators based on current theme
+            function updateThemeIcon(theme) {
+                const projectIcon = document.getElementById('projectIcon');
+                const devIcon = document.getElementById('devIcon');
+                
+                if (theme === 'light') {
+                    // In light mode, project manager icon is prominent
+                    if (projectIcon) {
+                        projectIcon.style.opacity = '1';
+                        projectIcon.style.transform = 'scale(1)';
+                    }
+                    
+                    if (devIcon) {
+                        devIcon.style.opacity = '0.5';
+                        devIcon.style.transform = 'scale(0.8)';
+                    }
+                    
+                    themeToggle.setAttribute('title', 'Active: Project Manager Mode | Click for Developer Mode');
+                } else {
+                    // In dark mode, developer icon is prominent
+                    if (projectIcon) {
+                        projectIcon.style.opacity = '0.5';
+                        projectIcon.style.transform = 'scale(0.8)';
+                    }
+                    
+                    if (devIcon) {
+                        devIcon.style.opacity = '1';
+                        devIcon.style.transform = 'scale(1)';
+                    }
+                    
+                    themeToggle.setAttribute('title', 'Active: Developer Mode | Click for Project Manager Mode');
+                }
+            }
+            
+            // Apply theme to bootstrap components and other elements
+            function applyThemeToComponents() {
+                const theme = htmlElement.getAttribute('data-bs-theme');
+                
+                // Apply to cards, dropdowns, and modals
+                document.querySelectorAll('.card, .dropdown-menu, .modal-content').forEach(el => {
+                    el.style.backgroundColor = theme === 'dark' ? 'var(--card-bg)' : '';
+                    el.style.borderColor = theme === 'dark' ? 'var(--border-color)' : '';
+                });
+                
+                // Apply to form elements - using CSS classes instead of inline styles
+                document.querySelectorAll('.form-control, .form-select').forEach(el => {
+                    // Remove any previous inline styles that might interfere
+                    el.removeAttribute('style');
+                    
+                    // Force browser to recalculate styles based on current theme
+                    void el.offsetWidth;
+                });
+                
+                // Force repaint for all form controls to ensure they pick up new theme
+                setTimeout(() => {
+                    document.querySelectorAll('input, textarea, select').forEach(el => {
+                        // Trigger repaint by briefly changing a non-visible property
+                        const oldDisplay = el.style.display;
+                        el.style.display = 'none';
+                        void el.offsetHeight;
+                        el.style.display = oldDisplay;
+                    });
+                }, 10);
+                
+                // Apply to tables
+                document.querySelectorAll('table').forEach(table => {
+                    if (theme === 'dark') {
+                        table.classList.add('table-dark');
+                    } else {
+                        table.classList.remove('table-dark');
+                    }
+                });
+                
+                // Apply to tech badges
+                document.querySelectorAll('.tech-badge').forEach(badge => {
+                    if (theme === 'dark') {
+                        badge.style.backgroundColor = '#2c3034';
+                        badge.style.color = '#ecf0f1';
+                        badge.style.borderColor = '#495057';
+                    } else {
+                        badge.style.backgroundColor = '#f0f2f5';
+                        badge.style.color = '#2c3e50';
+                        badge.style.borderColor = '#dee2e6';
+                    }
+                });
+            }
+            
+            // Apply theme when it changes
+            applyThemeToComponents();
+            themeToggle.addEventListener('click', applyThemeToComponents);
+        });
+    </script>
 
     @await RenderSectionAsync("Scripts", required: false)
+    
+    <!-- Scroll Animation and Hover Effects Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Make all animated elements visible by default
+            const animatedElements = document.querySelectorAll('.animate-on-scroll');
+            animatedElements.forEach(el => {
+                // Apply animations immediately
+                const animation = el.dataset.animation;
+                el.classList.add(animation);
+                
+                // Make all staggered children visible immediately
+                if (el.classList.contains('stagger-children')) {
+                    Array.from(el.children).forEach(child => {
+                        child.style.opacity = '1';
+                        child.style.transform = 'translateY(0)';
+                    });
+                }
+            });
+            
+            // Keep the observer for when scrolling but don't hide elements initially
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const el = entry.target;
+                        const animation = el.dataset.animation;
+                        
+                        // Refresh animation by removing and adding the class
+                        el.classList.remove(animation);
+                        setTimeout(() => {
+                            el.classList.add(animation);
+                        }, 50);
+                        
+                        observer.unobserve(el);
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+            
+            animatedElements.forEach(el => {
+                observer.observe(el);
+            });
+            
+            // Add hover effect to all sections
+            const sections = document.querySelectorAll('.mb-5');
+            sections.forEach(section => {
+                section.addEventListener('mouseenter', function() {
+                    this.classList.add('section-hover');
+                });
+                
+                section.addEventListener('mouseleave', function() {
+                    this.classList.remove('section-hover');
+                });
+            });
+            
+            // Add floating effect to profile image
+            const profileImage = document.querySelector('.profile-image');
+            if (profileImage) {
+                let floatAnimation = null;
+                let startPos = { x: 0, y: 0 };
+                
+                profileImage.addEventListener('mouseenter', function() {
+                    startPos = { 
+                        x: parseFloat(getComputedStyle(this).getPropertyValue('transform-origin').split(' ')[0]) || 0,
+                        y: parseFloat(getComputedStyle(this).getPropertyValue('transform-origin').split(' ')[1]) || 0
+                    };
+                    
+                    // Create floating animation
+                    let progress = 0;
+                    clearInterval(floatAnimation);
+                    floatAnimation = setInterval(() => {
+                        progress += 0.01;
+                        const x = Math.sin(progress) * 5;
+                        const y = Math.cos(progress) * 5;
+                        this.style.transform = `translate(${x}px, ${y}px) scale(1.05)`;
+                    }, 30);
+                });
+                
+                profileImage.addEventListener('mouseleave', function() {
+                    clearInterval(floatAnimation);
+                    this.style.transform = '';
+                });
+            }
+            
+            // Add interactive tech badge effects
+            const techBadges = document.querySelectorAll('.tech-badge');
+            techBadges.forEach(badge => {
+                const theme = document.documentElement.getAttribute('data-bs-theme');
+                const color = theme === 'dark' ? '#00bfff' : '#3498db';
+                
+                badge.addEventListener('click', function() {
+                    // Create ripple effect
+                    const ripple = document.createElement('span');
+                    ripple.classList.add('ripple');
+                    this.appendChild(ripple);
+                    
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    ripple.style.width = ripple.style.height = `${size}px`;
+                    ripple.style.left = `${0}px`;
+                    ripple.style.top = `${0}px`;
+                    
+                    setTimeout(() => ripple.remove(), 600);
+                });
+            });
+        });
+    </script>
 </body>
 </html>

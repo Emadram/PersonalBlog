@@ -1,13 +1,21 @@
 @page
 @model PersonalBlog.Pages.Admin.SettingsModel
 @{
-    ViewData["Title"] = "Website Settings";
+    ViewData["Title"] = "Settings";
+    Layout = "_AdminLayout";
 }
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2><i class="fas fa-cog me-2"></i>Website Settings</h2>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-0">Website Settings</h1>
+        <p class="text-muted mb-0">Configure your blog and website preferences</p>
     </div>
+    <div>
+        <button type="submit" form="settingsForm" class="btn btn-primary">
+            <i class="fas fa-save me-2"></i>Save Changes
+        </button>
+    </div>
+</div>
     
     @if (Model.SuccessMessage != null)
     {
@@ -17,76 +25,148 @@
         </div>
     }
     
-    <form method="post">
+    <form method="post" id="settingsForm">
         <div class="row">
-            <div class="col-md-6 mb-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">General Settings</h5>
+            <div class="col-lg-8 mb-4">
+                <!-- General Settings Card -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white py-3 border-0">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <span class="badge rounded-circle p-2 bg-primary bg-opacity-10">
+                                    <i class="fas fa-globe text-primary"></i>
+                                </span>
+                            </div>
+                            <div class="ms-3">
+                                <h5 class="mb-0">General Settings</h5>
+                                <p class="text-muted small mb-0">Basic website information</p>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-body">
-                        <div class="mb-3">
-                            <label asp-for="Settings.SiteTitle" class="form-label">Site Title</label>
-                            <input asp-for="Settings.SiteTitle" class="form-control" />
-                            <span asp-validation-for="Settings.SiteTitle" class="text-danger"></span>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="Settings.SiteTitle" class="form-label small text-muted">Site Title</label>
+                                <div class="input-group mb-1">
+                                    <span class="input-group-text bg-light border-end-0">
+                                        <i class="fas fa-heading text-muted"></i>
+                                    </span>
+                                    <input asp-for="Settings.SiteTitle" class="form-control border-start-0" placeholder="My Blog" />
+                                </div>
+                                <span asp-validation-for="Settings.SiteTitle" class="text-danger small"></span>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label asp-for="Settings.SiteTagline" class="form-label small text-muted">Site Tagline</label>
+                                <div class="input-group mb-1">
+                                    <span class="input-group-text bg-light border-end-0">
+                                        <i class="fas fa-comment text-muted"></i>
+                                    </span>
+                                    <input asp-for="Settings.SiteTagline" class="form-control border-start-0" placeholder="A short description of your site" />
+                                </div>
+                                <span asp-validation-for="Settings.SiteTagline" class="text-danger small"></span>
+                            </div>
+                            
+                            <div class="col-md-12">
+                                <label asp-for="Settings.FaviconUrl" class="form-label small text-muted">Favicon URL</label>
+                                <div class="input-group mb-1">
+                                    <span class="input-group-text bg-light border-end-0">
+                                        <i class="fas fa-image text-muted"></i>
+                                    </span>
+                                    <input asp-for="Settings.FaviconUrl" class="form-control border-start-0" placeholder="https://example.com/favicon.ico" />
+                                </div>
+                                <span asp-validation-for="Settings.FaviconUrl" class="text-danger small"></span>
+                                <div class="form-text small">The icon that appears in browser tabs (16x16 or 32x32 pixels)</div>
+                            </div>
                         </div>
-                        
-                        <div class="mb-3">
-                            <label asp-for="Settings.SiteTagline" class="form-label">Site Tagline</label>
-                            <input asp-for="Settings.SiteTagline" class="form-control" />
-                            <span asp-validation-for="Settings.SiteTagline" class="text-danger"></span>
+                    </div>
+                </div>
+                
+                <!-- Social Media Card -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white py-3 border-0">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <span class="badge rounded-circle p-2 bg-info bg-opacity-10">
+                                    <i class="fas fa-share-alt text-info"></i>
+                                </span>
+                            </div>
+                            <div class="ms-3">
+                                <h5 class="mb-0">Social Media</h5>
+                                <p class="text-muted small mb-0">Connect your social profiles</p>
+                            </div>
                         </div>
-                        
-                        <div class="mb-3">
-                            <label asp-for="Settings.FaviconUrl" class="form-label">Favicon URL</label>
-                            <input asp-for="Settings.FaviconUrl" class="form-control" placeholder="https://" />
-                            <span asp-validation-for="Settings.FaviconUrl" class="text-danger"></span>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label asp-for="Settings.TwitterUrl" class="form-label small text-muted">Twitter URL</label>
+                                <div class="input-group mb-1">
+                                    <span class="input-group-text bg-light border-end-0">
+                                        <i class="fab fa-twitter text-muted"></i>
+                                    </span>
+                                    <input asp-for="Settings.TwitterUrl" class="form-control border-start-0" placeholder="https://twitter.com/username" />
+                                </div>
+                                <span asp-validation-for="Settings.TwitterUrl" class="text-danger small"></span>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <label asp-for="Settings.LinkedInUrl" class="form-label small text-muted">LinkedIn URL</label>
+                                <div class="input-group mb-1">
+                                    <span class="input-group-text bg-light border-end-0">
+                                        <i class="fab fa-linkedin text-muted"></i>
+                                    </span>
+                                    <input asp-for="Settings.LinkedInUrl" class="form-control border-start-0" placeholder="https://linkedin.com/in/username" />
+                                </div>
+                                <span asp-validation-for="Settings.LinkedInUrl" class="text-danger small"></span>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <label asp-for="Settings.GitHubUrl" class="form-label small text-muted">GitHub URL</label>
+                                <div class="input-group mb-1">
+                                    <span class="input-group-text bg-light border-end-0">
+                                        <i class="fab fa-github text-muted"></i>
+                                    </span>
+                                    <input asp-for="Settings.GitHubUrl" class="form-control border-start-0" placeholder="https://github.com/username" />
+                                </div>
+                                <span asp-validation-for="Settings.GitHubUrl" class="text-danger small"></span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <div class="col-md-6 mb-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">Social Media</h5>
+            <div class="col-lg-4 mb-4">
+                <!-- Content Settings Card -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white py-3 border-0">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <span class="badge rounded-circle p-2 bg-success bg-opacity-10">
+                                    <i class="fas fa-cog text-success"></i>
+                                </span>
+                            </div>
+                            <div class="ms-3">
+                                <h5 class="mb-0">Content Settings</h5>
+                                <p class="text-muted small mb-0">Configure how content is displayed</p>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-body">
                         <div class="mb-3">
-                            <label asp-for="Settings.TwitterUrl" class="form-label">Twitter URL</label>
-                            <input asp-for="Settings.TwitterUrl" class="form-control" placeholder="https://twitter.com/username" />
-                            <span asp-validation-for="Settings.TwitterUrl" class="text-danger"></span>
+                            <label asp-for="Settings.PostsPerPage" class="form-label small text-muted">Posts Per Page</label>
+                            <div class="input-group mb-1">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="fas fa-list-ol text-muted"></i>
+                                </span>
+                                <input asp-for="Settings.PostsPerPage" type="number" class="form-control border-start-0" min="1" max="50" />
+                            </div>
+                            <span asp-validation-for="Settings.PostsPerPage" class="text-danger small"></span>
+                            <div class="form-text small">Number of posts to display per page</div>
                         </div>
                         
                         <div class="mb-3">
-                            <label asp-for="Settings.LinkedInUrl" class="form-label">LinkedIn URL</label>
-                            <input asp-for="Settings.LinkedInUrl" class="form-control" placeholder="https://linkedin.com/in/username" />
-                            <span asp-validation-for="Settings.LinkedInUrl" class="text-danger"></span>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label asp-for="Settings.GitHubUrl" class="form-label">GitHub URL</label>
-                            <input asp-for="Settings.GitHubUrl" class="form-control" placeholder="https://github.com/username" />
-                            <span asp-validation-for="Settings.GitHubUrl" class="text-danger"></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-6 mb-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">Content Settings</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <label asp-for="Settings.PostsPerPage" class="form-label">Posts Per Page</label>
-                            <input asp-for="Settings.PostsPerPage" type="number" class="form-control" min="1" max="50" />
-                            <span asp-validation-for="Settings.PostsPerPage" class="text-danger"></span>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label asp-for="Settings.EnableComments" class="form-label">Comments</label>
+                            <label class="form-label small text-muted d-block">Comments</label>
                             <div class="form-check form-switch">
                                 <input asp-for="Settings.EnableComments" class="form-check-input" type="checkbox" />
                                 <label asp-for="Settings.EnableComments" class="form-check-label">Enable comments on posts</label>
@@ -94,7 +174,7 @@
                         </div>
                         
                         <div class="mb-3">
-                            <label asp-for="Settings.DefaultCategoryColor" class="form-label">Default Category Color</label>
+                            <label asp-for="Settings.DefaultCategoryColor" class="form-label small text-muted">Default Category Color</label>
                             <select asp-for="Settings.DefaultCategoryColor" class="form-select">
                                 <option value="primary">Blue</option>
                                 <option value="secondary">Gray</option>
@@ -102,36 +182,58 @@
                                 <option value="danger">Red</option>
                                 <option value="warning">Yellow</option>
                                 <option value="info">Light Blue</option>
-                                <option value="dark">Dark</option>
+                                <option value="dark">Black</option>
                             </select>
+                            <div class="form-text small">Default color for category badges</div>
                         </div>
                     </div>
                 </div>
-            </div>
-            
-            <div class="col-md-6 mb-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">Analytics & SEO</h5>
+                
+                <!-- Analytics & SEO Card -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white py-3 border-0">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <span class="badge rounded-circle p-2 bg-warning bg-opacity-10">
+                                    <i class="fas fa-chart-line text-warning"></i>
+                                </span>
+                            </div>
+                            <div class="ms-3">
+                                <h5 class="mb-0">Analytics & SEO</h5>
+                                <p class="text-muted small mb-0">Configure your site analytics and search settings</p>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-body">
                         <div class="mb-3">
-                            <label asp-for="Settings.GoogleAnalyticsId" class="form-label">Google Analytics ID</label>
-                            <input asp-for="Settings.GoogleAnalyticsId" class="form-control" placeholder="G-XXXXXXXXXX" />
-                            <span asp-validation-for="Settings.GoogleAnalyticsId" class="text-danger"></span>
+                            <label asp-for="Settings.GoogleAnalyticsId" class="form-label small text-muted">Google Analytics ID</label>
+                            <div class="input-group mb-1">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="fab fa-google text-muted"></i>
+                                </span>
+                                <input asp-for="Settings.GoogleAnalyticsId" class="form-control border-start-0" placeholder="G-XXXXXXXXXX" />
+                            </div>
+                            <span asp-validation-for="Settings.GoogleAnalyticsId" class="text-danger small"></span>
+                            <div class="form-text small">Your Google Analytics tracking ID</div>
                         </div>
                         
                         <div class="mb-3">
-                            <label asp-for="Settings.MetaDescription" class="form-label">Meta Description</label>
-                            <textarea asp-for="Settings.MetaDescription" class="form-control" rows="3"></textarea>
-                            <span asp-validation-for="Settings.MetaDescription" class="text-danger"></span>
-                            <small class="text-muted">Brief description of your site for search engines.</small>
+                            <label asp-for="Settings.MetaDescription" class="form-label small text-muted">Meta Description</label>
+                            <textarea asp-for="Settings.MetaDescription" class="form-control" rows="3" placeholder="Brief description of your site for search engines"></textarea>
+                            <span asp-validation-for="Settings.MetaDescription" class="text-danger small"></span>
+                            <div class="form-text small">Appears in search engine results (150-160 characters)</div>
                         </div>
                         
                         <div class="mb-3">
-                            <label asp-for="Settings.MetaKeywords" class="form-label">Meta Keywords</label>
-                            <input asp-for="Settings.MetaKeywords" class="form-control" placeholder="keyword1, keyword2, keyword3" />
-                            <span asp-validation-for="Settings.MetaKeywords" class="text-danger"></span>
+                            <label asp-for="Settings.MetaKeywords" class="form-label small text-muted">Meta Keywords</label>
+                            <div class="input-group mb-1">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="fas fa-tags text-muted"></i>
+                                </span>
+                                <input asp-for="Settings.MetaKeywords" class="form-control border-start-0" placeholder="keyword1, keyword2, keyword3" />
+                            </div>
+                            <span asp-validation-for="Settings.MetaKeywords" class="text-danger small"></span>
+                            <div class="form-text small">Comma-separated list of keywords</div>
                         </div>
                     </div>
                 </div>
