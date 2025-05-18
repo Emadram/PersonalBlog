@@ -19,5 +19,11 @@ namespace PersonalBlog.Models
         public string LinkedInUrl { get; set; } = string.Empty;
         public string TwitterUrl { get; set; } = string.Empty;
         public string ResumeUrl { get; set; } = string.Empty;
+
+        // Dual Persona Theme Colors
+        public string LightModeColor { get; set; } = "#3498db"; // Default Project Manager Color (Light Blue)
+        public string DarkModeColor { get; set; } = "#00bfff"; // Default Developer Color (Neon Blue)
+        public string LightModeSecondaryColor { get; set; } = "#2980b9"; // Darker shade for gradients
+        public string DarkModeSecondaryColor { get; set; } = "#0099cc"; // Darker shade for gradients
     }
-} 
+}

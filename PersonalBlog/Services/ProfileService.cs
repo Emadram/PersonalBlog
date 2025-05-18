@@ -68,6 +68,7 @@ namespace PersonalBlog.Services
                 existingSkill.Proficiency = skill.Proficiency;
                 existingSkill.Category = skill.Category;
                 existingSkill.IconClass = skill.IconClass;
+                existingSkill.IconColor = skill.IconColor;
                 
                 _context.SaveChanges();
             }

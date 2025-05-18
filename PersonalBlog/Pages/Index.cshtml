@@ -54,7 +54,7 @@
                     {
                         <div class="col-md-6 mb-3">
                             <div class="d-flex justify-content-between align-items-center mb-1">
-                                <span><i class="@skill.IconClass me-2"></i> @skill.Name</span>
+                                <span><i class="@skill.IconClass me-2" style="@(string.IsNullOrEmpty(skill.IconColor) ? "" : $"color: {skill.IconColor};")" ></i> @skill.Name</span>
                                 <span>@skill.Proficiency%</span>
                             </div>
                             <div class="progress" style="height: 8px;">

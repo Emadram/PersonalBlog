@@ -89,27 +89,36 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     @await RenderSectionAsync("Styles", required: false)
+    @using PersonalBlog.Services;
+    @inject IProfileService ProfileService
+    @{
+        var profile = ProfileService.GetProfile();
+        var lightColor = string.IsNullOrEmpty(profile?.LightModeColor) ? "#3498db" : profile.LightModeColor;
+        var darkColor = string.IsNullOrEmpty(profile?.DarkModeColor) ? "#00bfff" : profile.DarkModeColor;
+        var lightSecondaryColor = string.IsNullOrEmpty(profile?.LightModeSecondaryColor) ? "#2980b9" : profile.LightModeSecondaryColor;
+        var darkSecondaryColor = string.IsNullOrEmpty(profile?.DarkModeSecondaryColor) ? "#0099cc" : profile.DarkModeSecondaryColor;
+    }
     <style>
         :root {
             --sidebar-width: 250px;
             --header-height: 60px;
             --sidebar-bg: #2c3e50;
-            --sidebar-active-bg: #3498db;
+            --sidebar-active-bg: @lightColor;
             --sidebar-hover-bg: #34495e;
         }
         
-        /* Light mode styles */
+        /* Light mode styles - Project Manager Mode */
         [data-bs-theme=light] {
             --sidebar-bg: #2c3e50;
-            --sidebar-active-bg: #3498db; /* Light blue for light mode */
+            --sidebar-active-bg: @lightColor; /* Project Manager color - customizable */
             --sidebar-hover-bg: #34495e;
             --body-bg: #f8f9fa;
             --card-bg: #ffffff;
             --text-color: #2c3e50;
             --header-bg: #ffffff;
-            --tab-active-color: #3498db;
-            --tab-active-border: #3498db;
-            --tab-hover-bg: rgba(52, 152, 219, 0.1);
+            --tab-active-color: @lightColor;
+            --tab-active-border: @lightColor;
+            --tab-hover-bg: @(lightColor)15; /* With 10% opacity */
             --input-bg: #ffffff;
             --input-border: #ced4da;
             --dropdown-bg: #ffffff;
@@ -117,20 +126,23 @@
             --tooltip-bg: #000;
             --btn-default-bg: #f8f9fa;
             --btn-default-border: #ced4da;
+            
+            /* Gradient using primary and secondary colors */
+            --gradient-primary: linear-gradient(135deg, @lightColor, @lightSecondaryColor);
         }
         
-        /* Dark mode styles */
+        /* Dark mode styles - Developer Mode */
         [data-bs-theme=dark] {
             --sidebar-bg: #1a2533;
-            --sidebar-active-bg: #00bfff; /* Neon blue for dark mode */
+            --sidebar-active-bg: @darkColor; /* Developer color - customizable */
             --sidebar-hover-bg: #212e3e;
             --body-bg: #121212;
             --card-bg: #1e2327;
             --text-color: #ecf0f1;
             --header-bg: #1e2327;
-            --tab-active-color: #00bfff;
-            --tab-active-border: #00bfff;
-            --tab-hover-bg: rgba(0, 191, 255, 0.2);
+            --tab-active-color: @darkColor;
+            --tab-active-border: @darkColor;
+            --tab-hover-bg: @(darkColor)20; /* With 15% opacity */
             --input-bg: #2c3034;
             --input-border: #495057;
             --dropdown-bg: #2c3034;
@@ -138,6 +150,9 @@
             --tooltip-bg: #212529;
             --btn-default-bg: #2c3034;
             --btn-default-border: #495057;
+            
+            /* Gradient using primary and secondary colors */
+            --gradient-primary: linear-gradient(135deg, @darkColor, @darkSecondaryColor);
         }
         
         body {

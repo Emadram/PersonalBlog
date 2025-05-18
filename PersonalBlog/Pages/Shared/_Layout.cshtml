@@ -84,11 +84,23 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    @using PersonalBlog.Services;
+    @inject IProfileService ProfileService
+    @{
+        var profile = ProfileService.GetProfile();
+        var lightColor = string.IsNullOrEmpty(profile?.LightModeColor) ? "#3498db" : profile.LightModeColor;
+        var darkColor = string.IsNullOrEmpty(profile?.DarkModeColor) ? "#00bfff" : profile.DarkModeColor;
+        var lightSecondaryColor = string.IsNullOrEmpty(profile?.LightModeSecondaryColor) ? "#2980b9" : profile.LightModeSecondaryColor;
+        var darkSecondaryColor = string.IsNullOrEmpty(profile?.DarkModeSecondaryColor) ? "#0099cc" : profile.DarkModeSecondaryColor;
+        
+        // Mixed color for combined elements
+        var mixedColor = "#34c6eb";
+    }
     <style>
         :root {
-            /* Mixed Project Manager + Developer style */
+            /* Dual Persona Theme - Custom Colors */
             /* Base colors */
-            --primary-color: #34c6eb; /* A mix between light blue and neon blue */
+            --primary-color: @mixedColor; /* A mix between light and dark mode colors */
             --secondary-color: #2c4363; /* Deeper and richer than standard */
             --text-color: #333;
             --bg-color: #f8f9fa;
@@ -96,19 +108,25 @@
             --footer-bg: #f0f2f5;
             --header-bg: #ffffff;
             --border-color: #dee2e6;
-            --nav-active-color: #34c6eb;
+            --nav-active-color: @mixedColor;
             --nav-active-glow: 0 0 5px rgba(52, 198, 235, 0.3); /* Subtle glow even in light mode */
             
-            /* Mixed style specific */
-            --project-color: #3498db; /* Project Manager color */
-            --dev-color: #00bfff;     /* Developer color */
+            /* Project Manager (Light Mode) Colors */
+            --project-color: @lightColor; /* Project Manager color - customizable */
+            --project-color-dark: @lightSecondaryColor; /* Darker shade for gradients */
+            
+            /* Developer (Dark Mode) Colors */
+            --dev-color: @darkColor;     /* Developer color - customizable */
+            --dev-color-dark: @darkSecondaryColor; /* Darker shade for gradients */
+            
+            /* Combined gradient */
             --gradient-primary: linear-gradient(135deg, var(--project-color), var(--dev-color)); /* Blend both personas */
             --accent-shadow: 0 5px 15px rgba(52, 198, 235, 0.2);
         }
         
         /* Dark mode styles with dual-persona blend */
         [data-bs-theme=dark] {
-            --primary-color: #30d0ff; /* Brighter version of the mixed blue */
+            --primary-color: @darkColor; /* Developer color */
             --secondary-color: #1e2b40; /* Darker version for contrast */
             --text-color: #f0f0f0;
             --bg-color: #121820; /* Slightly blue-tinted dark background */
@@ -116,14 +134,12 @@
             --footer-bg: #1a1a25; /* Slightly blue-tinted footer */
             --header-bg: #1e2835;
             --border-color: #364759; /* Blue-tinted borders */
-            --nav-active-color: #30d0ff;
-            --nav-active-glow: 0 0 12px rgba(48, 208, 255, 0.6);
+            --nav-active-color: @darkColor;
+            --nav-active-glow: 0 0 12px @(darkColor)80; /* With 50% alpha */
             
-            /* Mixed style specific for dark mode */
-            --project-color: #3498db; /* Project Manager color */
-            --dev-color: #00bfff;     /* Developer color */
-            --gradient-primary: linear-gradient(135deg, var(--dev-color), var(--project-color) 70%); /* Inverted for dark mode */
-            --accent-shadow: 0 5px 20px rgba(48, 208, 255, 0.3);
+            /* Inverted gradient for dark mode */
+            --gradient-primary: linear-gradient(135deg, var(--dev-color), var(--dev-color-dark)); /* Developer focused */
+            --accent-shadow: 0 5px 20px @(darkColor)40; /* With 25% alpha */
         }
         
         body {
