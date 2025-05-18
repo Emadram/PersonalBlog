@@ -23,12 +23,12 @@ namespace PersonalBlog.Services
             return _context.News.OrderByDescending(n => n.PublishedDate).Take(count).ToList();
         }
 
-        public News GetFeaturedNews()
+        public News? GetFeaturedNews()
         {
             return _context.News.FirstOrDefault(n => n.IsFeatured);
         }
 
-        public News GetNewsBySlug(string slug)
+        public News? GetNewsBySlug(string slug)
         {
             return _context.News.FirstOrDefault(n => n.Slug == slug);
         }
@@ -43,7 +43,7 @@ namespace PersonalBlog.Services
             return _context.News.Where(n => n.Category == category).OrderByDescending(n => n.PublishedDate).ToList();
         }
         
-        public News GetNewsById(int id)
+        public News? GetNewsById(int id)
         {
             return _context.News.Find(id);
         }

@@ -23,12 +23,12 @@ namespace PersonalBlog.Services
             return _context.BlogPosts.OrderByDescending(p => p.PublishedDate).Take(count).ToList();
         }
 
-        public BlogPost GetFeaturedPost()
+        public BlogPost? GetFeaturedPost()
         {
             return _context.BlogPosts.FirstOrDefault(p => p.IsFeatured);
         }
 
-        public BlogPost GetPostBySlug(string slug)
+        public BlogPost? GetPostBySlug(string slug)
         {
             return _context.BlogPosts.FirstOrDefault(p => p.Slug == slug);
         }
@@ -43,7 +43,7 @@ namespace PersonalBlog.Services
             return _context.BlogPosts.Where(p => p.Category == category).OrderByDescending(p => p.PublishedDate).ToList();
         }
         
-        public BlogPost GetPostById(int id)
+        public BlogPost? GetPostById(int id)
         {
             return _context.BlogPosts.Find(id);
         }

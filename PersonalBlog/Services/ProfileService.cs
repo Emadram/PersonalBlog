@@ -13,7 +13,7 @@ namespace PersonalBlog.Services
             _context = context;
         }
 
-        public Person GetProfile()
+        public Person? GetProfile()
         {
             return _context.People.FirstOrDefault();
         }
@@ -90,7 +90,7 @@ namespace PersonalBlog.Services
         }
 
         // Implement Experience methods
-        public Experience GetExperienceById(int id)
+        public Experience? GetExperienceById(int id)
         {
             return _context.Experiences.Find(id);
         }
@@ -129,7 +129,7 @@ namespace PersonalBlog.Services
         }
 
         // Implement Education methods
-        public Education GetEducationById(int id)
+        public Education? GetEducationById(int id)
         {
             return _context.Educations.Find(id);
         }

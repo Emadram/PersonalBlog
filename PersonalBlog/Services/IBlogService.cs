@@ -6,13 +6,13 @@ namespace PersonalBlog.Services
     {
         IEnumerable<BlogPost> GetAllPosts();
         IEnumerable<BlogPost> GetRecentPosts(int count);
-        BlogPost GetFeaturedPost();
-        BlogPost GetPostBySlug(string slug);
+        BlogPost? GetFeaturedPost();
+        BlogPost? GetPostBySlug(string slug);
         IEnumerable<string> GetCategories();
         IEnumerable<BlogPost> GetPostsByCategory(string category);
         
         // CRUD operations
-        BlogPost GetPostById(int id);
+        BlogPost? GetPostById(int id);
         void CreatePost(BlogPost post);
         void UpdatePost(BlogPost post);
         void DeletePost(int id);

@@ -23,12 +23,12 @@ namespace PersonalBlog.Services
             return _context.PodcastEpisodes.OrderByDescending(e => e.PublishedDate).Take(count).ToList();
         }
 
-        public PodcastEpisode GetFeaturedEpisode()
+        public PodcastEpisode? GetFeaturedEpisode()
         {
             return _context.PodcastEpisodes.FirstOrDefault(e => e.IsFeatured);
         }
 
-        public PodcastEpisode GetEpisodeBySlug(string slug)
+        public PodcastEpisode? GetEpisodeBySlug(string slug)
         {
             return _context.PodcastEpisodes.FirstOrDefault(e => e.Slug == slug);
         }
@@ -38,7 +38,7 @@ namespace PersonalBlog.Services
             return _context.PodcastEpisodes.Select(e => e.Category).Distinct().ToList();
         }
         
-        public PodcastEpisode GetEpisodeById(int id)
+        public PodcastEpisode? GetEpisodeById(int id)
         {
             return _context.PodcastEpisodes.Find(id);
         }
