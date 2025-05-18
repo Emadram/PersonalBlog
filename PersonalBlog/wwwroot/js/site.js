@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Update the icon based on current theme
     function updateToggleIcon(isDark) {
         const iconElement = themeToggle.querySelector('i');
-        iconElement.className = isDark ? 'fas fa-code' : 'fas fa-users-cog';
+        iconElement.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
     }
     
     // Update specific components that require JS modifications for theme changes

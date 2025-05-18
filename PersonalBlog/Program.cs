@@ -68,4 +68,5 @@ using (var scope = app.Services.CreateScope())
     await DataSeeder.SeedSettingsAsync(context);
 }
 
-app.Run();
+// Run on a specific port to avoid conflicts
+app.Run("http://localhost:8000");
