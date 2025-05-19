@@ -1,6 +1,7 @@
 using PersonalBlog.Data;
 using PersonalBlog.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace PersonalBlog.Services
 {
@@ -15,48 +16,69 @@ namespace PersonalBlog.Services
 
         public IEnumerable<BlogPost> GetAllPosts()
         {
-            return _context.BlogPosts.OrderByDescending(p => p.PublishedDate).ToList();
+            return _context.BlogPosts
+                .Include(p => p.PostCategories)
+                    .ThenInclude(pc => pc.Category)
+                .OrderByDescending(p => p.PublishedDate)
+                .ToList();
         }
 
         public IEnumerable<BlogPost> GetRecentPosts(int count)
         {
-            return _context.BlogPosts.OrderByDescending(p => p.PublishedDate).Take(count).ToList();
+            return _context.BlogPosts
+                .Include(p => p.PostCategories)
+                    .ThenInclude(pc => pc.Category)
+                .OrderByDescending(p => p.PublishedDate)
+                .Take(count)
+                .ToList();
         }
 
         public BlogPost? GetFeaturedPost()
         {
-            return _context.BlogPosts.FirstOrDefault(p => p.IsFeatured);
+            return _context.BlogPosts
+                .Include(p => p.PostCategories)
+                    .ThenInclude(pc => pc.Category)
+                .FirstOrDefault(p => p.IsFeatured);
         }
 
         public BlogPost? GetPostBySlug(string slug)
         {
-            return _context.BlogPosts.FirstOrDefault(p => p.Slug == slug);
+            return _context.BlogPosts
+                .Include(p => p.PostCategories)
+                    .ThenInclude(pc => pc.Category)
+                .FirstOrDefault(p => p.Slug == slug);
         }
 
-        public IEnumerable<string> GetCategories()
+        public IEnumerable<Category> GetCategories()
         {
-            return _context.BlogPosts.Select(p => p.Category).Distinct().ToList();
+            return _context.Categories.OrderBy(c => c.Name).ToList();
         }
 
-        public IEnumerable<BlogPost> GetPostsByCategory(string category)
+        public IEnumerable<BlogPost> GetPostsByCategory(int categoryId)
         {
-            return _context.BlogPosts.Where(p => p.Category == category).OrderByDescending(p => p.PublishedDate).ToList();
+            return _context.BlogPosts
+                .Include(p => p.PostCategories)
+                    .ThenInclude(pc => pc.Category)
+                .Where(p => p.PostCategories.Any(pc => pc.CategoryId == categoryId))
+                .OrderByDescending(p => p.PublishedDate)
+                .ToList();
         }
         
         public BlogPost? GetPostById(int id)
         {
-            return _context.BlogPosts.Find(id);
+            return _context.BlogPosts
+                .Include(p => p.PostCategories)
+                    .ThenInclude(pc => pc.Category)
+                .FirstOrDefault(p => p.Id == id);
         }
         
-        public void CreatePost(BlogPost post)
+        public void CreatePost(BlogPost post, List<int> selectedCategoryIds)
         {
-            // Generate a slug if not provided
             if (string.IsNullOrEmpty(post.Slug))
             {
                 post.Slug = GenerateSlug(post.Title);
             }
             
-            // Set the published date if not provided
             if (post.PublishedDate == default)
             {
                 post.PublishedDate = DateTime.Now;
@@ -64,42 +86,64 @@ namespace PersonalBlog.Services
             
             _context.BlogPosts.Add(post);
             _context.SaveChanges();
+
+            if (selectedCategoryIds != null && selectedCategoryIds.Any())
+            {
+                foreach (var categoryId in selectedCategoryIds)
+                {
+                    _context.PostCategories.Add(new PostCategory { BlogPostId = post.Id, CategoryId = categoryId });
+                }
+                _context.SaveChanges();
+            }
         }
         
-        public void UpdatePost(BlogPost post)
+        public void UpdatePost(BlogPost post, List<int> selectedCategoryIds)
         {
-            var existingPost = _context.BlogPosts.Find(post.Id);
+            var existingPost = _context.BlogPosts
+                                    .Include(p => p.PostCategories)
+                                    .FirstOrDefault(p => p.Id == post.Id);
+
             if (existingPost != null)
             {
-                // Update properties
                 existingPost.Title = post.Title;
                 existingPost.Summary = post.Summary;
                 existingPost.Content = post.Content;
                 existingPost.ImageUrl = post.ImageUrl;
-                existingPost.Category = post.Category;
-                existingPost.CategoryBadgeColor = post.CategoryBadgeColor;
                 
-                // Only update slug if it's provided and different
                 if (!string.IsNullOrEmpty(post.Slug) && existingPost.Slug != post.Slug)
                 {
                     existingPost.Slug = post.Slug;
                 }
+                else if (string.IsNullOrEmpty(existingPost.Slug))
+                {
+                    existingPost.Slug = GenerateSlug(existingPost.Title);
+                }
                 
-                // Only update IsFeatured if needed
                 if (post.IsFeatured && !existingPost.IsFeatured)
                 {
-                    // Unset any currently featured post
-                    var currentFeatured = _context.BlogPosts.FirstOrDefault(p => p.IsFeatured);
+                    var currentFeatured = _context.BlogPosts.FirstOrDefault(p => p.IsFeatured && p.Id != existingPost.Id);
                     if (currentFeatured != null)
                     {
                         currentFeatured.IsFeatured = false;
                     }
-                    
                     existingPost.IsFeatured = true;
+                }
+                else if (!post.IsFeatured && existingPost.IsFeatured)
+                {
+                    existingPost.IsFeatured = false;
                 }
                 
                 existingPost.ReadMinutes = post.ReadMinutes;
-                existingPost.CommentCount = post.CommentCount;
+                existingPost.PublishedDate = post.PublishedDate;
+
+                existingPost.PostCategories.Clear();
+                if (selectedCategoryIds != null && selectedCategoryIds.Any())
+                {
+                    foreach (var categoryId in selectedCategoryIds)
+                    {
+                        existingPost.PostCategories.Add(new PostCategory { CategoryId = categoryId });
+                    }
+                }
                 
                 _context.SaveChanges();
             }
@@ -107,11 +151,56 @@ namespace PersonalBlog.Services
         
         public void DeletePost(int id)
         {
-            var post = _context.BlogPosts.Find(id);
-            if (post != null)
+            try
             {
-                _context.BlogPosts.Remove(post);
-                _context.SaveChanges();
+                // Get the post with its relationships
+                var post = _context.BlogPosts
+                    .Include(p => p.PostCategories)
+                    .Include(p => p.Comments)
+                    .FirstOrDefault(p => p.Id == id);
+
+                if (post != null)
+                {
+                    // Start a transaction to ensure all operations complete or none do
+                    using (var transaction = _context.Database.BeginTransaction())
+                    {
+                        try
+                        {
+                            // First, remove any comments associated with this post
+                            if (post.Comments != null && post.Comments.Any())
+                            {
+                                _context.Comments.RemoveRange(post.Comments);
+                                _context.SaveChanges();
+                            }
+
+                            // Then remove all related PostCategories
+                            if (post.PostCategories != null && post.PostCategories.Any())
+                            {
+                                _context.PostCategories.RemoveRange(post.PostCategories);
+                                _context.SaveChanges();
+                            }
+
+                            // Finally remove the post itself
+                            _context.BlogPosts.Remove(post);
+                            _context.SaveChanges();
+
+                            // Commit the transaction
+                            transaction.Commit();
+                        }
+                        catch
+                        {
+                            // If anything goes wrong, roll back all changes
+                            transaction.Rollback();
+                            throw; // Re-throw to handle at the caller level
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception - in a real app, you'd use proper logging
+                Console.WriteLine($"Error deleting post {id}: {ex.Message}");
+                throw; // Re-throw so the caller knows something went wrong
             }
         }
         
@@ -122,7 +211,6 @@ namespace PersonalBlog.Services
             {
                 if (!post.IsFeatured)
                 {
-                    // Unset any currently featured post
                     var currentFeatured = _context.BlogPosts.FirstOrDefault(p => p.IsFeatured);
                     if (currentFeatured != null)
                     {
@@ -133,7 +221,6 @@ namespace PersonalBlog.Services
                 }
                 else
                 {
-                    // Unfeature this post
                     post.IsFeatured = false;
                 }
                 
@@ -143,13 +230,78 @@ namespace PersonalBlog.Services
         
         private string GenerateSlug(string title)
         {
-            // Simple slug generation - replace spaces with dashes and make lowercase
             var slug = title.ToLower().Replace(" ", "-");
             
-            // Remove any special characters
             slug = new string(slug.Where(c => char.IsLetterOrDigit(c) || c == '-').ToArray());
             
             return slug;
         }
+        
+        // Comment operations
+        public IEnumerable<Comment> GetCommentsByPostId(int postId)
+        {
+            return _context.Comments
+                .Where(c => c.BlogPostId == postId && c.IsApproved)
+                .OrderByDescending(c => c.CreatedAt)
+                .ToList();
+        }
+        
+        public void AddComment(Comment comment)
+        {
+            // Save the comment
+            _context.Comments.Add(comment);
+            
+            // Update the comment count on the post
+            var post = _context.BlogPosts.Find(comment.BlogPostId);
+            if (post != null)
+            {
+                // Only increment the count if the comment is auto-approved
+                // Otherwise, it will be incremented when the comment is approved
+                if (comment.IsApproved)
+                {
+                    post.CommentCount++;
+                }
+            }
+            
+            _context.SaveChanges();
+        }
+        
+        public void ApproveComment(int id)
+        {
+            var comment = _context.Comments.Find(id);
+            if (comment != null && !comment.IsApproved)
+            {
+                comment.IsApproved = true;
+                
+                // Increment the comment count on the post
+                var post = _context.BlogPosts.Find(comment.BlogPostId);
+                if (post != null)
+                {
+                    post.CommentCount++;
+                }
+                
+                _context.SaveChanges();
+            }
+        }
+        
+        public void DeleteComment(int id)
+        {
+            var comment = _context.Comments.Find(id);
+            if (comment != null)
+            {
+                // Decrement the comment count on the post if the comment was approved
+                if (comment.IsApproved)
+                {
+                    var post = _context.BlogPosts.Find(comment.BlogPostId);
+                    if (post != null && post.CommentCount > 0)
+                    {
+                        post.CommentCount--;
+                    }
+                }
+                
+                _context.Comments.Remove(comment);
+                _context.SaveChanges();
+            }
+        }
     }
-} 
+}
