@@ -70,7 +70,7 @@
                         </div>
                     </th>
                     <th>Title</th>
-                    <th>Category</th>
+                    <th>Categories</th>
                     <th>Status</th>
                     <th>Published Date</th>
                     <th>Featured</th>
@@ -80,7 +80,10 @@
                 <tbody>
                     @foreach (var post in Model.Posts)
                     {
-                        <tr class="post-row" data-category="@post.Category" data-status="@(post.PublishedDate <= DateTime.Now ? "published" : "scheduled")">
+                        var categoryNamesForFilter = post.PostCategories != null && post.PostCategories.Any() 
+                            ? string.Join(" ", post.PostCategories.Select(pc => pc.Category?.Name?.Replace(" ", "-"))) 
+                            : string.Empty;
+                        <tr class="post-row" data-category="@categoryNamesForFilter" data-status="@(post.PublishedDate <= DateTime.Now ? "published" : "scheduled")">
                     <td>
                         <div class="form-check">
                             <input class="form-check-input row-checkbox" type="checkbox" value="@post.Id">
@@ -107,7 +110,20 @@
                         </div>
                     </td>
                     <td>
-                        <span class="badge bg-@post.CategoryBadgeColor">@post.Category</span>
+                        @if (post.PostCategories != null && post.PostCategories.Any())
+                        {
+                            foreach (var pc in post.PostCategories)
+                            {
+                                if (pc.Category != null)
+                                {
+                                    <span class="badge bg-@pc.Category.BadgeColor me-1">@pc.Category.Name</span>
+                                }
+                            }
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Uncategorized</span>
+                        }
                     </td>
                     <td>
                         @if (post.PublishedDate <= DateTime.Now)
@@ -219,6 +235,30 @@
     </div>
 </div>
 
+<!-- Hidden Forms for Bulk Actions -->
+<form id="bulkDeleteForm" method="post" asp-page-handler="BulkDelete">
+    <input type="hidden" id="selectedPostIds" name="ids" value="" />
+</form>
+
+<!-- Confirmation Modal for Bulk Delete -->
+<div class="modal fade" id="bulkDeleteModal" tabindex="-1" aria-labelledby="bulkDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="bulkDeleteModalLabel">Confirm Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete <span id="deleteCount">0</span> selected posts? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmBulkDelete">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Pagination -->
 <nav aria-label="Page navigation" class="mt-4">
     <ul class="pagination justify-content-center">
@@ -236,7 +276,7 @@
             </a>
         </li>
     </ul>
-</div>
+</nav>
 
 @section Styles {
     <style>
@@ -317,15 +357,19 @@
             
             // Category filter
             $("#categoryFilter, #statusFilter").on("change", function() {
-                const category = $("#categoryFilter").val().toLowerCase();
+                const categoryFilterValue = $("#categoryFilter").val().toLowerCase();
                 const status = $("#statusFilter").val().toLowerCase();
                 
+                // Prepare the category filter by replacing spaces with hyphens, if any
+                const preparedCategoryFilter = categoryFilterValue.replace(/ /g, '-');
+
                 $(".post-row").each(function() {
                     const $row = $(this);
-                    const rowCategory = $row.data("category").toLowerCase();
+                    const rowCategories = $row.data("category").toLowerCase(); // This is space-separated, hyphenated e.g. "tech-world life-style"
                     const rowStatus = $row.data("status").toLowerCase();
                     
-                    const categoryMatch = category === "" || rowCategory === category;
+                    // If categoryFilterValue is empty, it's a match. Otherwise, check if rowCategories includes the prepared filter value.
+                    const categoryMatch = categoryFilterValue === "" || rowCategories.includes(preparedCategoryFilter);
                     const statusMatch = status === "" || rowStatus === status;
                     
                     $row.toggle(categoryMatch && statusMatch);
@@ -382,6 +426,7 @@
                 }
             });
             
+            // Bulk delete button handling
             $("#bulkDeleteBtn").on("click", function() {
                 const selectedIds = [];
                 $(".row-checkbox:checked").each(function() {
@@ -389,13 +434,21 @@
                 });
                 
                 if (selectedIds.length > 0) {
-                    if (confirm(`Are you sure you want to delete ${selectedIds.length} selected posts? This action cannot be undone.`)) {
-                        // Implement delete logic here
-                        console.log("Deleting posts:", selectedIds);
-                    }
+                    // Show the delete confirmation modal
+                    $("#deleteCount").text(selectedIds.length);
+                    $("#bulkDeleteModal").modal("show");
+                    
+                    // Set the selected post IDs in the hidden form field
+                    $("#selectedPostIds").val(JSON.stringify(selectedIds));
                 } else {
                     alert("Please select at least one post to delete.");
                 }
+            });
+            
+            // Confirm bulk delete button in modal
+            $("#confirmBulkDelete").on("click", function() {
+                // Submit the form
+                $("#bulkDeleteForm").submit();
             });
             
             // Initialize tooltips
@@ -403,8 +456,6 @@
             tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl);
             });
-            searchInput.addEventListener('input', filterPosts);
-            categoryFilter.addEventListener('change', filterPosts);
         });
     </script>
 } 

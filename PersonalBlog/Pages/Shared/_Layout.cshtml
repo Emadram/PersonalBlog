@@ -740,6 +740,111 @@
         .section-hover .card {
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
+        
+        /* Weather widget styling */
+        .weather-widget-container {
+            position: relative; /* Ensures tooltip is positioned relative to this container */
+            display: inline-block; /* Or block, depending on layout needs */
+        }
+        
+        .weather-widget {
+            cursor: pointer;
+            padding: 5px; /* Add some padding if needed for easier hover targeting */
+        }
+        
+        .weather-tooltip {
+            display: block; /* Changed from none to block for transition control */
+            position: absolute;
+            bottom: calc(100% + 5px); /* Position above the widget with a 5px gap */
+            left: 50%;
+            transform: translateX(-50%); /* Center the tooltip */
+            background-color: var(--card-bg, #fff);
+            color: var(--text-color, #333);
+            border: 1px solid var(--border-color, #ddd);
+            border-radius: 8px;
+            padding: 15px;
+            width: 300px;
+            max-width: calc(100vw - 30px); /* Ensure it doesn't overflow viewport */
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+            z-index: 1050; /* High z-index to appear above other elements */
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none; /* Prevent interaction when hidden */
+            transition: opacity 0.25s ease-in-out, visibility 0s linear 0.25s, transform 0.25s ease-in-out;
+            /* Delay visibility transition until after opacity is done */
+        }
+        
+        .weather-widget-container:hover .weather-tooltip,
+        .weather-widget-container .weather-tooltip:hover /* Keep open if mouse is over tooltip */ {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            transform: translateX(-50%) translateY(-5px); /* Slight upward move to indicate active */
+            transition-delay: 0s, 0s, 0s; /* Remove delay for visibility when showing */
+        }
+        
+        /* Loading animation */
+        .weather-widget.weather-loading .weather-icon {
+            animation: spin 1s linear infinite;
+        }
+        
+@{ WriteLiteral(@"
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+"); }
+        
+        /* Responsive adjustments for tooltip */
+@{ WriteLiteral(@"
+        @media (max-width: 768px) {
+            .weather-tooltip {
+                left: 15px; /* Adjust to be almost full width with some padding */
+                right: 15px;
+                width: auto; /* Override fixed width */
+                transform: translateX(0) translateY(-5px); /* Adjust transform as it's no longer centered via left:50% */
+                bottom: calc(100% + 10px); /* Ensure it's above */
+            }
+            .weather-widget-container:hover .weather-tooltip,
+            .weather-widget-container .weather-tooltip:hover {
+                transform: translateX(0) translateY(-10px); /* Consistent transform on hover */
+            }
+        }
+"); }
+        
+        /* Tooltip in Navbar specific adjustments */
+        .navbar .weather-widget-container .weather-tooltip {
+            bottom: auto; /* Remove bottom positioning */
+            top: calc(100% + 5px); /* Position below the navbar item, with a small gap */
+            left: 0; /* Default to align left with the widget */
+            transform: translateX(0) translateY(5px); /* Initial position for transition */
+            /* If widget is far right, might need to adjust: left: auto; right: 0; transform: translateX(0) ... */
+        }
+        
+        .navbar .weather-widget-container:hover .weather-tooltip,
+        .navbar .weather-widget-container .weather-tooltip:hover {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            transform: translateX(0) translateY(0); /* Final position */
+        }
+        
+        /* Tooltip Content Styling - Assuming these are fine, keeping them concise */
+        .weather-tooltip-header {
+            display: flex; align-items: center; margin-bottom: 10px; 
+            padding-bottom: 10px; border-bottom: 1px solid var(--border-color, #ddd);
+        }
+        .weather-tooltip-icon { font-size: 1.8em; margin-right: 10px; color: var(--primary-color); }
+        .weather-tooltip-body .weather-detail-row { display: flex; justify-content: space-between; padding: 5px 0; font-size: 0.9em; }
+        .weather-tooltip-body .weather-detail-row span:first-child i { margin-right: 8px; color: var(--secondary-color); }
+        .weather-tooltip-footer {
+            margin-top: 10px; padding-top: 10px; 
+            border-top: 1px solid var(--border-color, #ddd); 
+            font-size: 0.85em; color: #6c757d;
+        }
+        .weather-tooltip-footer .temp-unit-toggle span { cursor: pointer; padding: 2px 5px; border-radius: 4px; }
+        .weather-tooltip-footer .temp-unit-toggle span.active { background-color: var(--primary-color); color: white; }
+        .weather-tooltip-footer .temp-unit-separator { margin: 0 3px; }
     </style>
 </head>
 <body>
@@ -771,14 +876,20 @@
                             </a>
                         </li>
                     </ul>
-                    <div class="d-flex align-items-center">
-                        <!-- Social links in navbar -->
-                        <a href="@(Model?.GetType().GetProperty("Profile")?.GetValue(Model, null)?.GetType().GetProperty("GitHubUrl")?.GetValue(Model?.GetType().GetProperty("Profile")?.GetValue(Model, null), null))" target="_blank" class="btn btn-sm btn-outline-secondary me-2">
+                    <div class="d-flex ms-auto align-items-center">
+                        <!-- Weather Widget -->
+                        <div class="me-3 d-none d-sm-block">
+                            @await Component.InvokeAsync("WeatherWidget")
+                        </div>
+                        
+                        <!-- GitHub and LinkedIn buttons moved to the navbar -->
+                        <a href="@(Model?.GetType().GetProperty("Profile")?.GetValue(Model, null)?.GetType().GetProperty("GitHubUrl")?.GetValue(Model?.GetType().GetProperty("Profile")?.GetValue(Model, null), null))" target="_blank" class="btn btn-sm btn-outline-secondary me-2" title="GitHub">
                             <i class="fab fa-github"></i>
                         </a>
-                        <a href="@(Model?.GetType().GetProperty("Profile")?.GetValue(Model, null)?.GetType().GetProperty("LinkedInUrl")?.GetValue(Model?.GetType().GetProperty("Profile")?.GetValue(Model, null), null))" target="_blank" class="btn btn-sm btn-outline-secondary me-2">
+                        <a href="@(Model?.GetType().GetProperty("Profile")?.GetValue(Model, null)?.GetType().GetProperty("LinkedInUrl")?.GetValue(Model?.GetType().GetProperty("Profile")?.GetValue(Model, null), null))" target="_blank" class="btn btn-sm btn-outline-secondary me-2" title="LinkedIn">
                             <i class="fab fa-linkedin"></i>
                         </a>
+                        
                         <!-- Dual-persona theme toggle button -->
                         <button id="themeToggle" class="dual-persona-btn btn btn-sm btn-outline-secondary me-2">
                             <div class="persona-icons">
@@ -962,6 +1073,9 @@
         });
     </script>
 
+    <!-- Weather Widget Script -->
+    <script src="~/js/weather.js" asp-append-version="true"></script>
+    
     @await RenderSectionAsync("Scripts", required: false)
     
     <!-- Scroll Animation and Hover Effects Script -->

@@ -1,0 +1,159 @@
+@page
+@model PersonalBlog.Pages.Admin.WeatherSettingsModel
+@{
+    ViewData["Title"] = "Weather Settings";
+    Layout = "_AdminLayout";
+}
+
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h3 class="mb-1">Weather Widget Settings</h3>
+                <p class="text-muted mb-0">Configure your weather display preferences</p>
+            </div>
+            <div>
+                <i class="fas fa-cloud text-primary fa-2x"></i>
+            </div>
+        </div>
+        
+        @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-2"></i>@Model.SuccessMessage
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-circle me-2"></i>@Model.ErrorMessage
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        
+        <form method="post">
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-0">General Settings</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label asp-for="DefaultLocation" class="form-label">Default Location</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0">
+                                        <i class="fas fa-map-marker-alt text-muted"></i>
+                                    </span>
+                                    <input asp-for="DefaultLocation" class="form-control border-start-0" placeholder="e.g., Tel Aviv, London, New York">
+                                </div>
+                                <small class="form-text text-muted">Enter a city name to be used when geolocation is not available.</small>
+                                <span asp-validation-for="DefaultLocation" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" id="enableGeolocation" checked>
+                                <label class="form-check-label" for="enableGeolocation">Use visitor's location when available</label>
+                            </div>
+                            
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" id="showWeatherWidget" checked>
+                                <label class="form-check-label" for="showWeatherWidget">Show weather widget in navigation bar</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-0">API Configuration</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label asp-for="ApiKey" class="form-label">OpenWeatherMap API Key</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0">
+                                        <i class="fas fa-key text-muted"></i>
+                                    </span>
+                                    <input asp-for="ApiKey" type="password" class="form-control border-start-0" placeholder="Enter your API key">
+                                    <button class="btn btn-outline-secondary" type="button" id="toggleApiKey">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <small class="form-text text-muted">Get your free API key at <a href="https://openweathermap.org/api" target="_blank">OpenWeatherMap.org</a></small>
+                            </div>
+                            
+                            <div class="alert alert-info mb-0">
+                                <i class="fas fa-info-circle me-2"></i> Your API key is stored securely and is only used to retrieve weather data.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Display Options</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label d-block">Temperature Unit</label>
+                                <div class="btn-group" role="group">
+                                    <input type="radio" class="btn-check" name="tempUnit" id="tempCelsius" checked>
+                                    <label class="btn btn-outline-primary" for="tempCelsius">Celsius (°C)</label>
+                                    
+                                    <input type="radio" class="btn-check" name="tempUnit" id="tempFahrenheit">
+                                    <label class="btn btn-outline-primary" for="tempFahrenheit">Fahrenheit (°F)</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Refresh Interval</label>
+                                <select class="form-select">
+                                    <option value="30">Every 30 minutes</option>
+                                    <option value="60" selected>Every hour</option>
+                                    <option value="180">Every 3 hours</option>
+                                    <option value="360">Every 6 hours</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="d-flex justify-content-between">
+                <a asp-page="/Admin/Index" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-2"></i>Save Settings
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toggle API key visibility
+            const toggleApiKeyBtn = document.getElementById('toggleApiKey');
+            const apiKeyInput = document.getElementById('ApiKey');
+            
+            toggleApiKeyBtn.addEventListener('click', function() {
+                const type = apiKeyInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                apiKeyInput.setAttribute('type', type);
+                
+                const icon = toggleApiKeyBtn.querySelector('i');
+                icon.className = type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
+            });
+        });
+    </script>
+}

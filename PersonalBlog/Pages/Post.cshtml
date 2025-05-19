@@ -1,0 +1,165 @@
+@page "{slug}"
+@model PersonalBlog.Pages.PostModel
+@{
+    ViewData["Title"] = Model.Post?.Title ?? "Blog Post";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8">
+            @if (Model.Post != null)
+            {
+                <div class="mb-4">
+                    <a asp-page="/Blog" class="btn btn-sm btn-outline-secondary mb-3">
+                        <i class="fas fa-arrow-left me-1"></i> Back to Blog
+                    </a>
+                    
+                    <h1 class="mb-3">@Model.Post.Title</h1>
+                    
+                    <div class="d-flex mb-4">
+                        <div class="me-3">
+                            <i class="far fa-calendar-alt me-1"></i>
+                            <span>@Model.Post.PublishedDate.ToString("MMMM d, yyyy")</span>
+                        </div>
+                        <div class="me-3">
+                            <i class="far fa-clock me-1"></i>
+                            <span>@Model.Post.ReadMinutes min read</span>
+                        </div>
+                        <div>
+                            <i class="far fa-comments me-1"></i>
+                            <span>@Model.Post.CommentCount comments</span>
+                        </div>
+                    </div>
+                    
+                    <div class="blog-post-categories mb-4">
+                        @if (Model.Post.PostCategories != null && Model.Post.PostCategories.Any())
+                        {
+                            foreach (var pc in Model.Post.PostCategories)
+                            {
+                                if (pc.Category != null)
+                                {
+                                    <a asp-page="/Blog" asp-route-categoryId="@pc.Category.Id" class="badge bg-@pc.Category.BadgeColor text-decoration-none me-1">
+                                        @pc.Category.Name
+                                    </a>
+                                }
+                            }
+                        }
+                    </div>
+                    
+                    @if (!string.IsNullOrEmpty(Model.Post.ImageUrl))
+                    {
+                        <img src="@Model.Post.ImageUrl" alt="@Model.Post.Title" class="img-fluid rounded mb-4" style="width: 100%; max-height: 400px; object-fit: cover;">
+                    }
+                    
+                    <div class="blog-content mb-5">
+                        @Html.Raw(Model.Post.Content)
+                    </div>
+                    
+                    <hr class="my-5">
+                    
+                    <!-- Comments Section -->
+                    <div class="blog-comments">
+                        <h3 class="mb-4">Comments (@Model.Post.CommentCount)</h3>
+                        
+                        @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+                        {
+                            <div class="alert alert-success alert-dismissible fade show mb-4" role="alert" id="successAlert">
+                                <i class="fas fa-check-circle me-2"></i> @Model.SuccessMessage
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                            <script>
+                                // Auto-hide the success alert after 5 seconds
+                                setTimeout(function() {
+                                    var alert = document.getElementById('successAlert');
+                                    if (alert) {
+                                        var bsAlert = new bootstrap.Alert(alert);
+                                        bsAlert.close();
+                                    }
+                                }, 5000);
+                            </script>
+                        }
+                        
+                        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                        {
+                            <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+                                <i class="fas fa-exclamation-triangle me-2"></i> @Model.ErrorMessage
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        }
+                        
+                        @if (Model.ApprovedComments.Any())
+                        {
+                            <div class="comments-list">
+                                @foreach (var comment in Model.ApprovedComments)
+                                {
+                                    <div class="comment-item card mb-3">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <h5 class="mb-0">@comment.Name</h5>
+                                                <small class="text-muted">@comment.CreatedAt.ToString("MMM d, yyyy h:mm tt")</small>
+                                            </div>
+                                            <p class="mb-0">@comment.Content</p>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-muted">No comments yet. Be the first to share your thoughts!</p>
+                        }
+                        
+                        <!-- Comment Form -->
+                        <div class="card mt-4">
+                            <div class="card-body">
+                                <h4 class="card-title">Leave a Comment</h4>
+                                <form method="post">
+                                    <div class="mb-3">
+                                        <label asp-for="NewComment.Name" class="form-label">Name</label>
+                                        <input asp-for="NewComment.Name" class="form-control" placeholder="Your name">
+                                        <span asp-validation-for="NewComment.Name" class="text-danger"></span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label asp-for="NewComment.Email" class="form-label">Email</label>
+                                        <input asp-for="NewComment.Email" class="form-control" placeholder="Your email (will not be published)">
+                                        <span asp-validation-for="NewComment.Email" class="text-danger"></span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label asp-for="NewComment.Content" class="form-label">Comment</label>
+                                        <textarea asp-for="NewComment.Content" class="form-control" rows="4" placeholder="Your comment"></textarea>
+                                        <span asp-validation-for="NewComment.Content" class="text-danger"></span>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Submit Comment</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-warning">
+                    Post not found. <a asp-page="/Blog">Return to Blog</a>
+                </div>
+            }
+        </div>
+        <div class="col-lg-4">
+            <!-- Sidebar -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Categories</h5>
+                    <div class="d-flex flex-wrap gap-2 mt-3">
+                        <a asp-page="/Blog" class="tag">All Posts</a>
+                        @foreach (var category in Model.AllCategories)
+                        {
+                            <a asp-page="/Blog" asp-route-categoryId="@category.Id" class="tag">@category.Name</a>
+                        }
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Posts Widget could go here -->
+            
+        </div>
+    </div>
+</div>

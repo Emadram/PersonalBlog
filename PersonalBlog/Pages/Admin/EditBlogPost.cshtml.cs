@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using PersonalBlog.Models;
 using PersonalBlog.Services;
+using System.Collections.Generic; 
+using System.Linq; 
 
 namespace PersonalBlog.Pages.Admin;
 
@@ -14,9 +16,12 @@ public class EditBlogPostModel : PageModel
     [BindProperty]
     public BlogPost Post { get; set; } = new BlogPost();
     
+    [BindProperty] 
+    public List<int> SelectedCategoryIds { get; set; } = new List<int>();
+
     public bool IsNew => Post.Id == 0;
     
-    public IEnumerable<string> Categories { get; set; } = new List<string>();
+    public IEnumerable<Category> AllCategories { get; set; } = new List<Category>(); 
     
     [TempData]
     public string? SuccessMessage { get; set; }
@@ -28,27 +33,26 @@ public class EditBlogPostModel : PageModel
     
     public IActionResult OnGet(int? id)
     {
-        Categories = _blogService.GetCategories();
+        AllCategories = _blogService.GetCategories(); 
         
         if (id.HasValue)
         {
-            // Edit existing post
             var existingPost = _blogService.GetPostById(id.Value);
             if (existingPost == null)
             {
                 return NotFound();
             }
-            
             Post = existingPost;
+            if (Post.PostCategories != null)
+            {
+                SelectedCategoryIds = Post.PostCategories.Select(pc => pc.CategoryId).ToList();
+            }
         }
         else
         {
-            // New post
             Post = new BlogPost
             {
-                PublishedDate = DateTime.Now,
-                CategoryBadgeColor = "primary",
-                ReadMinutes = 5
+                PublishedDate = DateTime.Now
             };
         }
         
@@ -59,18 +63,18 @@ public class EditBlogPostModel : PageModel
     {
         if (!ModelState.IsValid)
         {
-            Categories = _blogService.GetCategories();
+            AllCategories = _blogService.GetCategories(); 
             return Page();
         }
         
         if (IsNew)
         {
-            _blogService.CreatePost(Post);
+            _blogService.CreatePost(Post, SelectedCategoryIds);
             SuccessMessage = "Blog post created successfully.";
         }
         else
         {
-            _blogService.UpdatePost(Post);
+            _blogService.UpdatePost(Post, SelectedCategoryIds);
             SuccessMessage = "Blog post updated successfully.";
         }
         

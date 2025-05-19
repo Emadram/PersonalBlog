@@ -1,13 +1,15 @@
 @page
 @model PersonalBlog.Pages.BlogModel
 @{    
-    ViewData["Title"] = "Blog";
+    ViewData["Title"] = Model.CurrentCategory != null ? $"Blog - {Model.CurrentCategory.Name}" : "Blog";
 }
 
 <div class="container">
     <div class="row mb-5">
         <div class="col-lg-8">
-            <h1 class="mb-4 section-title"><i class="fas fa-blog me-2"></i>Tech Blog</h1>
+            <h1 class="mb-4 section-title">
+                <i class="fas fa-blog me-2"></i>Blog - @(Model.CurrentCategory != null ? Model.CurrentCategory.Name : "All Posts")
+            </h1>
             <p class="lead">
                 Thoughts, tutorials, and insights on software development, 
                 project management, and technology trends.
@@ -18,10 +20,10 @@
                 <div class="card-body">
                     <h5 class="card-title">Blog Categories</h5>
                     <div class="d-flex flex-wrap gap-2 mt-3">
-                        <a href="#" class="tag">All Posts</a>
-                        @foreach (var category in Model.Categories)
+                        <a asp-page="/Blog" class="tag @(Model.CurrentCategory == null ? "active" : "")">All Posts</a>
+                        @foreach (var category in Model.AllCategories)
                         {
-                            <a href="#" class="tag">@category</a>
+                            <a asp-page="/Blog" asp-route-categoryId="@category.Id" class="tag @(Model.CurrentCategory?.Id == category.Id ? "active" : "")">@category.Name</a>
                         }
                     </div>
                 </div>
@@ -42,7 +44,20 @@
                         </div>
                         <div class="col-md-7">
                             <div class="card-body">
-                                <span class="badge bg-@Model.FeaturedPost.CategoryBadgeColor mb-2">@Model.FeaturedPost.Category</span>
+                                @if (Model.FeaturedPost.PostCategories != null && Model.FeaturedPost.PostCategories.Any())
+                                {
+                                    foreach (var pc in Model.FeaturedPost.PostCategories)
+                                    {
+                                        if (pc.Category != null)
+                                        {
+                                            <span class="badge bg-@pc.Category.BadgeColor me-1 mb-2">@pc.Category.Name</span>
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary me-1 mb-2">Uncategorized</span>
+                                }
                                 <h3 class="card-title">@Model.FeaturedPost.Title</h3>
                                 <p class="card-text text-muted">
                                     @Model.FeaturedPost.PublishedDate.ToString("MMMM d, yyyy") | @Model.FeaturedPost.ReadMinutes min read
@@ -50,7 +65,7 @@
                                 <p class="card-text">
                                     @Model.FeaturedPost.Summary
                                 </p>
-                                <a href="#" class="btn btn-primary">Read Full Post</a>
+                                <a asp-page="/Post" asp-route-slug="@Model.FeaturedPost.Slug" class="btn btn-primary">Read Full Post</a>
                             </div>
                         </div>
                     </div>
@@ -61,13 +76,26 @@
 
     <!-- Blog Posts -->
     <div class="row mb-5">
-        @foreach (var post in Model.RecentPosts)
+        @foreach (var post in Model.PostsToDisplay)
         {
             <div class="col-md-6 mb-4">
                 <div class="card h-100 blog-post">
                     <img src="@post.ImageUrl" class="card-img-top" alt="Blog post image">
                     <div class="card-body">
-                        <span class="badge bg-@post.CategoryBadgeColor mb-2">@post.Category</span>
+                        @if (post.PostCategories != null && post.PostCategories.Any())
+                        {
+                            foreach (var pc in post.PostCategories)
+                            {
+                                if (pc.Category != null)
+                                {
+                                    <span class="badge bg-@pc.Category.BadgeColor me-1 mb-2">@pc.Category.Name</span>
+                                }
+                            }
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary me-1 mb-2">Uncategorized</span>
+                        }
                         <h4 class="card-title">@post.Title</h4>
                         <div class="blog-post-meta">
                             <span><i class="far fa-calendar-alt me-1"></i> @post.PublishedDate.ToString("MMMM d, yyyy")</span>
@@ -77,7 +105,7 @@
                             @post.Summary
                         </p>
                         <div class="d-flex justify-content-between align-items-center">
-                            <a href="#" class="btn btn-sm btn-outline-primary">Read Post</a>
+                            <a asp-page="/Post" asp-route-slug="@post.Slug" class="btn btn-sm btn-outline-primary">Read Post</a>
                             <div>
                                 <span class="text-muted"><i class="far fa-comments me-1"></i> @post.CommentCount</span>
                             </div>
@@ -104,10 +132,6 @@
             </ul>
         </nav>
     </div> -->
-</pre>
-            </div>
-        </div>
-    </div>
 
     <!-- Subscribe Section -->
     <div class="section mb-5">
@@ -131,4 +155,4 @@
             </div>
         </div>
     </div>
-</div> 
+</div>

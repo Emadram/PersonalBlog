@@ -461,18 +461,6 @@
             margin-top: 15px;
         }
         
-        .sidebar-menu.collapsed .section-title {
-            text-align: center;
-            padding: 10px 5px;
-        }
-        
-        /* Responsive adjustments */
-        @@media (max-width: 992px) {
-            .admin-sidebar {
-                left: calc(-1 * var(--sidebar-width) + 60px);
-            }
-            
-            .admin-sidebar.show {
                 left: 0;
             }
             
@@ -483,6 +471,186 @@
             .admin-sidebar.collapsed {
                 left: -60px;
             }
+        }
+        
+        /* Weather tooltip styles */
+        .weather-widget-container {
+            position: relative;
+            z-index: 1000;
+        }
+        
+        /* Loading animation for weather widget */
+        .weather-loading {
+            position: relative;
+        }
+        
+        .weather-loading::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 2px;
+            width: 0;
+            background: var(--gradient-primary);
+            animation: weather-loading 2s infinite ease-in-out;
+        }
+        
+@{
+            WriteLiteral("@keyframes weather-loading {\n");
+            WriteLiteral("            0% { width: 0; left: 0; }\n");
+            WriteLiteral("            50% { width: 100%; left: 0; }\n");
+            WriteLiteral("            100% { width: 0; left: 100%; }\n");
+            WriteLiteral("        }\n");
+}
+        
+        .weather-tooltip {
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 50%;
+            transform: translateX(-50%) scale(0.95);
+            width: 280px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            z-index: 1050;
+            pointer-events: none;
+        }
+        
+@{
+            WriteLiteral("@media (max-width: 576px) {");
+        }
+            .weather-tooltip {
+                position: fixed;
+                top: auto;
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%) scale(0.95);
+                width: 90%;
+                max-width: 350px;
+            }
+            
+            .weather-tooltip::before {
+                display: none;
+            }
+        }
+        
+        [data-bs-theme=dark] .weather-tooltip {
+            background: #2c3e50;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .weather-widget-container:hover .weather-tooltip {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) scale(1);
+        }
+        
+        .weather-tooltip::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%) rotate(45deg);
+            width: 16px;
+            height: 16px;
+            background: inherit;
+        }
+        
+        .weather-tooltip-header {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            background: rgba(52, 152, 219, 0.1);
+            border-bottom: 1px solid rgba(52, 152, 219, 0.2);
+        }
+        
+        [data-bs-theme=dark] .weather-tooltip-header {
+            background: rgba(0, 191, 255, 0.1);
+            border-bottom: 1px solid rgba(0, 191, 255, 0.2);
+        }
+        
+        .weather-tooltip-icon {
+            font-size: 2rem;
+            margin-right: 12px;
+            color: #3498db;
+        }
+        
+        [data-bs-theme=dark] .weather-tooltip-icon {
+            color: #00bfff;
+        }
+        
+        .weather-tooltip-body {
+            padding: 12px 15px;
+        }
+        
+        .weather-detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .weather-detail-row i {
+            width: 20px;
+            text-align: center;
+            margin-right: 5px;
+            color: #3498db;
+        }
+        
+        [data-bs-theme=dark] .weather-detail-row i {
+            color: #00bfff;
+        }
+        
+        .weather-tooltip-footer {
+            padding: 8px 15px;
+            background: rgba(52, 152, 219, 0.05);
+            border-top: 1px solid rgba(52, 152, 219, 0.1);
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        [data-bs-theme=dark] .weather-tooltip-footer {
+            background: rgba(0, 191, 255, 0.05);
+            border-top: 1px solid rgba(0, 191, 255, 0.1);
+            color: #aaa;
+        }
+        
+        /* Temperature unit toggle styles */
+        .temp-unit-toggle {
+            display: flex;
+            align-items: center;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .temp-unit {
+            cursor: pointer;
+            opacity: 0.6;
+            transition: all 0.2s ease;
+            padding: 2px 4px;
+        }
+        
+        .temp-unit:hover {
+            opacity: 0.8;
+        }
+        
+        .temp-unit.active {
+            opacity: 1;
+            font-weight: 600;
+            color: #3498db;
+        }
+        
+        [data-bs-theme=dark] .temp-unit.active {
+            color: #00bfff;
+        }
+        
+        .temp-unit-separator {
+            margin: 0 4px;
+            opacity: 0.4;
         }
     </style>
 </head>
@@ -496,6 +664,11 @@
         </div>
         
         <div class="d-flex align-items-center">
+            <!-- Weather Widget -->
+            <div class="me-3 d-none d-md-block">
+                @await Component.InvokeAsync("WeatherWidget")
+            </div>
+            
             <!-- Theme Toggle Button -->
             <button id="themeToggle" class="btn btn-sm btn-outline-secondary me-3">
                 <i id="themeIcon" class="fas fa-user-tie"></i> <!-- Project Manager icon (light mode default) -->
@@ -555,6 +728,27 @@
                     </a>
                 </li>
                 <li>
+                    <a href="/Admin/Comments" class="@(ViewContext.RouteData.Values["Page"]?.ToString() == "/Admin/Comments" ? "active" : "")">
+                        <i class="fas fa-comments"></i>
+                        <span class="menu-text">Comments</span>
+                        @if (ViewContext.HttpContext.RequestServices.GetService(typeof(PersonalBlog.Services.IBlogService)) is PersonalBlog.Services.IBlogService commentService)
+                        {
+                            // Count comments from all posts
+                            var posts = commentService.GetAllPosts();
+                            int commentCount = 0;
+                            foreach (var post in posts)
+                            {
+                                commentCount += commentService.GetCommentsByPostId(post.Id).Count();
+                            }
+                            
+                            if (commentCount > 0)
+                            {
+                                <span class="badge bg-warning rounded-pill">@commentCount</span>
+                            }
+                        }
+                    </a>
+                </li>
+                <li>
                     <a href="/Admin/Podcasts" class="@(ViewContext.RouteData.Values["Page"]?.ToString()?.StartsWith("/Admin/Podcast") == true ? "active" : "")">
                         <i class="fas fa-microphone"></i>
                         <span class="menu-text">Podcasts</span>
@@ -583,11 +777,17 @@
                     </a>
                 </li>
                 
-                <li class="section-title mt-3">Settings</li>
+                <li class="section-title mt-3">System</li>
                 <li>
                     <a href="/Admin/Settings" class="@(ViewContext.RouteData.Values["Page"]?.ToString() == "/Admin/Settings" ? "active" : "")">
                         <i class="fas fa-cog"></i>
                         <span class="menu-text">Settings</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/Admin/WeatherSettings" class="@(ViewContext.RouteData.Values["Page"]?.ToString() == "/Admin/WeatherSettings" ? "active" : "")">
+                        <i class="fas fa-cloud-sun"></i>
+                        <span class="menu-text">Weather Settings</span>
                     </a>
                 </li>
             </ul>
@@ -784,6 +984,9 @@
             }
         });
     </script>
+    
+    <!-- Weather Widget Script -->
+    <script src="~/js/weather.js" asp-append-version="true"></script>
     
     @await RenderSectionAsync("Scripts", required: false)
 </body>

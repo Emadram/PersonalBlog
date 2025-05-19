@@ -67,34 +67,25 @@
                         </div>
                         
                         <div class="mb-3">
-                            <label asp-for="Post.Category" class="form-label">Category</label>
-                            <div class="input-group">
-                                <select asp-for="Post.Category" class="form-select">
-                                    <option value="">-- Select Category --</option>
-                                    @foreach (var category in Model.Categories)
-                                    {
-                                        <option value="@category" selected="@(category == Model.Post.Category)">@category</option>
-                                    }
-                                </select>
-                                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#newCategoryModal">
-                                    <i class="fas fa-plus"></i>
-                                </button>
+                            <label class="form-label">Categories</label>
+                            <div class="list-group" style="max-height: 200px; overflow-y: auto;">
+                                @foreach (var category in Model.AllCategories)
+                                {
+                                    <div class="list-group-item">
+                                        <input class="form-check-input me-1" type="checkbox" name="SelectedCategoryIds" value="@category.Id" id="category-@category.Id" 
+                                               @(Model.SelectedCategoryIds.Contains(category.Id) ? "checked" : "")>
+                                        <label class="form-check-label stretched-link" for="category-@category.Id">
+                                            @category.Name
+                                            <span class="badge bg-@category.BadgeColor ms-2">@category.BadgeColor</span>
+                                        </label>
+                                    </div>
+                                }
+                                @if (!Model.AllCategories.Any())
+                                {
+                                    <p class="text-muted">No categories available. Please add categories via the admin panel.</p>
+                                }
                             </div>
-                            <span asp-validation-for="Post.Category" class="text-danger"></span>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label asp-for="Post.CategoryBadgeColor" class="form-label">Badge Color</label>
-                            <select asp-for="Post.CategoryBadgeColor" class="form-select">
-                                <option value="primary" selected="@(Model.Post.CategoryBadgeColor == "primary")">Blue</option>
-                                <option value="secondary" selected="@(Model.Post.CategoryBadgeColor == "secondary")">Gray</option>
-                                <option value="success" selected="@(Model.Post.CategoryBadgeColor == "success")">Green</option>
-                                <option value="danger" selected="@(Model.Post.CategoryBadgeColor == "danger")">Red</option>
-                                <option value="warning" selected="@(Model.Post.CategoryBadgeColor == "warning")">Yellow</option>
-                                <option value="info" selected="@(Model.Post.CategoryBadgeColor == "info")">Light Blue</option>
-                                <option value="dark" selected="@(Model.Post.CategoryBadgeColor == "dark")">Dark</option>
-                            </select>
-                            <span asp-validation-for="Post.CategoryBadgeColor" class="text-danger"></span>
+                            <!-- TODO: Add a link/button to a separate Category Management page -->
                         </div>
                         
                         <div class="mb-3">
@@ -132,7 +123,8 @@
         </div>
     </form>
     
-    <!-- New Category Modal -->
+    <!-- New Category Modal (Commented out for now) -->
+    <!--
     <div class="modal fade" id="newCategoryModal" tabindex="-1" aria-labelledby="newCategoryModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -153,44 +145,12 @@
             </div>
         </div>
     </div>
+    -->
 </div>
 
 @section Scripts {
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Handle adding new category
-            const addCategoryBtn = document.getElementById('addCategoryBtn');
-            const categoryInput = document.getElementById('newCategory');
-            const categorySelect = document.getElementById('Post_Category');
-            
-            addCategoryBtn.addEventListener('click', function() {
-                const categoryName = categoryInput.value.trim();
-                if (categoryName) {
-                    // Check if category already exists
-                    let exists = false;
-                    for (let i = 0; i < categorySelect.options.length; i++) {
-                        if (categorySelect.options[i].value === categoryName) {
-                            exists = true;
-                            categorySelect.value = categoryName;
-                            break;
-                        }
-                    }
-                    
-                    // If it doesn't exist, add it
-                    if (!exists) {
-                        const option = document.createElement('option');
-                        option.value = categoryName;
-                        option.text = categoryName;
-                        option.selected = true;
-                        categorySelect.add(option);
-                    }
-                    
-                    // Close modal
-                    bootstrap.Modal.getInstance(document.getElementById('newCategoryModal')).hide();
-                    categoryInput.value = '';
-                }
-            });
-            
             // Auto-generate slug when typing title
             const titleInput = document.getElementById('Post_Title');
             const slugInput = document.getElementById('Post_Slug');

@@ -1,0 +1,148 @@
+@page
+@model PersonalBlog.Pages.Admin.CommentsModel
+@{
+    ViewData["Title"] = "Manage Comments";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 text-gray-800">
+            <i class="fas fa-comments me-2"></i>Manage Comments
+        </h1>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i> @Model.SuccessMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i> @Model.ErrorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">
+                All Comments (@Model.Comments.Count())
+            </h6>
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-sm btn-outline-primary active" id="all-tab">All</button>
+                <button type="button" class="btn btn-sm btn-outline-warning" id="pending-tab">
+                    Pending (@Model.PendingComments.Count())
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-success" id="approved-tab">
+                    Approved (@Model.ApprovedComments.Count())
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Author</th>
+                            <th>Comment</th>
+                            <th>Post</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var comment in Model.Comments)
+                        {
+                            <tr class="comment-row @(comment.IsApproved ? "approved-comment" : "pending-comment")">
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar avatar-sm me-2 bg-primary rounded-circle">
+                                            <span class="avatar-text">@(comment.Name.Substring(0, 1).ToUpper())</span>
+                                        </div>
+                                        <div>
+                                            <div class="font-weight-bold">@comment.Name</div>
+                                            <div class="small text-muted">@comment.Email</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>@comment.Content</td>
+                                <td>
+                                    <a href="/Post/@(comment.BlogPost?.Slug)" target="_blank">
+                                        @(comment.BlogPost?.Title ?? "Unknown Post")
+                                    </a>
+                                </td>
+                                <td>@comment.CreatedAt.ToString("MMM d, yyyy h:mm tt")</td>
+                                <td>
+                                    @if (comment.IsApproved)
+                                    {
+                                        <span class="badge bg-success">Approved</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning text-dark">Pending</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        @if (!comment.IsApproved)
+                                        {
+                                            <form method="post" asp-page-handler="Approve" asp-route-id="@comment.Id" class="d-inline">
+                                                <button type="submit" class="btn btn-sm btn-outline-success">
+                                                    <i class="fas fa-check me-1"></i> Approve
+                                                </button>
+                                            </form>
+                                        }
+                                        <form method="post" asp-page-handler="Delete" asp-route-id="@comment.Id" class="d-inline ms-1" 
+                                              onsubmit="return confirm('Are you sure you want to delete this comment?');">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                <i class="fas fa-trash me-1"></i> Delete
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Setup DataTable
+            var table = $('#dataTable').DataTable({
+                order: [[3, 'desc']] // Sort by date column descending
+            });
+            
+            // Filter by tab
+            $('#all-tab').click(function() {
+                table.columns(4).search('').draw();
+                updateActiveButton($(this));
+            });
+            
+            $('#pending-tab').click(function() {
+                table.columns(4).search('Pending').draw();
+                updateActiveButton($(this));
+            });
+            
+            $('#approved-tab').click(function() {
+                table.columns(4).search('Approved').draw();
+                updateActiveButton($(this));
+            });
+            
+            function updateActiveButton(button) {
+                button.siblings().removeClass('active');
+                button.addClass('active');
+            }
+        });
+    </script>
+}
