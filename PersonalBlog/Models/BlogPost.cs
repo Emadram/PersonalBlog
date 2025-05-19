@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 
 namespace PersonalBlog.Models
 {
@@ -32,12 +33,11 @@ namespace PersonalBlog.Models
         [Display(Name = "Featured")]
         public bool IsFeatured { get; set; }
         
-        [Required(ErrorMessage = "Category is required")]
-        public string Category { get; set; } = string.Empty;
-        
-        [Display(Name = "Badge Color")]
-        public string CategoryBadgeColor { get; set; } = "primary";
-        
         public string Slug { get; set; } = string.Empty;
+
+        public ICollection<PostCategory> PostCategories { get; set; } = new List<PostCategory>();
+        
+        // Navigation property for comments
+        public ICollection<Comment> Comments { get; set; } = new List<Comment>();
     }
 } 

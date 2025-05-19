@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PersonalBlog.Data;
 
@@ -10,9 +11,11 @@ using PersonalBlog.Data;
 namespace PersonalBlog.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250519105756_AddCategoriesAndPostCategories")]
+    partial class AddCategoriesAndPostCategories
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.5");
@@ -174,43 +177,6 @@ namespace PersonalBlog.Migrations
                             BadgeColor = "danger",
                             Name = "DevOps"
                         });
-                });
-
-            modelBuilder.Entity("PersonalBlog.Models.Comment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("BlogPostId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("IsApproved")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BlogPostId");
-
-                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("PersonalBlog.Models.Education", b =>
@@ -887,17 +853,6 @@ namespace PersonalBlog.Migrations
                         });
                 });
 
-            modelBuilder.Entity("PersonalBlog.Models.Comment", b =>
-                {
-                    b.HasOne("PersonalBlog.Models.BlogPost", "BlogPost")
-                        .WithMany("Comments")
-                        .HasForeignKey("BlogPostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("BlogPost");
-                });
-
             modelBuilder.Entity("PersonalBlog.Models.PostCategory", b =>
                 {
                     b.HasOne("PersonalBlog.Models.BlogPost", "BlogPost")
@@ -919,8 +874,6 @@ namespace PersonalBlog.Migrations
 
             modelBuilder.Entity("PersonalBlog.Models.BlogPost", b =>
                 {
-                    b.Navigation("Comments");
-
                     b.Navigation("PostCategories");
                 });
 

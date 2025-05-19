@@ -1,0 +1,110 @@
+@using PersonalBlog.Models
+@model WeatherResponse
+
+@{
+    var temperatureClass = "text-info";
+    
+    if (Model?.Main != null)
+    {
+        if (Model.Main.Temperature > 30)
+        {
+            temperatureClass = "text-danger";
+        }
+        else if (Model.Main.Temperature < 10)
+        {
+            temperatureClass = "text-primary";
+        }
+    }
+}
+
+<div class="weather-widget-container">
+    <div class="weather-widget" id="weatherWidget">
+        @if (Model != null && Model.Weather?.Count > 0)
+        {
+            <div class="d-flex align-items-center">
+                <div class="me-2">
+                    <i class="@Model.GetFontAwesomeIcon() weather-icon" aria-hidden="true"></i>
+                </div>
+                <div>
+                    <div class="d-flex align-items-center">
+                        <span class="@temperatureClass fw-bold">@Model.FormattedTemperature</span>
+                        <small class="ms-1 text-muted">(@Model.Description)</small>
+                    </div>
+                    <small class="weather-location">@Model.Name, @Model.Sys.Country</small>
+                </div>
+            </div>
+            
+            <!-- Weather Details Tooltip that appears on hover -->
+            <div class="weather-tooltip">
+                <div class="weather-tooltip-header">
+                    <i class="@Model.GetFontAwesomeIcon() weather-tooltip-icon"></i>
+                    <div>
+                        <h6 class="mb-0">@Model.Name, @Model.Sys.Country</h6>
+                        <p class="mb-0 text-capitalize">@Model.Description</p>
+                    </div>
+                </div>
+                <div class="weather-tooltip-body">
+                    <div class="weather-detail-row">
+                        <span><i class="fas fa-temperature-high"></i> Temperature:</span>
+                        <span>@Model.FormattedTemperature</span>
+                    </div>
+                    <div class="weather-detail-row">
+                        <span><i class="fas fa-temperature-low"></i> Feels like:</span>
+                        <span>@(Math.Round(Model.Main.FeelsLike))°C</span>
+                    </div>
+                    <div class="weather-detail-row">
+                        <span><i class="fas fa-tint"></i> Humidity:</span>
+                        <span>@Model.Main.Humidity%</span>
+                    </div>
+                    @if (Model.CurrentWeather?.WindSpeed != null)
+                    {
+                        <div class="weather-detail-row">
+                            <span><i class="fas fa-wind"></i> Wind:</span>
+                            <span>@(Math.Round(Model.CurrentWeather.WindSpeed.Value, 1)) m/s</span>
+                        </div>
+                    }
+                    @if (Model.CurrentWeather?.Clouds != null)
+                    {
+                        <div class="weather-detail-row">
+                            <span><i class="fas fa-cloud"></i> Clouds:</span>
+                            <span>@(Model.CurrentWeather.Clouds.Value)%</span>
+                        </div>
+                    }
+                    @if (Model.CurrentWeather?.Uv != null)
+                    {
+                        <div class="weather-detail-row">
+                            <span><i class="fas fa-sun"></i> UV Index:</span>
+                            <span>@(Model.CurrentWeather.Uv.Value.ToString("0.0"))</span>
+                        </div>
+                    }
+                    @if (Model.CurrentWeather?.ObTime != null)
+                    {
+                        <div class="weather-detail-row"> 
+                            <span><i class="fas fa-clock"></i> Updated:</span>
+                            <span>@(DateTime.Parse(Model.CurrentWeather.ObTime).ToString("HH:mm"))</span>
+                        </div>
+                    }
+                </div>
+                <div class="weather-tooltip-footer">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fas fa-sync-alt me-1"></i> Click to refresh
+                        </div>
+                        <div class="temp-unit-toggle">
+                            <span class="temp-unit temp-unit-c active" data-unit="c">°C</span>
+                            <span class="temp-unit-separator">|</span>
+                            <span class="temp-unit temp-unit-f" data-unit="f">°F</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="d-flex align-items-center text-muted">
+                <i class="fas fa-cloud me-1"></i>
+                <span>Weather unavailable</span>
+            </div>
+        }
+    </div>
+</div>

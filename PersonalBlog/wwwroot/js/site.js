@@ -1,4 +1,4 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 // for details on configuring this project to bundle and minify static web assets.
 
 // Dark mode functionality
@@ -10,33 +10,42 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme) {
         htmlElement.setAttribute('data-theme', savedTheme);
-        updateToggleIcon(savedTheme === 'dark');
+        if (themeToggle) {
+            updateToggleIcon(savedTheme === 'dark');
+        }
         updateComponentsForTheme(savedTheme);
     } else {
         // Check for OS preference
         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         if (prefersDark) {
             htmlElement.setAttribute('data-theme', 'dark');
-            updateToggleIcon(true);
+            if (themeToggle) {
+                updateToggleIcon(true);
+            }
             updateComponentsForTheme('dark');
         }
     }
     
     // Toggle theme when button is clicked
-    themeToggle.addEventListener('click', () => {
-        const currentTheme = htmlElement.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        
-        htmlElement.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        updateToggleIcon(newTheme === 'dark');
-        updateComponentsForTheme(newTheme);
-    });
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = htmlElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            htmlElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateToggleIcon(newTheme === 'dark');
+            updateComponentsForTheme(newTheme);
+        });
+    }
     
     // Update the icon based on current theme
     function updateToggleIcon(isDark) {
+        if (!themeToggle) return;
         const iconElement = themeToggle.querySelector('i');
-        iconElement.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+        if (iconElement) {
+            iconElement.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+        }
     }
     
     // Update specific components that require JS modifications for theme changes

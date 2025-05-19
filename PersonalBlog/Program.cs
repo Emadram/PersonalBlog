@@ -6,7 +6,14 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddRazorPages();
+builder.Services.AddRazorPages()
+    .AddRazorPagesOptions(options =>
+    {
+        // Configure Razor Pages options if needed
+    });
+
+// Add MVC services to support ViewComponents
+builder.Services.AddControllersWithViews();
 
 // Add database context
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -18,6 +25,11 @@ builder.Services.AddScoped<IBlogService, BlogService>();
 builder.Services.AddScoped<IPodcastService, PodcastService>();
 builder.Services.AddScoped<INewsService, NewsService>();
 builder.Services.AddScoped<ISettingsService, SettingsService>();
+
+// Add HttpClient and Memory Cache for Weather API
+builder.Services.AddHttpClient();
+builder.Services.AddMemoryCache();
+builder.Services.AddScoped<IWeatherService, WeatherService>();
 
 // Add authentication 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -57,6 +69,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
+app.MapControllers(); // Map API controller endpoints
 
 // Seed the database when the application starts
 using (var scope = app.Services.CreateScope())
@@ -66,6 +79,9 @@ using (var scope = app.Services.CreateScope())
     
     // Seed settings
     await DataSeeder.SeedSettingsAsync(context);
+    
+    // Seed categories and post relationships
+    await DataSeeder.SeedCategoriesAndPostRelationsAsync(context);
 }
 
 // Run on a specific port to avoid conflicts
