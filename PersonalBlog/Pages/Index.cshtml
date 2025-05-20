@@ -54,11 +54,18 @@
                     {
                         <div class="col-md-6 mb-3">
                             <div class="d-flex justify-content-between align-items-center mb-1">
-                                <span><i class="@skill.IconClass me-2" style="@(string.IsNullOrEmpty(skill.IconColor) ? "" : $"color: {skill.IconColor};")" ></i> @skill.Name</span>
+                                <span>
+                                    <i class="@skill.IconClass me-2" style="@(string.IsNullOrEmpty(skill.IconColor) ? "" : $"color: {skill.IconColor};")" ></i> 
+                                    @skill.Name
+                                    <span class="badge bg-secondary ms-2" style="@(string.IsNullOrEmpty(skill.IconColor) ? "" : $"background-color: {skill.IconColor}!important;")">
+                                        @skill.ProficiencyLevel
+                                    </span>
+                                </span>
                                 <span>@skill.Proficiency%</span>
                             </div>
                             <div class="progress" style="height: 8px;">
-                                <div class="progress-bar" role="progressbar" style="width: @(skill.Proficiency)%;" 
+                                <div class="progress-bar" role="progressbar" 
+                                     style="width: @(skill.Proficiency)%; @(string.IsNullOrEmpty(skill.IconColor) ? "" : $"background-color: {skill.IconColor};")" 
                                      aria-valuenow="@skill.Proficiency" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                         </div>

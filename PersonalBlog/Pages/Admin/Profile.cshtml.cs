@@ -15,6 +15,7 @@ public class ProfileModel : PageModel
     public Person Profile { get; set; } = new Person();
     
     public IEnumerable<Skill> Skills { get; set; } = new List<Skill>();
+    public IEnumerable<SkillCategory> SkillCategories { get; set; } = new List<SkillCategory>();
     public IEnumerable<Experience> Experiences { get; set; } = new List<Experience>();
     public IEnumerable<Education> Educations { get; set; } = new List<Education>();
     
@@ -35,6 +36,7 @@ public class ProfileModel : PageModel
     {
         Profile = _profileService.GetProfile() ?? new Person();
         Skills = _profileService.GetSkills();
+        SkillCategories = _profileService.GetSkillCategories();
         Experiences = _profileService.GetExperiences();
         Educations = _profileService.GetEducations();
     }
@@ -50,6 +52,45 @@ public class ProfileModel : PageModel
         _profileService.UpdateProfile(Profile);
         
         SuccessMessage = "Profile updated successfully!";
+        return RedirectToPage();
+    }
+    
+    // Skill Category Handlers
+    public IActionResult OnPostAddSkillCategory(SkillCategory newCategory)
+    {
+        if (string.IsNullOrWhiteSpace(newCategory.Name))
+        {
+            SuccessMessage = "Category name is required.";
+            LoadAllData();
+            return Page();
+        }
+        
+        _profileService.AddSkillCategory(newCategory);
+        
+        SuccessMessage = $"Skill category '{newCategory.Name}' added successfully!";
+        return RedirectToPage();
+    }
+    
+    public IActionResult OnPostUpdateSkillCategory(SkillCategory category)
+    {
+        if (category.Id == 0 || string.IsNullOrWhiteSpace(category.Name))
+        {
+            SuccessMessage = "Invalid category data.";
+            LoadAllData();
+            return Page();
+        }
+        
+        _profileService.UpdateSkillCategory(category);
+        
+        SuccessMessage = $"Skill category '{category.Name}' updated successfully!";
+        return RedirectToPage();
+    }
+    
+    public IActionResult OnPostDeleteSkillCategory(int id)
+    {
+        _profileService.DeleteSkillCategory(id);
+        
+        SuccessMessage = "Skill category deleted successfully!";
         return RedirectToPage();
     }
     
