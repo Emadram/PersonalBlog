@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PersonalBlog.Data;
 
@@ -10,9 +11,11 @@ using PersonalBlog.Data;
 namespace PersonalBlog.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250519161215_AddSkillCategoriesAndProficiencyLevels")]
+    partial class AddSkillCategoriesAndProficiencyLevels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.5");
@@ -782,7 +785,7 @@ namespace PersonalBlog.Migrations
                             IconColor = "",
                             Name = "C# / .NET",
                             Proficiency = 95,
-                            ProficiencyLevel = 3
+                            ProficiencyLevel = 2
                         },
                         new
                         {
@@ -792,7 +795,7 @@ namespace PersonalBlog.Migrations
                             IconColor = "",
                             Name = "JavaScript / TypeScript",
                             Proficiency = 90,
-                            ProficiencyLevel = 3
+                            ProficiencyLevel = 2
                         },
                         new
                         {
@@ -802,7 +805,7 @@ namespace PersonalBlog.Migrations
                             IconColor = "",
                             Name = "SQL",
                             Proficiency = 85,
-                            ProficiencyLevel = 3
+                            ProficiencyLevel = 2
                         },
                         new
                         {
@@ -812,7 +815,7 @@ namespace PersonalBlog.Migrations
                             IconColor = "",
                             Name = "Python",
                             Proficiency = 75,
-                            ProficiencyLevel = 3
+                            ProficiencyLevel = 2
                         },
                         new
                         {
@@ -822,7 +825,7 @@ namespace PersonalBlog.Migrations
                             IconColor = "",
                             Name = "ASP.NET Core",
                             Proficiency = 90,
-                            ProficiencyLevel = 3
+                            ProficiencyLevel = 2
                         },
                         new
                         {
@@ -832,7 +835,7 @@ namespace PersonalBlog.Migrations
                             IconColor = "",
                             Name = "React",
                             Proficiency = 85,
-                            ProficiencyLevel = 3
+                            ProficiencyLevel = 2
                         },
                         new
                         {
@@ -842,7 +845,7 @@ namespace PersonalBlog.Migrations
                             IconColor = "",
                             Name = "Angular",
                             Proficiency = 80,
-                            ProficiencyLevel = 3
+                            ProficiencyLevel = 2
                         },
                         new
                         {
@@ -852,7 +855,7 @@ namespace PersonalBlog.Migrations
                             IconColor = "",
                             Name = "SQL Server",
                             Proficiency = 85,
-                            ProficiencyLevel = 3
+                            ProficiencyLevel = 2
                         },
                         new
                         {
@@ -862,7 +865,7 @@ namespace PersonalBlog.Migrations
                             IconColor = "",
                             Name = "Docker",
                             Proficiency = 70,
-                            ProficiencyLevel = 3
+                            ProficiencyLevel = 2
                         },
                         new
                         {
@@ -872,7 +875,7 @@ namespace PersonalBlog.Migrations
                             IconColor = "",
                             Name = "Azure",
                             Proficiency = 75,
-                            ProficiencyLevel = 3
+                            ProficiencyLevel = 2
                         },
                         new
                         {
@@ -882,7 +885,7 @@ namespace PersonalBlog.Migrations
                             IconColor = "",
                             Name = "AWS",
                             Proficiency = 65,
-                            ProficiencyLevel = 3
+                            ProficiencyLevel = 2
                         },
                         new
                         {
@@ -892,7 +895,7 @@ namespace PersonalBlog.Migrations
                             IconColor = "",
                             Name = "Git",
                             Proficiency = 90,
-                            ProficiencyLevel = 3
+                            ProficiencyLevel = 2
                         },
                         new
                         {
@@ -902,7 +905,7 @@ namespace PersonalBlog.Migrations
                             IconColor = "",
                             Name = "Prompt Engineering",
                             Proficiency = 92,
-                            ProficiencyLevel = 3
+                            ProficiencyLevel = 2
                         });
                 });
 

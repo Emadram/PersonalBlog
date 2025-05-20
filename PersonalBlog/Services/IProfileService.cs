@@ -6,6 +6,11 @@ namespace PersonalBlog.Services
     {
         Person? GetProfile();
         IEnumerable<Skill> GetSkills();
+        IEnumerable<SkillCategory> GetSkillCategories();
+        SkillCategory? GetSkillCategoryById(int id);
+        void AddSkillCategory(SkillCategory category);
+        void UpdateSkillCategory(SkillCategory category);
+        void DeleteSkillCategory(int categoryId);
         IEnumerable<Experience> GetExperiences();
         IEnumerable<Education> GetEducations();
         void UpdateProfile(Person profile);

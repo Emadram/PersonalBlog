@@ -20,7 +20,56 @@ namespace PersonalBlog.Services
 
         public IEnumerable<Skill> GetSkills()
         {
-            return _context.Skills.OrderBy(s => s.Category).ThenByDescending(s => s.Proficiency).ToList();
+            return _context.Skills
+                .OrderBy(s => s.Category)
+                .ThenByDescending(s => s.Proficiency)
+                .ToList();
+        }
+
+        public IEnumerable<SkillCategory> GetSkillCategories()
+        {
+            return _context.SkillCategories.OrderBy(c => c.Order).ToList();
+        }
+
+        public SkillCategory? GetSkillCategoryById(int id)
+        {
+            return _context.SkillCategories.Find(id);
+        }
+
+        public void AddSkillCategory(SkillCategory category)
+        {
+            _context.SkillCategories.Add(category);
+            _context.SaveChanges();
+        }
+
+        public void UpdateSkillCategory(SkillCategory category)
+        {
+            var existing = _context.SkillCategories.Find(category.Id);
+            if (existing != null)
+            {
+                existing.Name = category.Name;
+                existing.Description = category.Description;
+                existing.Order = category.Order;
+                _context.SaveChanges();
+            }
+        }
+
+        public void DeleteSkillCategory(int categoryId)
+        {
+            var category = _context.SkillCategories.Find(categoryId);
+            if (category != null)
+            {
+                // Update related skills to have null CategoryId
+                var relatedSkills = _context.Skills.Where(s => s.CategoryId == categoryId).ToList();
+                foreach (var skill in relatedSkills)
+                {
+                    skill.CategoryId = null;
+                    skill.Category = "Uncategorized"; // Set a default category name
+                }
+                
+                _context.SkillCategories.Remove(category);
+                _context.SaveChanges();
+            }
         }
 
         public IEnumerable<Experience> GetExperiences()
@@ -66,7 +115,9 @@ namespace PersonalBlog.Services
             {
                 existingSkill.Name = skill.Name;
                 existingSkill.Proficiency = skill.Proficiency;
+                existingSkill.ProficiencyLevel = skill.ProficiencyLevel;
                 existingSkill.Category = skill.Category;
+                existingSkill.CategoryId = skill.CategoryId;
                 existingSkill.IconClass = skill.IconClass;
                 existingSkill.IconColor = skill.IconColor;
                 
