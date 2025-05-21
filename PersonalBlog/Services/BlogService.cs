@@ -5,15 +5,23 @@ using System.Linq;
 
 namespace PersonalBlog.Services
 {
+    /// <summary>
+    /// Implementation of the IBlogService interface for managing blog posts and comments.
+    /// </summary>
     public class BlogService : IBlogService
     {
         private readonly ApplicationDbContext _context;
 
+        /// <summary>
+        /// Initializes a new instance of the BlogService class.
+        /// </summary>
+        /// <param name="context">The database context for blog operations.</param>
         public BlogService(ApplicationDbContext context)
         {
             _context = context;
         }
 
+        /// <inheritdoc/>
         public IEnumerable<BlogPost> GetAllPosts()
         {
             return _context.BlogPosts
@@ -23,6 +31,7 @@ namespace PersonalBlog.Services
                 .ToList();
         }
 
+        /// <inheritdoc/>
         public IEnumerable<BlogPost> GetRecentPosts(int count)
         {
             return _context.BlogPosts
@@ -33,6 +42,7 @@ namespace PersonalBlog.Services
                 .ToList();
         }
 
+        /// <inheritdoc/>
         public BlogPost? GetFeaturedPost()
         {
             return _context.BlogPosts
@@ -41,6 +51,7 @@ namespace PersonalBlog.Services
                 .FirstOrDefault(p => p.IsFeatured);
         }
 
+        /// <inheritdoc/>
         public BlogPost? GetPostBySlug(string slug)
         {
             return _context.BlogPosts
@@ -49,11 +60,13 @@ namespace PersonalBlog.Services
                 .FirstOrDefault(p => p.Slug == slug);
         }
 
+        /// <inheritdoc/>
         public IEnumerable<Category> GetCategories()
         {
             return _context.Categories.OrderBy(c => c.Name).ToList();
         }
 
+        /// <inheritdoc/>
         public IEnumerable<BlogPost> GetPostsByCategory(int categoryId)
         {
             return _context.BlogPosts
@@ -64,6 +77,7 @@ namespace PersonalBlog.Services
                 .ToList();
         }
         
+        /// <inheritdoc/>
         public BlogPost? GetPostById(int id)
         {
             return _context.BlogPosts
@@ -72,6 +86,7 @@ namespace PersonalBlog.Services
                 .FirstOrDefault(p => p.Id == id);
         }
         
+        /// <inheritdoc/>
         public void CreatePost(BlogPost post, List<int> selectedCategoryIds)
         {
             if (string.IsNullOrEmpty(post.Slug))
@@ -97,6 +112,7 @@ namespace PersonalBlog.Services
             }
         }
         
+        /// <inheritdoc/>
         public void UpdatePost(BlogPost post, List<int> selectedCategoryIds)
         {
             var existingPost = _context.BlogPosts
@@ -149,6 +165,7 @@ namespace PersonalBlog.Services
             }
         }
         
+        /// <inheritdoc/>
         public void DeletePost(int id)
         {
             try
@@ -204,6 +221,7 @@ namespace PersonalBlog.Services
             }
         }
         
+        /// <inheritdoc/>
         public void TogglePostFeatured(int id)
         {
             var post = _context.BlogPosts.Find(id);
@@ -228,16 +246,7 @@ namespace PersonalBlog.Services
             }
         }
         
-        private string GenerateSlug(string title)
-        {
-            var slug = title.ToLower().Replace(" ", "-");
-            
-            slug = new string(slug.Where(c => char.IsLetterOrDigit(c) || c == '-').ToArray());
-            
-            return slug;
-        }
-        
-        // Comment operations
+        /// <inheritdoc/>
         public IEnumerable<Comment> GetCommentsByPostId(int postId)
         {
             return _context.Comments
@@ -246,6 +255,7 @@ namespace PersonalBlog.Services
                 .ToList();
         }
         
+        /// <inheritdoc/>
         public void AddComment(Comment comment)
         {
             // Save the comment
@@ -266,6 +276,7 @@ namespace PersonalBlog.Services
             _context.SaveChanges();
         }
         
+        /// <inheritdoc/>
         public void ApproveComment(int id)
         {
             var comment = _context.Comments.Find(id);
@@ -284,6 +295,7 @@ namespace PersonalBlog.Services
             }
         }
         
+        /// <inheritdoc/>
         public void DeleteComment(int id)
         {
             var comment = _context.Comments.Find(id);
@@ -302,6 +314,18 @@ namespace PersonalBlog.Services
                 _context.Comments.Remove(comment);
                 _context.SaveChanges();
             }
+        }
+
+        /// <summary>
+        /// Generates a URL-friendly slug from a title.
+        /// </summary>
+        /// <param name="title">The title to convert to a slug.</param>
+        /// <returns>A URL-friendly version of the title.</returns>
+        private string GenerateSlug(string title)
+        {
+            var slug = title.ToLower().Replace(" ", "-");
+            slug = new string(slug.Where(c => char.IsLetterOrDigit(c) || c == '-').ToArray());
+            return slug;
         }
     }
 }
