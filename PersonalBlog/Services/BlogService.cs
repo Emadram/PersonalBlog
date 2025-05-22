@@ -16,6 +16,10 @@ namespace PersonalBlog.Services
         /// Initializes a new instance of the BlogService class.
         /// </summary>
         /// <param name="context">The database context for blog operations.</param>
+        /// <remarks>
+        /// This constructor uses dependency injection to receive an instance of ApplicationDbContext,
+        /// which is used for all database operations within the service.
+        /// </remarks>
         public BlogService(ApplicationDbContext context)
         {
             _context = context;
@@ -246,7 +250,11 @@ namespace PersonalBlog.Services
             }
         }
         
-        /// <inheritdoc/>
+        /// <summary>
+        /// Retrieves approved comments for a specific blog post.
+        /// </summary>
+        /// <param name="postId">The ID of the blog post to retrieve comments for.</param>
+        /// <returns>A collection of approved comments for the specified blog post, ordered by creation date descending.</returns>
         public IEnumerable<Comment> GetCommentsByPostId(int postId)
         {
             return _context.Comments
